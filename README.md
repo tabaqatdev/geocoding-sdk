@@ -1,6 +1,9 @@
 # Saudi Arabia Geocoding SDK
 
-A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser.
+[![npm version](https://badge.fury.io/js/@tabaqat%2Fgeocoding-sdk.svg)](https://www.npmjs.com/package/@tabaqat/geocoding-sdk)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**v0.1.0** - A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser with automatic fallback to default data source.
 
 ## Live Examples
 
@@ -89,7 +92,7 @@ flowchart TB
 - **Bbox Filtering**: Optimize forward geocoding by limiting search to visible map area
 - **Bilingual**: Full support for Arabic and English
 
-## Performance (V3 - H3 Tiles)
+## Performance
 
 | Metric                   | Value                       |
 | ------------------------ | --------------------------- |
@@ -113,6 +116,9 @@ bun add @tabaqat/geocoding-sdk
 
 # pnpm
 pnpm add @tabaqat/geocoding-sdk
+
+# yarn
+yarn add @tabaqat/geocoding-sdk
 ```
 
 ## Quick Start
@@ -596,9 +602,11 @@ To host your own data files:
 
 ```typescript
 const sdk = new GeoSDK({
-  dataUrl: 'https://your-cdn.com/geocoding-data/v3_h3_tiles',
+  dataUrl: 'https://your-cdn.com/geocoding-data/v0.1.0',
 });
 ```
+
+**Automatic Fallback**: If your custom URL fails, the SDK automatically falls back to the default source.coop CDN.
 
 Your CDN should serve:
 
@@ -608,6 +616,35 @@ Your CDN should serve:
 - `sa_regions_simple.parquet`
 - `sa_districts_simple.parquet`
 - `tiles/*.parquet` (717 files)
+
+## Development
+
+```bash
+# Install dependencies
+bun install
+
+# Build
+bun run build
+
+# Type check
+bun run typecheck
+
+# Lint
+bun run lint
+
+# Format
+bun run format
+```
+
+## Contributing
+
+Contributions are welcome! This project uses:
+
+- Pre-commit hooks (husky + lint-staged)
+- Conventional commits (commitlint)
+- ESLint + Prettier for code quality
+
+See [RELEASE.md](RELEASE.md) for release process.
 
 ## License
 

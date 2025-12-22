@@ -1,0 +1,178 @@
+{
+  "common": {
+    "appName": "Saudi Arabia Geocoding SDK",
+    "appDescription": "Browser-based geocoding for Saudi Arabia using DuckDB-WASM",
+    "loading": "Loading...",
+    "error": "Error",
+    "search": "Search",
+    "results": "Results",
+    "noResults": "No results found",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "tryIt": "Try it",
+    "viewCode": "View Code",
+    "learnMore": "Learn more",
+    "meters": "m",
+    "kilometers": "km",
+    "milliseconds": "ms",
+    "seconds": "s"
+  },
+  "nav": {
+    "home": "Home",
+    "playground": "Playground",
+    "docs": "Documentation",
+    "gettingStarted": "Getting Started",
+    "forwardGeocoding": "Forward Geocoding",
+    "reverseGeocoding": "Reverse Geocoding",
+    "postcodeSearch": "Postcode Search",
+    "houseNumber": "House Number Search",
+    "countryDetection": "Country Detection",
+    "adminHierarchy": "Admin Hierarchy",
+    "apiReference": "API Reference",
+    "examples": "Examples",
+    "mapIntegration": "Map Integration",
+    "autocomplete": "Autocomplete"
+  },
+  "home": {
+    "hero": {
+      "title": "Saudi Arabia Geocoding SDK",
+      "subtitle": "Browser-based geocoding with zero backend dependencies",
+      "description": "Convert addresses to coordinates and vice versa, entirely in the browser using DuckDB-WASM. Supports 5.3M+ addresses across all 13 Saudi regions.",
+      "getStarted": "Get Started",
+      "viewPlayground": "Try Playground"
+    },
+    "features": {
+      "title": "Features",
+      "forwardGeocoding": {
+        "title": "Forward Geocoding",
+        "description": "Convert addresses to coordinates with Jaccard similarity matching"
+      },
+      "reverseGeocoding": {
+        "title": "Reverse Geocoding",
+        "description": "Find nearest addresses from coordinates using H3 tile-based indexing"
+      },
+      "postcodeSearch": {
+        "title": "Postcode Search",
+        "description": "Ultra-fast postcode lookups using indexed tile mapping"
+      },
+      "bilingual": {
+        "title": "Bilingual Support",
+        "description": "Full Arabic and English support for addresses and admin names"
+      },
+      "zeroBackend": {
+        "title": "Zero Backend",
+        "description": "Runs entirely in the browser - no server required"
+      },
+      "fastPerformance": {
+        "title": "Fast Performance",
+        "description": "< 4s cold start, < 100ms cached queries"
+      }
+    },
+    "stats": {
+      "addresses": "Addresses",
+      "regions": "Regions",
+      "tiles": "H3 Tiles",
+      "initialLoad": "Initial Load"
+    }
+  },
+  "playground": {
+    "title": "Interactive Playground",
+    "description": "Test all SDK features in one place",
+    "initializeFirst": "Initialize the SDK to start",
+    "initialize": "Initialize SDK",
+    "initializing": "Initializing...",
+    "ready": "SDK Ready",
+    "tabs": {
+      "forward": "Forward Geocode",
+      "reverse": "Reverse Geocode",
+      "postcode": "Postcode Search",
+      "number": "House Number"
+    }
+  },
+  "docs": {
+    "gettingStarted": {
+      "title": "Getting Started",
+      "description": "Learn how to install and use the Saudi Arabia Geocoding SDK",
+      "installation": "Installation",
+      "quickStart": "Quick Start",
+      "initialization": "Initialization"
+    },
+    "forwardGeocoding": {
+      "title": "Forward Geocoding",
+      "description": "Convert addresses to coordinates",
+      "method": "geocode(address, options)",
+      "addressPlaceholder": "Enter an address (e.g., حي الروضة الرياض)"
+    },
+    "reverseGeocoding": {
+      "title": "Reverse Geocoding",
+      "description": "Find addresses near coordinates",
+      "method": "reverseGeocode(lat, lon, options)",
+      "clickMap": "Click on the map to reverse geocode",
+      "detailLevel": "Detail Level",
+      "radius": "Search Radius"
+    },
+    "postcodeSearch": {
+      "title": "Postcode Search",
+      "description": "Search addresses by postcode",
+      "method": "searchByPostcode(postcode, options)",
+      "postcodePlaceholder": "Enter postcode (e.g., 13847)",
+      "houseNumberPlaceholder": "House number (optional)"
+    },
+    "houseNumber": {
+      "title": "House Number Search",
+      "description": "Search by house number within a region",
+      "method": "searchByNumber(number, options)",
+      "numberPlaceholder": "Enter house number",
+      "regionFilter": "Filter by Region"
+    },
+    "countryDetection": {
+      "title": "Country Detection",
+      "description": "Identify country from coordinates",
+      "method": "detectCountry(lat, lon)"
+    },
+    "adminHierarchy": {
+      "title": "Admin Hierarchy",
+      "description": "Get administrative hierarchy for Saudi Arabia coordinates",
+      "method": "getAdminHierarchy(lat, lon)"
+    },
+    "apiReference": {
+      "title": "API Reference",
+      "description": "Complete TypeScript API documentation"
+    }
+  },
+  "results": {
+    "address": "Address",
+    "distance": "Distance",
+    "similarity": "Similarity",
+    "coordinates": "Coordinates",
+    "postcode": "Postcode",
+    "district": "District",
+    "region": "Region",
+    "houseNumber": "House Number",
+    "street": "Street",
+    "city": "City",
+    "country": "Country"
+  },
+  "regions": {
+    "all": "All Regions",
+    "riyadh": "Riyadh Region",
+    "makkah": "Makkah Region",
+    "eastern": "Eastern Province",
+    "madinah": "Madinah Region",
+    "qassim": "Qassim Region",
+    "asir": "Asir Region",
+    "jazan": "Jazan Region",
+    "tabuk": "Tabuk Region",
+    "hail": "Hail Region",
+    "najran": "Najran Region",
+    "jawf": "Al Jawf Region",
+    "bahah": "Al Bahah Region",
+    "northern": "Northern Borders Region"
+  },
+  "footer": {
+    "builtWith": "Built with",
+    "sdk": "Geocoding SDK",
+    "github": "GitHub",
+    "docs": "Documentation"
+  }
+}

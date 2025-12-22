@@ -1,0 +1,1 @@
+cd examples/react && bunx lint-staged

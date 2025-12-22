@@ -1,0 +1,178 @@
+{
+  "common": {
+    "appName": "SDK الترميز الجغرافي للمملكة العربية السعودية",
+    "appDescription": "ترميز جغرافي في المتصفح باستخدام DuckDB-WASM",
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "search": "بحث",
+    "results": "النتائج",
+    "noResults": "لم يتم العثور على نتائج",
+    "copy": "نسخ",
+    "copied": "تم النسخ!",
+    "tryIt": "جرّبها",
+    "viewCode": "عرض الكود",
+    "learnMore": "اعرف المزيد",
+    "meters": "م",
+    "kilometers": "كم",
+    "milliseconds": "مللي ثانية",
+    "seconds": "ث"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "playground": "التجربة التفاعلية",
+    "docs": "التوثيق",
+    "gettingStarted": "البداية السريعة",
+    "forwardGeocoding": "الترميز الأمامي",
+    "reverseGeocoding": "الترميز العكسي",
+    "postcodeSearch": "البحث بالرمز البريدي",
+    "houseNumber": "البحث برقم المبنى",
+    "countryDetection": "تحديد الدولة",
+    "adminHierarchy": "التقسيم الإداري",
+    "apiReference": "مرجع API",
+    "examples": "أمثلة",
+    "mapIntegration": "تكامل الخريطة",
+    "autocomplete": "الإكمال التلقائي"
+  },
+  "home": {
+    "hero": {
+      "title": "SDK الترميز الجغرافي للسعودية",
+      "subtitle": "ترميز جغرافي في المتصفح بدون خادم",
+      "description": "تحويل العناوين إلى إحداثيات والعكس، بالكامل في المتصفح باستخدام DuckDB-WASM. يدعم أكثر من 5.3 مليون عنوان في جميع المناطق الـ 13.",
+      "getStarted": "ابدأ الآن",
+      "viewPlayground": "جرّب التطبيق"
+    },
+    "features": {
+      "title": "المميزات",
+      "forwardGeocoding": {
+        "title": "الترميز الأمامي",
+        "description": "تحويل العناوين إلى إحداثيات باستخدام مطابقة Jaccard"
+      },
+      "reverseGeocoding": {
+        "title": "الترميز العكسي",
+        "description": "إيجاد أقرب العناوين من الإحداثيات باستخدام فهرسة H3"
+      },
+      "postcodeSearch": {
+        "title": "البحث بالرمز البريدي",
+        "description": "بحث فائق السرعة باستخدام فهرسة الرموز البريدية"
+      },
+      "bilingual": {
+        "title": "دعم ثنائي اللغة",
+        "description": "دعم كامل للعربية والإنجليزية للعناوين والأسماء الإدارية"
+      },
+      "zeroBackend": {
+        "title": "بدون خادم",
+        "description": "يعمل بالكامل في المتصفح - لا حاجة لخادم"
+      },
+      "fastPerformance": {
+        "title": "أداء سريع",
+        "description": "أقل من 4 ثوانٍ للبدء، أقل من 100 مللي ثانية للاستعلامات المخزنة"
+      }
+    },
+    "stats": {
+      "addresses": "عنوان",
+      "regions": "منطقة",
+      "tiles": "خلية H3",
+      "initialLoad": "التحميل الأولي"
+    }
+  },
+  "playground": {
+    "title": "التجربة التفاعلية",
+    "description": "اختبر جميع ميزات SDK في مكان واحد",
+    "initializeFirst": "قم بتهيئة SDK للبدء",
+    "initialize": "تهيئة SDK",
+    "initializing": "جاري التهيئة...",
+    "ready": "SDK جاهز",
+    "tabs": {
+      "forward": "ترميز أمامي",
+      "reverse": "ترميز عكسي",
+      "postcode": "رمز بريدي",
+      "number": "رقم المبنى"
+    }
+  },
+  "docs": {
+    "gettingStarted": {
+      "title": "البداية السريعة",
+      "description": "تعلم كيفية تثبيت واستخدام SDK الترميز الجغرافي",
+      "installation": "التثبيت",
+      "quickStart": "البداية السريعة",
+      "initialization": "التهيئة"
+    },
+    "forwardGeocoding": {
+      "title": "الترميز الأمامي",
+      "description": "تحويل العناوين إلى إحداثيات",
+      "method": "geocode(address, options)",
+      "addressPlaceholder": "أدخل عنوان (مثال: حي الروضة الرياض)"
+    },
+    "reverseGeocoding": {
+      "title": "الترميز العكسي",
+      "description": "إيجاد العناوين القريبة من الإحداثيات",
+      "method": "reverseGeocode(lat, lon, options)",
+      "clickMap": "انقر على الخريطة للترميز العكسي",
+      "detailLevel": "مستوى التفاصيل",
+      "radius": "نطاق البحث"
+    },
+    "postcodeSearch": {
+      "title": "البحث بالرمز البريدي",
+      "description": "البحث عن العناوين بالرمز البريدي",
+      "method": "searchByPostcode(postcode, options)",
+      "postcodePlaceholder": "أدخل الرمز البريدي (مثال: 13847)",
+      "houseNumberPlaceholder": "رقم المبنى (اختياري)"
+    },
+    "houseNumber": {
+      "title": "البحث برقم المبنى",
+      "description": "البحث برقم المبنى داخل منطقة",
+      "method": "searchByNumber(number, options)",
+      "numberPlaceholder": "أدخل رقم المبنى",
+      "regionFilter": "تصفية حسب المنطقة"
+    },
+    "countryDetection": {
+      "title": "تحديد الدولة",
+      "description": "تحديد الدولة من الإحداثيات",
+      "method": "detectCountry(lat, lon)"
+    },
+    "adminHierarchy": {
+      "title": "التقسيم الإداري",
+      "description": "الحصول على التسلسل الإداري لإحداثيات في السعودية",
+      "method": "getAdminHierarchy(lat, lon)"
+    },
+    "apiReference": {
+      "title": "مرجع API",
+      "description": "توثيق API الكامل بـ TypeScript"
+    }
+  },
+  "results": {
+    "address": "العنوان",
+    "distance": "المسافة",
+    "similarity": "التشابه",
+    "coordinates": "الإحداثيات",
+    "postcode": "الرمز البريدي",
+    "district": "الحي",
+    "region": "المنطقة",
+    "houseNumber": "رقم المبنى",
+    "street": "الشارع",
+    "city": "المدينة",
+    "country": "الدولة"
+  },
+  "regions": {
+    "all": "جميع المناطق",
+    "riyadh": "منطقة الرياض",
+    "makkah": "منطقة مكة المكرمة",
+    "eastern": "المنطقة الشرقية",
+    "madinah": "منطقة المدينة المنورة",
+    "qassim": "منطقة القصيم",
+    "asir": "منطقة عسير",
+    "jazan": "منطقة جازان",
+    "tabuk": "منطقة تبوك",
+    "hail": "منطقة حائل",
+    "najran": "منطقة نجران",
+    "jawf": "منطقة الجوف",
+    "bahah": "منطقة الباحة",
+    "northern": "منطقة الحدود الشمالية"
+  },
+  "footer": {
+    "builtWith": "بُني بواسطة",
+    "sdk": "SDK الترميز الجغرافي",
+    "github": "GitHub",
+    "docs": "التوثيق"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "name": "@tabaqat/geocoding-sdk",
+  "version": "0.1.0",
+  "description": "Browser-based geocoding SDK using DuckDB-WASM",
+  "module": "src/index.ts",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target browser && tsc --emitDeclarationOnly --outDir dist",
+    "dev": "bun run --watch src/demo.ts",
+    "test": "bun test",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "prepare": "husky"
+  },
+  "keywords": [
+    "geocoding",
+    "reverse-geocoding",
+    "wasm",
+    "duckdb",
+    "browser",
+    "saudi-arabia",
+    "arabic"
+  ],
+  "devDependencies": {
+    "@commitlint/cli": "^20.2.0",
+    "@commitlint/config-conventional": "^20.2.0",
+    "@types/bun": "latest",
+    "@typescript-eslint/eslint-plugin": "^8.50.1",
+    "@typescript-eslint/parser": "^8.50.1",
+    "eslint": "^9.39.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.7.4",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@duckdb/duckdb-wasm": "^1.33.1-dev5.0"
+  }
+}

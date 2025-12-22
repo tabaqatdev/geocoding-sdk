@@ -37,11 +37,9 @@ export default function CountryDetection() {
     setSearching(true);
     try {
       const res = await sdk.detectCountry(parseFloat(lat), parseFloat(lon));
-      setResult(res as any);
+      setResult(res);
       if (res) {
-        toast.success(
-          `Detected: ${language === "ar" ? (res as any).name_ar : (res as any).name_en}`
-        );
+        toast.success(`Detected: ${language === "ar" ? res.name_ar : res.name_en}`);
       } else {
         toast.info("Point is not in any country (ocean/disputed territory)");
       }

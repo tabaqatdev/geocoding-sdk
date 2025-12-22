@@ -34,8 +34,8 @@ export default function AdminHierarchy() {
     setSearching(true);
     try {
       const res = await sdk.getAdminHierarchy(parseFloat(lat), parseFloat(lon));
-      setResult(res as any);
-      if (res && ((res as any).region || (res as any).district)) {
+      setResult(res);
+      if (res && (res.region || res.district)) {
         toast.success("Admin hierarchy found");
       } else {
         toast.info("Point is outside Saudi Arabia admin boundaries");

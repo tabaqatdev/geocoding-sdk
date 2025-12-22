@@ -25,7 +25,8 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit",
-    "prepare": "husky"
+    "prepare": "husky",
+    "prepublishOnly": "bun run lint && bun run typecheck && bun run build"
   },
   "keywords": [
     "geocoding",
@@ -34,8 +35,22 @@
     "duckdb",
     "browser",
     "saudi-arabia",
-    "arabic"
+    "arabic",
+    "h3",
+    "parquet",
+    "offline"
   ],
+  "author": "Tabaqat",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tabaqatdev/geocoding-wasm.git",
+    "directory": "geocoding-sdk"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "devDependencies": {
     "@commitlint/cli": "^20.2.0",
     "@commitlint/config-conventional": "^20.2.0",

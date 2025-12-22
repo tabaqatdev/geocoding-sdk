@@ -4,23 +4,24 @@ on:
   push:
     branches: [main]
     paths:
-      - 'examples/**'
-      - 'src/**'
-      - 'package.json'
+      - 'examples/react/**'
       - '.github/workflows/deploy-examples.yml'
   workflow_dispatch:
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Allow only one concurrent deployment
 concurrency:
-  group: "pages"
+  group: 'pages'
   cancel-in-progress: false
 
 jobs:
   build:
+    name: Build Example App
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,34 +32,31 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
       - name: Install SDK dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
+        working-directory: .
 
       - name: Build SDK
         run: bun run build
+        working-directory: .
 
-      - name: Install React example dependencies
-        run: bun install
-        working-directory: ./examples/react
+      - name: Install example dependencies
+        run: bun install --frozen-lockfile
+        working-directory: examples/react
 
-      - name: Build React example
+      - name: Build example app
         run: bun run build
-        working-directory: ./examples/react
-
-      - name: Prepare deployment directory
-        run: |
-          mkdir -p _site/examples/react
-          cp -r examples/react/build/client/* _site/examples/react/
+        working-directory: examples/react
+        env:
+          NODE_ENV: production
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./_site
+          path: examples/react/build/client
 
   deploy:
+    name: Deploy to GitHub Pages
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

@@ -207,12 +207,39 @@ export class GeoSDKH3 {
     const baseUrl = this.config.dataUrl;
     console.log('[GeoSDK-H3] Loading index files from:', baseUrl);
 
-    // Step 5: Load tile index
+    // Step 5: Load tile index with fallback
     stepStart = performance.now();
     report('tiles', 'loading');
-    const indexResult = await this.conn.query(`
-      SELECT * FROM read_parquet('${baseUrl}/tile_index.parquet')
-    `);
+
+    let indexResult;
+    let actualBaseUrl = baseUrl;
+
+    try {
+      indexResult = await this.conn.query(`
+        SELECT * FROM read_parquet('${baseUrl}/tile_index.parquet')
+      `);
+    } catch (error) {
+      // If custom URL fails, try fallback to default
+      if (baseUrl !== DEFAULT_DATA_URL) {
+        console.warn(`[GeoSDK-H3] Failed to load from custom URL: ${baseUrl}`);
+        console.log(`[GeoSDK-H3] Falling back to default URL: ${DEFAULT_DATA_URL}`);
+        report('tiles', 'error', performance.now() - stepStart, 'Trying fallback URL');
+
+        try {
+          indexResult = await this.conn.query(`
+            SELECT * FROM read_parquet('${DEFAULT_DATA_URL}/tile_index.parquet')
+          `);
+          actualBaseUrl = DEFAULT_DATA_URL;
+          this.config.dataUrl = DEFAULT_DATA_URL; // Update config to use fallback
+          console.log('[GeoSDK-H3] Successfully loaded from fallback URL');
+        } catch (fallbackError) {
+          throw new Error(`Failed to load tile index from both custom and default URLs: ${error}`);
+        }
+      } else {
+        throw error;
+      }
+    }
+
     this.tileIndex = indexResult.toArray().map((row: any) => ({
       h3_tile: row.h3_tile,
       addr_count: row.addr_count,
@@ -232,7 +259,7 @@ export class GeoSDKH3 {
     report('postcodes', 'loading');
     try {
       const postcodeResult = await this.conn.query(`
-        SELECT * FROM read_parquet('${baseUrl}/postcode_index.parquet')
+        SELECT * FROM read_parquet('${actualBaseUrl}/postcode_index.parquet')
       `);
       for (const row of postcodeResult.toArray()) {
         // Convert DuckDB list to JavaScript array
@@ -274,19 +301,19 @@ export class GeoSDKH3 {
     // Load world countries (small)
     await this.conn.query(`
       CREATE VIEW world_countries AS
-      SELECT * FROM read_parquet('${baseUrl}/world_countries_simple.parquet')
+      SELECT * FROM read_parquet('${actualBaseUrl}/world_countries_simple.parquet')
     `);
 
     // Load SA regions boundaries (small)
     await this.conn.query(`
       CREATE VIEW sa_regions AS
-      SELECT * FROM read_parquet('${baseUrl}/sa_regions_simple.parquet')
+      SELECT * FROM read_parquet('${actualBaseUrl}/sa_regions_simple.parquet')
     `);
 
     // Load SA districts boundaries (optional, ~500KB)
     await this.conn.query(`
       CREATE VIEW sa_districts AS
-      SELECT * FROM read_parquet('${baseUrl}/sa_districts_simple.parquet')
+      SELECT * FROM read_parquet('${actualBaseUrl}/sa_districts_simple.parquet')
     `);
 
     this.initialized = true;

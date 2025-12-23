@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // GitHub Pages SPA redirect hack
+    // Store the full path and redirect to index.html
+    const path = location.pathname + location.search + location.hash;
+    sessionStorage.setItem('redirect', path);
+    // Redirect to the base URL (geocoding-sdk root)
+    location.replace('/geocoding-sdk/');
+  </script>
+</head>
+<body>
+  Redirecting...
+</body>
+</html>

@@ -6,7 +6,7 @@ import path from "path";
 
 export default defineConfig({
   base: process.env.NODE_ENV === 'production' ? '/geocoding-sdk/examples/react/' : '/',
-  plugins: [reactRouter()],
+  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   resolve: {
     alias: {
       '@tabaqat/geocoding-sdk': path.resolve(__dirname, '../../src/index.ts'),

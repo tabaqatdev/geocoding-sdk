@@ -93,6 +93,29 @@
     "gettingStarted": {
       "title": "Getting Started",
       "description": "Learn how to install and use the Saudi Arabia Geocoding SDK",
+      "offlineUsage": {
+        "title": "Offline / Airgapped Usage",
+        "description": "Use the SDK in offline or airgapped environments by hosting the data files locally",
+        "step1": {
+          "title": "Step 1: Download Data Files",
+          "description": "Download all required Parquet files to your local environment (~158MB total)"
+        },
+        "step2": {
+          "title": "Step 2: Configure SDK",
+          "description": "Point the SDK to your local data directory"
+        },
+        "step3": {
+          "title": "Step 3: Web Server Configuration",
+          "description": "Configure your web server to serve Parquet files with proper headers"
+        },
+        "notes": {
+          "title": "Important Notes",
+          "note1": "Total data size: ~158MB (5 index files + 717 tile files)",
+          "note2": "You can download only specific tiles for your region to reduce size",
+          "note3": "Ensure your web server supports HTTP Range requests for efficient loading",
+          "note4": "The SDK will work completely offline once all files are downloaded"
+        }
+      },
       "installation": "Installation",
       "quickStart": "Quick Start",
       "initialization": "Initialization"

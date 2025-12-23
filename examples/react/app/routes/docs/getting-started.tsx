@@ -167,19 +167,27 @@ const results: GeocodingResult[] = await sdk.geocode("address");`}
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Hash className="w-5 h-5" />
-              {t("gettingStarted.offlineUsage.title")}
+              {t("docs.gettingStarted.offlineUsage.title")}
             </CardTitle>
-            <CardDescription>{t("gettingStarted.offlineUsage.description")}</CardDescription>
+            <CardDescription>{t("docs.gettingStarted.offlineUsage.description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h4 className="font-semibold mb-2">{t("gettingStarted.offlineUsage.step1.title")}</h4>
+              <h4 className="font-semibold mb-2">
+                {t("docs.gettingStarted.offlineUsage.step1.title")}
+              </h4>
               <p className="text-sm text-muted-foreground mb-3">
-                {t("gettingStarted.offlineUsage.step1.description")}
+                {t("docs.gettingStarted.offlineUsage.step1.description")}
               </p>
-              <CodeBlock
-                language="bash"
-                code={`# Download all required Parquet files
+              <Tabs defaultValue="unix">
+                <TabsList>
+                  <TabsTrigger value="unix">macOS / Linux</TabsTrigger>
+                  <TabsTrigger value="windows">Windows</TabsTrigger>
+                </TabsList>
+                <TabsContent value="unix">
+                  <CodeBlock
+                    language="bash"
+                    code={`# Download all required Parquet files
 mkdir -p ./public/geocoding-data/v0.1.0/tiles
 
 # Download index files
@@ -200,18 +208,50 @@ curl -o ./public/geocoding-data/v0.1.0/sa_districts_simple.parquet \\
   https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_districts_simple.parquet
 
 # Download all tile files (717 files, ~158MB total)
-# You can use a script or download selectively based on your region
 for tile in $(curl -s https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/tiles/ | grep -o 'href="[^"]*\\.parquet"' | cut -d'"' -f2); do
   curl -o ./public/geocoding-data/v0.1.0/tiles/$tile \\
     https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/tiles/$tile
 done`}
-              />
+                  />
+                </TabsContent>
+                <TabsContent value="windows">
+                  <CodeBlock
+                    language="powershell"
+                    code={`# PowerShell script to download all required Parquet files
+New-Item -ItemType Directory -Force -Path .\\public\\geocoding-data\\v0.1.0\\tiles
+
+# Download index files
+Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/tile_index.parquet" \`
+  -OutFile ".\\public\\geocoding-data\\v0.1.0\\tile_index.parquet"
+
+Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/postcode_index.parquet" \`
+  -OutFile ".\\public\\geocoding-data\\v0.1.0\\postcode_index.parquet"
+
+# Download boundary files
+Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/world_countries_simple.parquet" \`
+  -OutFile ".\\public\\geocoding-data\\v0.1.0\\world_countries_simple.parquet"
+
+Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_regions_simple.parquet" \`
+  -OutFile ".\\public\\geocoding-data\\v0.1.0\\sa_regions_simple.parquet"
+
+Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_districts_simple.parquet" \`
+  -OutFile ".\\public\\geocoding-data\\v0.1.0\\sa_districts_simple.parquet"
+
+# Download all tile files (717 files, ~158MB total)
+# Note: This is a simplified example. For production, use a proper download script
+$baseUrl = "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/tiles/"
+# Add your tile download logic here`}
+                  />
+                </TabsContent>
+              </Tabs>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">{t("gettingStarted.offlineUsage.step2.title")}</h4>
+              <h4 className="font-semibold mb-2">
+                {t("docs.gettingStarted.offlineUsage.step2.title")}
+              </h4>
               <p className="text-sm text-muted-foreground mb-3">
-                {t("gettingStarted.offlineUsage.step2.description")}
+                {t("docs.gettingStarted.offlineUsage.step2.description")}
               </p>
               <CodeBlock
                 language="typescript"
@@ -232,16 +272,22 @@ console.log(results);`}
             </div>
 
             <div>
-              <h4 className="font-semibold mb-2">{t("gettingStarted.offlineUsage.step3.title")}</h4>
+              <h4 className="font-semibold mb-2">
+                {t("docs.gettingStarted.offlineUsage.step3.title")}
+              </h4>
               <p className="text-sm text-muted-foreground mb-3">
-                {t("gettingStarted.offlineUsage.step3.description")}
+                {t("docs.gettingStarted.offlineUsage.step3.description")}
               </p>
-              <CodeBlock
-                language="typescript"
-                code={`// For airgapped environments, configure your web server
-// to serve the Parquet files with proper CORS headers
-
-// Example nginx configuration:
+              <Tabs defaultValue="nginx">
+                <TabsList>
+                  <TabsTrigger value="nginx">nginx</TabsTrigger>
+                  <TabsTrigger value="apache">Apache</TabsTrigger>
+                  <TabsTrigger value="iis">IIS (Windows)</TabsTrigger>
+                </TabsList>
+                <TabsContent value="nginx">
+                  <CodeBlock
+                    language="nginx"
+                    code={`# nginx configuration
 location /geocoding-data/ {
     add_header 'Access-Control-Allow-Origin' '*';
     add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
@@ -249,28 +295,52 @@ location /geocoding-data/ {
     
     # Enable range requests for efficient loading
     add_header 'Accept-Ranges' 'bytes';
-}
-
-// Example Apache configuration:
-# <Directory "/var/www/html/geocoding-data">
-#     Header set Access-Control-Allow-Origin "*"
-#     Header set Access-Control-Allow-Methods "GET, OPTIONS"
-#     Header set Access-Control-Allow-Headers "Range"
-#     Header set Accept-Ranges "bytes"
-# </Directory>`}
-              />
+}`}
+                  />
+                </TabsContent>
+                <TabsContent value="apache">
+                  <CodeBlock
+                    language="apache"
+                    code={`# Apache configuration
+<Directory "/var/www/html/geocoding-data">
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, OPTIONS"
+    Header set Access-Control-Allow-Headers "Range"
+    Header set Accept-Ranges "bytes"
+</Directory>`}
+                  />
+                </TabsContent>
+                <TabsContent value="iis">
+                  <CodeBlock
+                    language="xml"
+                    code={`<!-- IIS web.config -->
+<configuration>
+  <system.webServer>
+    <httpProtocol>
+      <customHeaders>
+        <add name="Access-Control-Allow-Origin" value="*" />
+        <add name="Access-Control-Allow-Methods" value="GET, OPTIONS" />
+        <add name="Access-Control-Allow-Headers" value="Range" />
+        <add name="Accept-Ranges" value="bytes" />
+      </customHeaders>
+    </httpProtocol>
+  </system.webServer>
+</configuration>`}
+                  />
+                </TabsContent>
+              </Tabs>
             </div>
 
             <div className="bg-muted p-4 rounded-lg">
               <h4 className="font-semibold mb-2 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4" />
-                {t("gettingStarted.offlineUsage.notes.title")}
+                {t("docs.gettingStarted.offlineUsage.notes.title")}
               </h4>
               <ul className="text-sm space-y-2 list-disc list-inside text-muted-foreground">
-                <li>{t("gettingStarted.offlineUsage.notes.note1")}</li>
-                <li>{t("gettingStarted.offlineUsage.notes.note2")}</li>
-                <li>{t("gettingStarted.offlineUsage.notes.note3")}</li>
-                <li>{t("gettingStarted.offlineUsage.notes.note4")}</li>
+                <li>{t("docs.gettingStarted.offlineUsage.notes.note1")}</li>
+                <li>{t("docs.gettingStarted.offlineUsage.notes.note2")}</li>
+                <li>{t("docs.gettingStarted.offlineUsage.notes.note3")}</li>
+                <li>{t("docs.gettingStarted.offlineUsage.notes.note4")}</li>
               </ul>
             </div>
           </CardContent>

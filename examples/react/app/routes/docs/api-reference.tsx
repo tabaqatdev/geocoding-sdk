@@ -244,7 +244,7 @@ export default function ApiReference() {
 
 // Default data URL
 const DEFAULT_DATA_URL_V3 =
-  'https://data.source.coop/tabaqat/geocoding-cng/v3_h3_tiles';`}
+  'https://data.source.coop/tabaqat/geocoding-cng/v0.1.0';`}
             />
           </CardContent>
         </Card>

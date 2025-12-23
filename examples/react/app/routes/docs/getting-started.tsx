@@ -95,7 +95,7 @@ console.log("SDK ready:", await sdk.getStats());`}
 
 const sdk = new GeoSDK({
   // Custom data URL (default: source.coop)
-  dataUrl: "https://your-cdn.com/geocoding-data/v3_h3_tiles",
+  dataUrl: "https://your-cdn.com/geocoding-data/v0.1.0",
 
   // Default language for results
   language: "ar" // or "en"

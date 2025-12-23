@@ -632,7 +632,7 @@ export default function Playground() {
                     </TabsContent>
 
                     {/* House Number Search Tab */}
-                    <TabsContent value="number" className="m-0 p-4 data-[state=active]:block">
+                    <TabsContent value="house" className="m-0 p-4 data-[state=active]:block">
                       <div className="space-y-3">
                         <div className="flex gap-2">
                           <Input

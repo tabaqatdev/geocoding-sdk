@@ -9,7 +9,8 @@
 
 Check out the interactive documentation and demos:
 
-- **[React Example App](https://tabaqatdev.github.io/geocoding-wasm/examples/react/)** - Comprehensive demo with all SDK features
+- Try the [interactive playground](https://tabaqatdev.github.io/geocoding-sdk/) to see the SDK in action.
+- **[React Example App](https://tabaqatdev.github.io/geocoding-sdk/examples/react/)** - Comprehensive demo with all SDK features
   - Playground with forward/reverse geocoding, postcode search
   - Full API documentation with interactive examples
   - MapLibre GL integration example

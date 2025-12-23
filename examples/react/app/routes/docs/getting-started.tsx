@@ -282,6 +282,7 @@ console.log(results);`}
                 <TabsList>
                   <TabsTrigger value="nginx">nginx</TabsTrigger>
                   <TabsTrigger value="apache">Apache</TabsTrigger>
+                  <TabsTrigger value="caddy">Caddy</TabsTrigger>
                   <TabsTrigger value="iis">IIS (Windows)</TabsTrigger>
                 </TabsList>
                 <TabsContent value="nginx">
@@ -308,6 +309,29 @@ location /geocoding-data/ {
     Header set Access-Control-Allow-Headers "Range"
     Header set Accept-Ranges "bytes"
 </Directory>`}
+                  />
+                </TabsContent>
+                <TabsContent value="caddy">
+                  <CodeBlock
+                    language="caddyfile"
+                    code={`# Caddyfile configuration
+example.com {
+    # Serve static files from geocoding-data directory
+    handle /geocoding-data/* {
+        root * /var/www/html
+        file_server
+        
+        # CORS headers
+        header {
+            Access-Control-Allow-Origin *
+            Access-Control-Allow-Methods "GET, OPTIONS"
+            Access-Control-Allow-Headers Range
+        }
+    }
+}
+
+# Note: Caddy automatically handles Range requests
+# No additional configuration needed for partial content support`}
                   />
                 </TabsContent>
                 <TabsContent value="iis">

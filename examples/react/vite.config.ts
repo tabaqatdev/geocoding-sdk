@@ -5,7 +5,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import path from "path";
 
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/geocoding-sdk/examples/react/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '/geocoding-sdk/' : '/',
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   resolve: {
     alias: {

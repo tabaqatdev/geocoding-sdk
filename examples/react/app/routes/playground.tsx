@@ -26,7 +26,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { Loader2, RotateCcw, Mail, Hash, CheckCircle, AlertCircle, Search } from "lucide-react";
+import {
+  Loader2,
+  RotateCcw,
+  Mail,
+  Hash,
+  CheckCircle,
+  AlertCircle,
+  Search,
+  Layers,
+} from "lucide-react";
 import { toast } from "sonner";
 import type { Route } from "./+types/playground";
 
@@ -93,6 +102,14 @@ export default function Playground() {
   const [houseResults, setHouseResults] = useState<GeocodingResult[]>([]);
   const [houseLoading, setHouseLoading] = useState(false);
 
+  // Admin hierarchy state
+  const [adminHierarchy, setAdminHierarchy] = useState<{
+    country?: string;
+    region?: string;
+    governorate?: string;
+    district?: string;
+  } | null>(null);
+
   // Active tab for syncing with map
   const [activeTab, setActiveTab] = useState("reverse");
 
@@ -128,6 +145,31 @@ export default function Playground() {
       setReverseLat(lat.toFixed(6));
       setReverseLon(lng.toFixed(6));
 
+      // Get country and admin hierarchy for clicked location
+      try {
+        const [countryResult, hierarchyResult] = await Promise.all([
+          sdk.detectCountry(lat, lng),
+          sdk.getAdminHierarchy(lat, lng),
+        ]);
+
+        setAdminHierarchy({
+          country: language === "ar" ? countryResult?.name_ar : countryResult?.name_en,
+          region:
+            language === "ar" ? hierarchyResult?.region?.name_ar : hierarchyResult?.region?.name_en,
+          governorate:
+            language === "ar"
+              ? hierarchyResult?.governorate?.name_ar
+              : hierarchyResult?.governorate?.name_en,
+          district:
+            language === "ar"
+              ? hierarchyResult?.district?.name_ar
+              : hierarchyResult?.district?.name_en,
+        });
+      } catch (err) {
+        console.error("Failed to get location hierarchy:", err);
+      }
+
+      // Perform reverse geocoding
       try {
         const results = await sdk.reverseGeocode(lat, lng, {
           limit: 5,
@@ -405,6 +447,42 @@ export default function Playground() {
               <Badge variant="secondary" className="text-xs">
                 {searchMode === "fts-bm25" ? "FTS BM25" : "JACCARD"}
               </Badge>
+            </div>
+          )}
+
+          {/* Admin Hierarchy Overlay */}
+          {adminHierarchy && (
+            <div
+              className="absolute bottom-4 right-4 z-10 bg-background/90 backdrop-blur rounded-lg px-3 py-2 text-xs space-y-1 max-w-[250px]"
+              dir={language === "ar" ? "rtl" : "ltr"}
+            >
+              <div className="font-semibold text-muted-foreground mb-1">
+                {language === "ar" ? "التسلسل الإداري" : "Admin Hierarchy"}
+              </div>
+              {adminHierarchy.country && (
+                <div className="flex items-center gap-1">
+                  <Layers className="w-3 h-3 text-muted-foreground" />
+                  <span className="font-medium">{adminHierarchy.country}</span>
+                </div>
+              )}
+              {adminHierarchy.region && (
+                <div className="flex items-center gap-1 ml-4">
+                  <span className="text-muted-foreground">→</span>
+                  <span>{adminHierarchy.region}</span>
+                </div>
+              )}
+              {adminHierarchy.governorate && (
+                <div className="flex items-center gap-1 ml-6">
+                  <span className="text-muted-foreground">→</span>
+                  <span>{adminHierarchy.governorate}</span>
+                </div>
+              )}
+              {adminHierarchy.district && (
+                <div className="flex items-center gap-1 ml-8">
+                  <span className="text-muted-foreground">→</span>
+                  <span>{adminHierarchy.district}</span>
+                </div>
+              )}
             </div>
           )}
         </div>

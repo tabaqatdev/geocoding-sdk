@@ -5,13 +5,11 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import path from "path";
 
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
-  // Base path for GitHub Pages deployment
-  base: "/geocoding-wasm/examples/react/",
-  // Resolve the linked SDK package
+  base: process.env.NODE_ENV === 'production' ? '/geocoding-sdk/examples/react/' : '/',
+  plugins: [reactRouter()],
   resolve: {
     alias: {
-      "@tabaqat/geocoding-sdk": path.resolve(__dirname, "../../dist/index.js"),
+      '@tabaqat/geocoding-sdk': path.resolve(__dirname, '../../src/index.ts'),
     },
   },
   // Required headers for DuckDB-WASM (SharedArrayBuffer)

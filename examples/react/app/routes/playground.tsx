@@ -94,7 +94,7 @@ export default function Playground() {
   const [houseLoading, setHouseLoading] = useState(false);
 
   // Active tab for syncing with map
-  const [activeTab, setActiveTab] = useState("forward");
+  const [activeTab, setActiveTab] = useState("reverse");
 
   // Initialize RTL text plugin for Arabic support
   useEffect(() => {
@@ -444,32 +444,32 @@ export default function Playground() {
                   <div className="px-4 pt-2 shrink-0">
                     <TabsList className="flex flex-wrap h-auto gap-1 bg-muted p-1 rounded-lg w-full">
                       <TabsTrigger
-                        value="forward"
-                        className="flex-1 min-w-[45%] text-xs px-2 py-2 gap-1.5 data-[state=active]:bg-background flex-row-reverse"
+                        value="reverse"
+                        className="flex-1 min-w-[120px] data-[state=active]:bg-background"
                       >
-                        <span>{t("playground.tabs.forward")}</span>
-                        <Search className="h-3.5 w-3.5 shrink-0" />
+                        <RotateCcw className="w-4 h-4 mr-2" />
+                        {t("playground.tabs.reverse")}
                       </TabsTrigger>
                       <TabsTrigger
-                        value="reverse"
-                        className="flex-1 min-w-[45%] text-xs px-2 py-2 gap-1.5 data-[state=active]:bg-background flex-row-reverse"
+                        value="forward"
+                        className="flex-1 min-w-[120px] data-[state=active]:bg-background"
                       >
-                        <span>{t("playground.tabs.reverse")}</span>
-                        <RotateCcw className="h-3.5 w-3.5 shrink-0" />
+                        <Search className="w-4 h-4 mr-2" />
+                        {t("playground.tabs.forward")}
                       </TabsTrigger>
                       <TabsTrigger
                         value="postcode"
-                        className="flex-1 min-w-[45%] text-xs px-2 py-2 gap-1.5 data-[state=active]:bg-background flex-row-reverse"
+                        className="flex-1 min-w-[120px] data-[state=active]:bg-background"
                       >
-                        <span>{t("playground.tabs.postcode")}</span>
-                        <Mail className="h-3.5 w-3.5 shrink-0" />
+                        <Mail className="w-4 h-4 mr-2" />
+                        {t("playground.tabs.postcode")}
                       </TabsTrigger>
                       <TabsTrigger
-                        value="number"
-                        className="flex-1 min-w-[45%] text-xs px-2 py-2 gap-1.5 data-[state=active]:bg-background flex-row-reverse"
+                        value="house"
+                        className="flex-1 min-w-[120px] data-[state=active]:bg-background"
                       >
-                        <span>{t("playground.tabs.number")}</span>
-                        <Hash className="h-3.5 w-3.5 shrink-0" />
+                        <Hash className="w-4 h-4 mr-2" />
+                        {t("playground.tabs.number")}
                       </TabsTrigger>
                     </TabsList>
                   </div>

@@ -50,10 +50,15 @@ jobs:
         env:
           NODE_ENV: production
 
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p _site
+          cp -r examples/react/build/client/* _site/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: examples/react/build/client
+          path: ./_site
 
   deploy:
     name: Deploy to GitHub Pages

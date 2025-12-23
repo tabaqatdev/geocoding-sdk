@@ -658,6 +658,20 @@ export default function Playground() {
                               <SelectItem value="المنطقة الشرقية">
                                 {t("regions.eastern")}
                               </SelectItem>
+                              <SelectItem value="منطقة المدينة المنورة">
+                                {t("regions.madinah")}
+                              </SelectItem>
+                              <SelectItem value="منطقة القصيم">{t("regions.qassim")}</SelectItem>
+                              <SelectItem value="منطقة عسير">{t("regions.asir")}</SelectItem>
+                              <SelectItem value="منطقة جازان">{t("regions.jazan")}</SelectItem>
+                              <SelectItem value="منطقة تبوك">{t("regions.tabuk")}</SelectItem>
+                              <SelectItem value="منطقة حائل">{t("regions.hail")}</SelectItem>
+                              <SelectItem value="منطقة نجران">{t("regions.najran")}</SelectItem>
+                              <SelectItem value="منطقة الجوف">{t("regions.jawf")}</SelectItem>
+                              <SelectItem value="منطقة الباحة">{t("regions.bahah")}</SelectItem>
+                              <SelectItem value="منطقة الحدود الشمالية">
+                                {t("regions.northern")}
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>

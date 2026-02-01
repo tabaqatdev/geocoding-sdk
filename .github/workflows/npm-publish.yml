@@ -24,8 +24,8 @@ jobs:
       - name: Run tests
         run: bun run typecheck && bun run lint
 
-      - name: Build package
-        run: bun run build
+      - name: Build package and verify types
+        run: bun run build:check
 
       - name: Setup npm authentication
         run: |

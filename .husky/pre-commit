@@ -1,1 +1,10 @@
+#!/usr/bin/env sh
+
+# Run lint-staged for formatting and linting
 bun run lint-staged
+
+# Run typecheck to ensure no type errors
+bun run typecheck
+
+# Verify build works and generates type definitions
+bun run build:check

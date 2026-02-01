@@ -1,0 +1,32 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src/index.ts"],
+  "out": "./docs/api",
+  "json": "./examples/react/app/data/api-docs.json",
+  "name": "@tabaqat/geocoding-sdk",
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "includeVersion": true,
+  "categorizeByGroup": true,
+  "categoryOrder": [
+    "Initialization",
+    "Forward Geocoding",
+    "Reverse Geocoding",
+    "Specialized Search",
+    "Location Detection",
+    "Tile Management",
+    "Postcode Index",
+    "Stats & Diagnostics",
+    "Debug & Cache",
+    "*"
+  ],
+  "sort": ["source-order"],
+  "visibilityFilters": {
+    "protected": false,
+    "private": false,
+    "inherited": true,
+    "external": false
+  }
+}

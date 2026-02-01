@@ -9,17 +9,14 @@
  * Initial load is ~140KB (index + boundaries)
  */
 
-// Main SDK export - use GeoSDK for convenience
-export { GeoSDKH3 as GeoSDK } from './geocoder-h3';
-
-// Also export as GeoSDKH3 for explicit usage
-export { GeoSDKH3 } from './geocoder-h3';
+// Main SDK export
+export { GeoSDK } from './geocoder-h3';
 
 // Export all types from the SDK
 export type {
   TileInfo,
   PostcodeInfo,
-  GeoSDKH3Config,
+  GeoSDKConfig,
   GeocodingResult,
   CountryResult,
   CountryDetectionResult,

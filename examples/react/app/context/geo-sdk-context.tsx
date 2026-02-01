@@ -19,6 +19,7 @@ interface AutocompleteOptions {
   limit?: number;
   bbox?: [number, number, number, number];
   regions?: string[];
+  types?: "all" | "district" | "postcode" | "region";
 }
 
 interface GeoSDKType {
@@ -35,7 +36,15 @@ interface GeoSDKType {
   getAutocompleteSuggestions(
     query: string,
     options?: AutocompleteOptions
-  ): Promise<{ suggestions: string[]; type: "district" | "postcode" | "general" }>;
+  ): Promise<{
+    suggestions: Array<{
+      type: "district" | "postcode" | "region";
+      value: string;
+      label_ar: string;
+      label_en: string;
+    }>;
+    type: "district" | "postcode" | "general";
+  }>;
   reverseGeocode(
     lat: number,
     lon: number,
@@ -84,6 +93,7 @@ interface PostcodeSearchOptions {
 interface NumberSearchOptions {
   limit?: number;
   region?: string;
+  bbox?: [number, number, number, number];
 }
 
 interface CountryDetectionResult {

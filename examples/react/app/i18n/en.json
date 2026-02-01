@@ -82,6 +82,7 @@
     "initialize": "Initialize SDK",
     "initializing": "Initializing...",
     "ready": "SDK Ready",
+    "clickMap": "Click on map or use search tools",
     "tabs": {
       "forward": "Forward Geocode",
       "reverse": "Reverse Geocode",

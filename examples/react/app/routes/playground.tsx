@@ -3,6 +3,7 @@ import Map, {
   Marker,
   Popup,
   NavigationControl,
+  AttributionControl,
   type MapLayerMouseEvent,
   type MapRef,
 } from "react-map-gl/maplibre";
@@ -36,6 +37,10 @@ import {
   AlertCircle,
   Search,
   Layers,
+  Trash2,
+  Zap,
+  Database,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { Route } from "./+types/playground";
@@ -64,7 +69,14 @@ const MAP_STYLES = {
 
 // RTL text plugin URL
 const RTL_PLUGIN_URL =
-  "https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.min.js";
+  "https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.3.0/dist/mapbox-gl-rtl-text.js";
+
+// Default zoom level for fly-to animations
+const DEFAULT_FLYTO_ZOOM = 18;
+
+// Detect mobile for performance optimizations
+const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+const FLYTO_DURATION = isMobile ? 800 : 1500;
 
 export default function Playground() {
   const { t, language } = useTranslation();
@@ -82,6 +94,15 @@ export default function Playground() {
   const [forwardQuery, setForwardQuery] = useState("");
   const [forwardResults, setForwardResults] = useState<GeocodingResult[]>([]);
   const [forwardLoading, setForwardLoading] = useState(false);
+  const [searchMethod, setSearchMethod] = useState<"standard" | "cached" | "smart">("cached");
+  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<
+    Array<{
+      type: "district" | "region" | "postcode";
+      value: string;
+      label_ar: string;
+      label_en: string;
+    }>
+  >([]);
 
   // Search scope options
   const [useBboxScope, setUseBboxScope] = useState(true);
@@ -105,6 +126,7 @@ export default function Playground() {
   // House number search state
   const [houseNumber, setHouseNumber] = useState("");
   const [houseRegion, setHouseRegion] = useState("");
+  const [useHouseBboxScope, setUseHouseBboxScope] = useState(false);
   const [houseResults, setHouseResults] = useState<GeocodingResult[]>([]);
   const [houseLoading, setHouseLoading] = useState(false);
 
@@ -141,6 +163,35 @@ export default function Playground() {
     if (!sdk || !postcodeQuery || selectedPostcode) return [];
     return sdk.getPostcodes(postcodeQuery).slice(0, 15);
   }, [sdk, postcodeQuery, selectedPostcode]);
+
+  // Fetch autocomplete suggestions for forward geocoding (debounced)
+  useEffect(() => {
+    if (!sdk || !forwardQuery || forwardQuery.length < 2) {
+      setAutocompleteSuggestions([]);
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        const suggestions = await sdk.getAutocompleteSuggestions(forwardQuery, {
+          limit: 8,
+          types: "all",
+        });
+        setAutocompleteSuggestions(suggestions?.suggestions || []);
+      } catch {
+        setAutocompleteSuggestions([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [sdk, forwardQuery]);
+
+  // Handle cache clear
+  const handleClearCache = useCallback(() => {
+    if (!sdk) return;
+    sdk.clearCache?.();
+    toast.success(language === "ar" ? "تم مسح ذاكرة التخزين المؤقت" : "Cache cleared");
+  }, [sdk, language]);
 
   // Handle map click for reverse geocoding
   const handleMapClick = useCallback(
@@ -211,6 +262,13 @@ export default function Playground() {
             }))
           );
 
+          // Fly to the result location
+          mapRef?.flyTo({
+            center: [result.longitude, result.latitude],
+            zoom: DEFAULT_FLYTO_ZOOM,
+            duration: FLYTO_DURATION,
+          });
+
           toast.success(`Found ${results.length} nearby addresses`);
         } else {
           setClickMarker(null);
@@ -229,8 +287,8 @@ export default function Playground() {
 
   // Fly to location on map
   const flyTo = useCallback(
-    (lat: number, lng: number, zoom = 14) => {
-      mapRef?.flyTo({ center: [lng, lat], zoom, duration: 1500 });
+    (lat: number, lng: number, zoom = DEFAULT_FLYTO_ZOOM) => {
+      mapRef?.flyTo({ center: [lng, lat], zoom, duration: FLYTO_DURATION });
     },
     [mapRef]
   );
@@ -263,6 +321,7 @@ export default function Playground() {
   const handleForwardGeocode = async () => {
     if (!sdk || !forwardQuery.trim()) return;
     setForwardLoading(true);
+    setAutocompleteSuggestions([]); // Clear suggestions on search
     try {
       const bounds = mapRef?.getBounds();
       const bbox =
@@ -276,14 +335,31 @@ export default function Playground() {
           : undefined;
       const regions = useRegionScope && selectedRegion ? [selectedRegion] : undefined;
 
-      const results = await sdk.geocode(forwardQuery, {
-        limit: 10,
-        bbox,
-        regions,
-      });
+      const options = { limit: 10, bbox, regions };
+      let results: GeocodingResult[];
+      let methodUsed: string;
+
+      switch (searchMethod) {
+        case "smart":
+          results = await sdk.smartGeocode(forwardQuery, options);
+          methodUsed = "Smart";
+          break;
+        case "cached":
+          results = await sdk.geocodeCached(forwardQuery, options);
+          methodUsed = "Cached";
+          break;
+        default:
+          results = await sdk.geocode(forwardQuery, options);
+          methodUsed = "Standard";
+      }
+
       setForwardResults(results);
       showResultsOnMap(results);
-      toast.success(`Found ${results.length} results`);
+      toast.success(
+        language === "ar"
+          ? `تم العثور على ${results.length} نتيجة (${methodUsed})`
+          : `Found ${results.length} results (${methodUsed})`
+      );
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Search failed");
     } finally {
@@ -335,13 +411,29 @@ export default function Playground() {
     if (!sdk || !houseNumber.trim()) return;
     setHouseLoading(true);
     try {
+      const bounds = mapRef?.getBounds();
+      const bbox =
+        useHouseBboxScope && bounds
+          ? ([bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()] as [
+              number,
+              number,
+              number,
+              number,
+            ])
+          : undefined;
+
       const results = await sdk.searchByNumber(houseNumber, {
         limit: 20,
         region: houseRegion || undefined,
+        bbox,
       });
       setHouseResults(results);
       showResultsOnMap(results);
-      toast.success(`Found ${results.length} addresses`);
+      toast.success(
+        language === "ar"
+          ? `تم العثور على ${results.length} عنوان`
+          : `Found ${results.length} addresses`
+      );
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "House number search failed");
     } finally {
@@ -353,13 +445,9 @@ export default function Playground() {
     return language === "ar" ? result.full_address_ar : result.full_address_en;
   };
 
-  const getRegion = (result: GeocodingResult) => {
-    return language === "ar" ? result.region_ar : result.region_en;
-  };
-
   return (
     <Layout>
-      <div className="h-[calc(100vh-4rem)] flex flex-col lg:flex-row gap-4 p-4 overflow-hidden">
+      <div className="h-[calc(100vh-3.5rem)] flex flex-col lg:flex-row gap-4 p-4 overflow-hidden">
         {/* Map Panel */}
         <div className="h-[250px] sm:h-[350px] lg:h-auto lg:flex-1 shrink-0 relative rounded-lg overflow-hidden border bg-card">
           {mapLoading && (
@@ -401,8 +489,13 @@ export default function Playground() {
             mapStyle={mapStyle}
             onClick={initialized ? handleMapClick : undefined}
             cursor={initialized ? "crosshair" : "default"}
+            attributionControl={false}
           >
             <NavigationControl position="top-right" />
+            <AttributionControl
+              compact={true}
+              customAttribution='<a href="https://tabaqat.net" target="_blank">Tabaqat</a>'
+            />
 
             {/* Click marker (primary) */}
             {clickMarker && (
@@ -462,8 +555,13 @@ export default function Playground() {
           {/* Map Stats Overlay */}
           {initialized && stats && (
             <div className="absolute bottom-4 left-4 z-10 bg-background/90 backdrop-blur rounded-lg px-3 py-2 text-xs flex gap-4">
-              <span>{stats.totalTiles} tiles</span>
-              <span>{(stats.totalAddresses / 1000000).toFixed(1)}M addresses</span>
+              <span>
+                {stats.totalTiles} {language === "ar" ? "خلية" : "tiles"}
+              </span>
+              <span>
+                {(stats.totalAddresses / 1000000).toFixed(1)}
+                {language === "ar" ? " مليون عنوان" : "M addresses"}
+              </span>
               <Badge variant="secondary" className="text-xs">
                 {searchMode === "fts-bm25" ? "FTS BM25" : "JACCARD"}
               </Badge>
@@ -473,33 +571,33 @@ export default function Playground() {
           {/* Admin Hierarchy Overlay */}
           {adminHierarchy && (
             <div
-              className="absolute bottom-4 right-4 z-10 bg-background/90 backdrop-blur rounded-lg px-3 py-2 text-xs space-y-1 max-w-[250px]"
+              className="absolute bottom-10 right-4 z-10 bg-background/90 backdrop-blur rounded-lg px-4 py-3 text-sm space-y-1.5 max-w-[280px]"
               dir={language === "ar" ? "rtl" : "ltr"}
             >
-              <div className="font-semibold text-muted-foreground mb-1">
+              <div className="font-semibold text-muted-foreground mb-2">
                 {language === "ar" ? "التسلسل الإداري" : "Admin Hierarchy"}
               </div>
               {adminHierarchy.country && (
-                <div className="flex items-center gap-1">
-                  <Layers className="w-3 h-3 text-muted-foreground" />
+                <div className="flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-muted-foreground" />
                   <span className="font-medium">{adminHierarchy.country}</span>
                 </div>
               )}
               {adminHierarchy.region && (
-                <div className="flex items-center gap-1 ml-4">
-                  <span className="text-muted-foreground">→</span>
+                <div className="flex items-center gap-2 ms-5">
+                  <span className="text-muted-foreground">←</span>
                   <span>{adminHierarchy.region}</span>
                 </div>
               )}
               {adminHierarchy.governorate && (
-                <div className="flex items-center gap-1 ml-6">
-                  <span className="text-muted-foreground">→</span>
+                <div className="flex items-center gap-2 ms-7">
+                  <span className="text-muted-foreground">←</span>
                   <span>{adminHierarchy.governorate}</span>
                 </div>
               )}
               {adminHierarchy.district && (
-                <div className="flex items-center gap-1 ml-8">
-                  <span className="text-muted-foreground">→</span>
+                <div className="flex items-center gap-2 ms-9">
+                  <span className="text-muted-foreground">←</span>
                   <span>{adminHierarchy.district}</span>
                 </div>
               )}
@@ -522,11 +620,7 @@ export default function Playground() {
                 )}
                 {t("playground.title")}
               </CardTitle>
-              <CardDescription className="text-xs">
-                {language === "ar"
-                  ? "انقر على الخريطة أو استخدم أدوات البحث"
-                  : "Click on map or use search tools"}
-              </CardDescription>
+              <CardDescription className="text-xs">{t("playground.clickMap")}</CardDescription>
             </CardHeader>
 
             <CardContent
@@ -576,25 +670,114 @@ export default function Playground() {
                     {/* Forward Geocoding Tab */}
                     <TabsContent value="forward" className="m-0 p-4 data-[state=active]:block">
                       <div className="space-y-3">
-                        <div className="flex gap-2">
-                          <Input
-                            placeholder={t("docs.forwardGeocoding.addressPlaceholder")}
-                            value={forwardQuery}
-                            onChange={(e) => setForwardQuery(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && handleForwardGeocode()}
-                            dir="auto"
-                            className="text-sm"
-                          />
+                        <div className="relative">
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder={t("docs.forwardGeocoding.addressPlaceholder")}
+                              value={forwardQuery}
+                              onChange={(e) => setForwardQuery(e.target.value)}
+                              onKeyDown={(e) => e.key === "Enter" && handleForwardGeocode()}
+                              dir="auto"
+                              className="text-sm"
+                            />
+                            <Button
+                              onClick={handleForwardGeocode}
+                              disabled={forwardLoading}
+                              size="sm"
+                            >
+                              {forwardLoading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Search className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </div>
+
+                          {/* Autocomplete Suggestions Dropdown */}
+                          {autocompleteSuggestions.length > 0 && (
+                            <Card className="absolute top-full left-0 right-0 mt-1 z-20 max-h-[200px] overflow-auto">
+                              <div className="p-1">
+                                {autocompleteSuggestions.map((suggestion, i) => (
+                                  <button
+                                    key={i}
+                                    onClick={() => {
+                                      setForwardQuery(
+                                        language === "ar"
+                                          ? suggestion.label_ar
+                                          : suggestion.label_en
+                                      );
+                                      setAutocompleteSuggestions([]);
+                                    }}
+                                    className="w-full text-left px-2 py-1.5 rounded text-sm hover:bg-accent flex justify-between items-center"
+                                    dir="auto"
+                                  >
+                                    <span>
+                                      {language === "ar"
+                                        ? suggestion.label_ar
+                                        : suggestion.label_en}
+                                    </span>
+                                    <Badge variant="outline" className="text-xs">
+                                      {suggestion.type === "district"
+                                        ? language === "ar"
+                                          ? "حي"
+                                          : "District"
+                                        : suggestion.type === "postcode"
+                                          ? language === "ar"
+                                            ? "بريدي"
+                                            : "Postcode"
+                                          : language === "ar"
+                                            ? "منطقة"
+                                            : "Region"}
+                                    </Badge>
+                                  </button>
+                                ))}
+                              </div>
+                            </Card>
+                          )}
+                        </div>
+
+                        {/* Search Method Selector */}
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground">
+                            {language === "ar" ? "طريقة البحث:" : "Search method:"}
+                          </span>
+                          <div className="flex gap-1">
+                            <Button
+                              variant={searchMethod === "standard" ? "default" : "outline"}
+                              size="sm"
+                              className="h-7 px-2 text-xs"
+                              onClick={() => setSearchMethod("standard")}
+                            >
+                              <Database className="w-3 h-3 mr-1" />
+                              {language === "ar" ? "عادي" : "Standard"}
+                            </Button>
+                            <Button
+                              variant={searchMethod === "cached" ? "default" : "outline"}
+                              size="sm"
+                              className="h-7 px-2 text-xs"
+                              onClick={() => setSearchMethod("cached")}
+                            >
+                              <Zap className="w-3 h-3 mr-1" />
+                              {language === "ar" ? "مخزن" : "Cached"}
+                            </Button>
+                            <Button
+                              variant={searchMethod === "smart" ? "default" : "outline"}
+                              size="sm"
+                              className="h-7 px-2 text-xs"
+                              onClick={() => setSearchMethod("smart")}
+                            >
+                              <Sparkles className="w-3 h-3 mr-1" />
+                              {language === "ar" ? "ذكي" : "Smart"}
+                            </Button>
+                          </div>
                           <Button
-                            onClick={handleForwardGeocode}
-                            disabled={forwardLoading}
+                            variant="ghost"
                             size="sm"
+                            className="h-7 px-2 text-xs ms-auto"
+                            onClick={handleClearCache}
+                            title={language === "ar" ? "مسح ذاكرة التخزين" : "Clear cache"}
                           >
-                            {forwardLoading ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Search className="h-4 w-4" />
-                            )}
+                            <Trash2 className="w-3 h-3" />
                           </Button>
                         </div>
 
@@ -671,7 +854,6 @@ export default function Playground() {
                           <ResultsList
                             results={forwardResults}
                             getAddress={getAddress}
-                            getRegion={getRegion}
                             onSelect={(r) => flyTo(r.latitude, r.longitude)}
                             showSimilarity
                           />
@@ -739,7 +921,6 @@ export default function Playground() {
                           <ResultsList
                             results={reverseResults}
                             getAddress={getAddress}
-                            getRegion={getRegion}
                             onSelect={(r) => flyTo(r.latitude, r.longitude)}
                             showDistance
                           />
@@ -792,7 +973,6 @@ export default function Playground() {
                           <ResultsList
                             results={postcodeResults}
                             getAddress={getAddress}
-                            getRegion={getRegion}
                             onSelect={(r) => flyTo(r.latitude, r.longitude)}
                           />
                         ) : null}
@@ -843,6 +1023,21 @@ export default function Playground() {
                             </SelectContent>
                           </Select>
                         </div>
+
+                        {/* Bbox Scope Toggle */}
+                        <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+                          <label htmlFor="house-bbox-scope" className="text-sm cursor-pointer">
+                            {language === "ar"
+                              ? "استخدام حدود الخريطة المرئية"
+                              : "Use visible map bounds"}
+                          </label>
+                          <Switch
+                            id="house-bbox-scope"
+                            checked={useHouseBboxScope}
+                            onCheckedChange={setUseHouseBboxScope}
+                          />
+                        </div>
+
                         <Button
                           onClick={handleHouseNumberSearch}
                           disabled={houseLoading}
@@ -856,7 +1051,6 @@ export default function Playground() {
                           <ResultsList
                             results={houseResults}
                             getAddress={getAddress}
-                            getRegion={getRegion}
                             onSelect={(r) => flyTo(r.latitude, r.longitude)}
                           />
                         )}
@@ -896,7 +1090,6 @@ export default function Playground() {
 interface ResultsListProps {
   results: GeocodingResult[];
   getAddress: (r: GeocodingResult) => string | undefined;
-  getRegion: (r: GeocodingResult) => string | undefined;
   onSelect?: (r: GeocodingResult) => void;
   showDistance?: boolean;
   showSimilarity?: boolean;
@@ -905,7 +1098,6 @@ interface ResultsListProps {
 function ResultsList({
   results,
   getAddress,
-  getRegion: _getRegion,
   onSelect,
   showDistance,
   showSimilarity,

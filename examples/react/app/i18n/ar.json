@@ -82,6 +82,7 @@
     "initialize": "تهيئة SDK",
     "initializing": "جاري التهيئة...",
     "ready": "SDK جاهز",
+    "clickMap": "انقر على الخريطة أو استخدم أدوات البحث",
     "tabs": {
       "forward": "ترميز أمامي",
       "reverse": "ترميز عكسي",

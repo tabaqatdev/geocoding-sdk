@@ -1,0 +1,5736 @@
+{
+  "schemaVersion": "2.0",
+  "id": 0,
+  "name": "@tabaqat/geocoding-sdk",
+  "variant": "project",
+  "kind": 1,
+  "flags": {},
+  "children": [
+    {
+      "id": 202,
+      "name": "TileInfo",
+      "variant": "declaration",
+      "kind": 256,
+      "flags": {},
+      "children": [
+        {
+          "id": 203,
+          "name": "h3_tile",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 43,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L43"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 204,
+          "name": "addr_count",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 44,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L44"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "number"
+          }
+        },
+        {
+          "id": 205,
+          "name": "min_lon",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 45,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L45"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "number"
+          }
+        },
+        {
+          "id": 206,
+          "name": "max_lon",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 46,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L46"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "number"
+          }
+        },
+        {
+          "id": 207,
+          "name": "min_lat",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 47,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L47"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "number"
+          }
+        },
+        {
+          "id": 208,
+          "name": "max_lat",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 48,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L48"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "number"
+          }
+        },
+        {
+          "id": 209,
+          "name": "file_size_kb",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 49,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L49"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "number"
+          }
+        },
+        {
+          "id": 210,
+          "name": "region_ar",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 50,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L50"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 211,
+          "name": "region_en",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 51,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L51"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "title": "Properties",
+          "children": [203, 204, 205, 206, 207, 208, 209, 210, 211]
+        }
+      ],
+      "sources": [
+        {
+          "fileName": "geocoder-h3.ts",
+          "line": 42,
+          "character": 17,
+          "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L42"
+        }
+      ]
+    },
+    {
+      "id": 212,
+      "name": "PostcodeInfo",
+      "variant": "declaration",
+      "kind": 256,
+      "flags": {},
+      "children": [
+        {
+          "id": 213,
+          "name": "postcode",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 55,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L55"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 214,
+          "name": "tiles",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 56,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L56"
+            }
+          ],
+          "type": {
+            "type": "array",
+            "elementType": {
+              "type": "intrinsic",
+              "name": "string"
+            }
+          }
+        },
+        {
+          "id": 215,
+          "name": "addr_count",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 57,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L57"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "number"
+          }
+        },
+        {
+          "id": 216,
+          "name": "region_ar",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 58,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L58"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 217,
+          "name": "region_en",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 59,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L59"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "title": "Properties",
+          "children": [213, 214, 215, 216, 217]
+        }
+      ],
+      "sources": [
+        {
+          "fileName": "geocoder-h3.ts",
+          "line": 54,
+          "character": 17,
+          "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L54"
+        }
+      ]
+    },
+    {
+      "id": 218,
+      "name": "GeoSDKConfig",
+      "variant": "declaration",
+      "kind": 256,
+      "flags": {},
+      "children": [
+        {
+          "id": 219,
+          "name": "dataUrl",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "comment": {
+            "summary": [
+              {
+                "kind": "text",
+                "text": "Base URL for parquet data files"
+              }
+            ]
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 64,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L64"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 220,
+          "name": "language",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "comment": {
+            "summary": [
+              {
+                "kind": "text",
+                "text": "Default language for results"
+              }
+            ]
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 66,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L66"
+            }
+          ],
+          "type": {
+            "type": "union",
+            "types": [
+              {
+                "type": "literal",
+                "value": "ar"
+              },
+              {
+                "type": "literal",
+                "value": "en"
+              }
+            ]
+          }
+        },
+        {
+          "id": 221,
+          "name": "debug",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "comment": {
+            "summary": [
+              {
+                "kind": "text",
+                "text": "Enable debug logging (default: false)"
+              }
+            ]
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 68,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L68"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "boolean"
+          }
+        },
+        {
+          "id": 222,
+          "name": "logLevel",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "comment": {
+            "summary": [
+              {
+                "kind": "text",
+                "text": "Log level when debug is enabled (default: 'info')"
+              }
+            ]
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 70,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L70"
+            }
+          ],
+          "type": {
+            "type": "reference",
+            "target": 265,
+            "name": "LogLevel",
+            "package": "@tabaqat/geocoding-sdk"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "title": "Properties",
+          "children": [219, 220, 221, 222]
+        }
+      ],
+      "sources": [
+        {
+          "fileName": "geocoder-h3.ts",
+          "line": 62,
+          "character": 17,
+          "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L62"
+        }
+      ]
+    },
+    {
+      "id": 223,
+      "name": "GeocodingResult",
+      "variant": "declaration",
+      "kind": 256,
+      "flags": {},
+      "children": [
+        {
+          "id": 224,
+          "name": "addr_id",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 74,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L74"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "number"
+          }
+        },
+        {
+          "id": 225,
+          "name": "longitude",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 75,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L75"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "number"
+          }
+        },
+        {
+          "id": 226,
+          "name": "latitude",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 76,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L76"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "number"
+          }
+        },
+        {
+          "id": 227,
+          "name": "number",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 77,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L77"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 228,
+          "name": "street",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 78,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L78"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 229,
+          "name": "postcode",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 79,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L79"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 230,
+          "name": "district_ar",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 80,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L80"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 231,
+          "name": "district_en",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 81,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L81"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 232,
+          "name": "city",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 82,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L82"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 233,
+          "name": "gov_ar",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 83,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L83"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 234,
+          "name": "gov_en",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 84,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L84"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 235,
+          "name": "region_ar",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 85,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L85"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 236,
+          "name": "region_en",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 86,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L86"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 237,
+          "name": "full_address_ar",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 87,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L87"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 238,
+          "name": "full_address_en",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 88,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L88"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 239,
+          "name": "h3_index",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 89,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L89"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 240,
+          "name": "distance_m",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 90,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L90"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "number"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "title": "Properties",
+          "children": [
+            224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "fileName": "geocoder-h3.ts",
+          "line": 73,
+          "character": 17,
+          "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L73"
+        }
+      ]
+    },
+    {
+      "id": 241,
+      "name": "CountryResult",
+      "variant": "declaration",
+      "kind": 256,
+      "flags": {},
+      "children": [
+        {
+          "id": 242,
+          "name": "iso_a3",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 94,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L94"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 243,
+          "name": "iso_a2",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 95,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L95"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 244,
+          "name": "name_en",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 96,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L96"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 245,
+          "name": "name_ar",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 97,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L97"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        },
+        {
+          "id": 246,
+          "name": "continent",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 98,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L98"
+            }
+          ],
+          "type": {
+            "type": "intrinsic",
+            "name": "string"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "title": "Properties",
+          "children": [242, 243, 244, 245, 246]
+        }
+      ],
+      "sources": [
+        {
+          "fileName": "geocoder-h3.ts",
+          "line": 93,
+          "character": 17,
+          "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L93"
+        }
+      ]
+    },
+    {
+      "id": 247,
+      "name": "CountryDetectionResult",
+      "variant": "declaration",
+      "kind": 2097152,
+      "flags": {},
+      "sources": [
+        {
+          "fileName": "geocoder-h3.ts",
+          "line": 102,
+          "character": 12,
+          "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L102"
+        }
+      ],
+      "type": {
+        "type": "reference",
+        "target": 241,
+        "name": "CountryResult",
+        "package": "@tabaqat/geocoding-sdk"
+      }
+    },
+    {
+      "id": 248,
+      "name": "AdminHierarchy",
+      "variant": "declaration",
+      "kind": 256,
+      "flags": {},
+      "children": [
+        {
+          "id": 249,
+          "name": "district",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 105,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L105"
+            }
+          ],
+          "type": {
+            "type": "reflection",
+            "declaration": {
+              "id": 250,
+              "name": "__type",
+              "variant": "declaration",
+              "kind": 65536,
+              "flags": {},
+              "children": [
+                {
+                  "id": 251,
+                  "name": "name_ar",
+                  "variant": "declaration",
+                  "kind": 1024,
+                  "flags": {},
+                  "sources": [
+                    {
+                      "fileName": "geocoder-h3.ts",
+                      "line": 105,
+                      "character": 15,
+                      "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L105"
+                    }
+                  ],
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                },
+                {
+                  "id": 252,
+                  "name": "name_en",
+                  "variant": "declaration",
+                  "kind": 1024,
+                  "flags": {},
+                  "sources": [
+                    {
+                      "fileName": "geocoder-h3.ts",
+                      "line": 105,
+                      "character": 32,
+                      "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L105"
+                    }
+                  ],
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                }
+              ],
+              "groups": [
+                {
+                  "title": "Properties",
+                  "children": [251, 252]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": 253,
+          "name": "governorate",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 106,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L106"
+            }
+          ],
+          "type": {
+            "type": "reflection",
+            "declaration": {
+              "id": 254,
+              "name": "__type",
+              "variant": "declaration",
+              "kind": 65536,
+              "flags": {},
+              "children": [
+                {
+                  "id": 255,
+                  "name": "name_ar",
+                  "variant": "declaration",
+                  "kind": 1024,
+                  "flags": {},
+                  "sources": [
+                    {
+                      "fileName": "geocoder-h3.ts",
+                      "line": 106,
+                      "character": 18,
+                      "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L106"
+                    }
+                  ],
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                },
+                {
+                  "id": 256,
+                  "name": "name_en",
+                  "variant": "declaration",
+                  "kind": 1024,
+                  "flags": {},
+                  "sources": [
+                    {
+                      "fileName": "geocoder-h3.ts",
+                      "line": 106,
+                      "character": 35,
+                      "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L106"
+                    }
+                  ],
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                }
+              ],
+              "groups": [
+                {
+                  "title": "Properties",
+                  "children": [255, 256]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": 257,
+          "name": "region",
+          "variant": "declaration",
+          "kind": 1024,
+          "flags": {
+            "isOptional": true
+          },
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 107,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L107"
+            }
+          ],
+          "type": {
+            "type": "reflection",
+            "declaration": {
+              "id": 258,
+              "name": "__type",
+              "variant": "declaration",
+              "kind": 65536,
+              "flags": {},
+              "children": [
+                {
+                  "id": 259,
+                  "name": "name_ar",
+                  "variant": "declaration",
+                  "kind": 1024,
+                  "flags": {},
+                  "sources": [
+                    {
+                      "fileName": "geocoder-h3.ts",
+                      "line": 107,
+                      "character": 13,
+                      "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L107"
+                    }
+                  ],
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                },
+                {
+                  "id": 260,
+                  "name": "name_en",
+                  "variant": "declaration",
+                  "kind": 1024,
+                  "flags": {},
+                  "sources": [
+                    {
+                      "fileName": "geocoder-h3.ts",
+                      "line": 107,
+                      "character": 30,
+                      "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L107"
+                    }
+                  ],
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                }
+              ],
+              "groups": [
+                {
+                  "title": "Properties",
+                  "children": [259, 260]
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "groups": [
+        {
+          "title": "Properties",
+          "children": [249, 253, 257]
+        }
+      ],
+      "sources": [
+        {
+          "fileName": "geocoder-h3.ts",
+          "line": 104,
+          "character": 17,
+          "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L104"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "GeoSDK",
+      "variant": "declaration",
+      "kind": 128,
+      "flags": {},
+      "comment": {
+        "summary": [
+          {
+            "kind": "text",
+            "text": "@tabaqat/geocoding-sdk\n\nBrowser-based geocoding SDK for Saudi Arabia using DuckDB-WASM\nSupports Arabic and English with zero backend dependencies\n\nUses H3 tile-based partitioning for ultra-fast queries\nH3 tiles (~220KB avg) provide <4s reverse geocoding\nInitial load is ~140KB (index + boundaries)"
+          }
+        ]
+      },
+      "children": [
+        {
+          "id": 2,
+          "name": "constructor",
+          "variant": "declaration",
+          "kind": 512,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 131,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L131"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 3,
+              "name": "GeoSDK",
+              "variant": "signature",
+              "kind": 16384,
+              "flags": {},
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 131,
+                  "character": 2,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L131"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 4,
+                  "name": "config",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "reference",
+                    "target": 218,
+                    "name": "GeoSDKConfig",
+                    "package": "@tabaqat/geocoding-sdk"
+                  },
+                  "defaultValue": "{}"
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": 1,
+                "name": "GeoSDK",
+                "package": "@tabaqat/geocoding-sdk"
+              }
+            }
+          ]
+        },
+        {
+          "id": 24,
+          "name": "setDebug",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 150,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L150"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 25,
+              "name": "setDebug",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Enable or disable debug logging at runtime"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 150,
+                  "character": 2,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L150"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 26,
+                  "name": "enabled",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "boolean"
+                  }
+                },
+                {
+                  "id": 27,
+                  "name": "level",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {
+                    "isOptional": true
+                  },
+                  "type": {
+                    "type": "reference",
+                    "target": 265,
+                    "name": "LogLevel",
+                    "package": "@tabaqat/geocoding-sdk"
+                  }
+                }
+              ],
+              "type": {
+                "type": "intrinsic",
+                "name": "void"
+              }
+            }
+          ]
+        },
+        {
+          "id": 35,
+          "name": "initialize",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 171,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L171"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 36,
+              "name": "initialize",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Initialize SDK - loads only index files (~50KB)"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 171,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L171"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 37,
+                  "name": "options",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "reflection",
+                    "declaration": {
+                      "id": 38,
+                      "name": "__type",
+                      "variant": "declaration",
+                      "kind": 65536,
+                      "flags": {},
+                      "children": [
+                        {
+                          "id": 39,
+                          "name": "onProgress",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "comment": {
+                            "summary": [
+                              {
+                                "kind": "text",
+                                "text": "Optional callback for initialization progress"
+                              }
+                            ]
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 173,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L173"
+                            }
+                          ],
+                          "type": {
+                            "type": "reflection",
+                            "declaration": {
+                              "id": 40,
+                              "name": "__type",
+                              "variant": "declaration",
+                              "kind": 65536,
+                              "flags": {},
+                              "signatures": [
+                                {
+                                  "id": 41,
+                                  "name": "__type",
+                                  "variant": "signature",
+                                  "kind": 4096,
+                                  "flags": {},
+                                  "parameters": [
+                                    {
+                                      "id": 42,
+                                      "name": "step",
+                                      "variant": "param",
+                                      "kind": 32768,
+                                      "flags": {},
+                                      "type": {
+                                        "type": "intrinsic",
+                                        "name": "string"
+                                      }
+                                    },
+                                    {
+                                      "id": 43,
+                                      "name": "status",
+                                      "variant": "param",
+                                      "kind": 32768,
+                                      "flags": {},
+                                      "type": {
+                                        "type": "union",
+                                        "types": [
+                                          {
+                                            "type": "literal",
+                                            "value": "error"
+                                          },
+                                          {
+                                            "type": "literal",
+                                            "value": "loading"
+                                          },
+                                          {
+                                            "type": "literal",
+                                            "value": "success"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "id": 44,
+                                      "name": "timeMs",
+                                      "variant": "param",
+                                      "kind": 32768,
+                                      "flags": {
+                                        "isOptional": true
+                                      },
+                                      "type": {
+                                        "type": "intrinsic",
+                                        "name": "number"
+                                      }
+                                    },
+                                    {
+                                      "id": 45,
+                                      "name": "details",
+                                      "variant": "param",
+                                      "kind": 32768,
+                                      "flags": {
+                                        "isOptional": true
+                                      },
+                                      "type": {
+                                        "type": "intrinsic",
+                                        "name": "string"
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "type": "intrinsic",
+                                    "name": "void"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "title": "Properties",
+                          "children": [39]
+                        }
+                      ]
+                    }
+                  },
+                  "defaultValue": "{}"
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "intrinsic",
+                    "name": "void"
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 48,
+          "name": "getTiles",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 365,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L365"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 49,
+              "name": "getTiles",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Get list of available tiles with stats"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 365,
+                  "character": 2,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L365"
+                }
+              ],
+              "type": {
+                "type": "array",
+                "elementType": {
+                  "type": "reference",
+                  "target": 202,
+                  "name": "TileInfo",
+                  "package": "@tabaqat/geocoding-sdk"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": 50,
+          "name": "getLoadedTiles",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 372,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L372"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 51,
+              "name": "getLoadedTiles",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Get currently loaded tiles"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 372,
+                  "character": 2,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L372"
+                }
+              ],
+              "type": {
+                "type": "array",
+                "elementType": {
+                  "type": "intrinsic",
+                  "name": "string"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": 52,
+          "name": "isFTSAvailable",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 380,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L380"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 53,
+              "name": "isFTSAvailable",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Check if FTS (Full Text Search) with BM25 scoring is available\nWhen available, geocode() uses better Arabic-aware text search"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 380,
+                  "character": 2,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L380"
+                }
+              ],
+              "type": {
+                "type": "intrinsic",
+                "name": "boolean"
+              }
+            }
+          ]
+        },
+        {
+          "id": 54,
+          "name": "getSearchMode",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 387,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L387"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 55,
+              "name": "getSearchMode",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Get the search mode being used for text search"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 387,
+                  "character": 2,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L387"
+                }
+              ],
+              "type": {
+                "type": "union",
+                "types": [
+                  {
+                    "type": "literal",
+                    "value": "fts-bm25"
+                  },
+                  {
+                    "type": "literal",
+                    "value": "jaccard"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": 63,
+          "name": "isInSaudiArabia",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 419,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L419"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 64,
+              "name": "isInSaudiArabia",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Check if a point is in Saudi Arabia"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 419,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L419"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 65,
+                  "name": "lat",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "number"
+                  }
+                },
+                {
+                  "id": 66,
+                  "name": "lon",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "number"
+                  }
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "intrinsic",
+                    "name": "boolean"
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 67,
+          "name": "reverseGeocode",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 441,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L441"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 68,
+              "name": "reverseGeocode",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Reverse geocoding using H3 tiles\n\nPerformance:\n- Cold start: <4 seconds (fetches only one small tile)\n- Cached: <100ms (tile already in browser cache)"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 441,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L441"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 69,
+                  "name": "lat",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "number"
+                  }
+                },
+                {
+                  "id": 70,
+                  "name": "lon",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "number"
+                  }
+                },
+                {
+                  "id": 71,
+                  "name": "options",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "reflection",
+                    "declaration": {
+                      "id": 72,
+                      "name": "__type",
+                      "variant": "declaration",
+                      "kind": 65536,
+                      "flags": {},
+                      "children": [
+                        {
+                          "id": 73,
+                          "name": "limit",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 445,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L445"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        },
+                        {
+                          "id": 74,
+                          "name": "radiusMeters",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 446,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L446"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        },
+                        {
+                          "id": 75,
+                          "name": "detailLevel",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 447,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L447"
+                            }
+                          ],
+                          "type": {
+                            "type": "union",
+                            "types": [
+                              {
+                                "type": "literal",
+                                "value": "minimal"
+                              },
+                              {
+                                "type": "literal",
+                                "value": "postcode"
+                              },
+                              {
+                                "type": "literal",
+                                "value": "region"
+                              },
+                              {
+                                "type": "literal",
+                                "value": "full"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": 76,
+                          "name": "includeNeighbors",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 448,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L448"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "boolean"
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "title": "Properties",
+                          "children": [73, 74, 75, 76]
+                        }
+                      ]
+                    }
+                  },
+                  "defaultValue": "{}"
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "array",
+                    "elementType": {
+                      "type": "reference",
+                      "target": 223,
+                      "name": "GeocodingResult",
+                      "package": "@tabaqat/geocoding-sdk"
+                    }
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 84,
+          "name": "detectCountry",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 615,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L615"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 85,
+              "name": "detectCountry",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Detect country from coordinates"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 615,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L615"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 86,
+                  "name": "lat",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "number"
+                  }
+                },
+                {
+                  "id": 87,
+                  "name": "lon",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "number"
+                  }
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "union",
+                    "types": [
+                      {
+                        "type": "reference",
+                        "target": 241,
+                        "name": "CountryResult",
+                        "package": "@tabaqat/geocoding-sdk"
+                      },
+                      {
+                        "type": "literal",
+                        "value": null
+                      }
+                    ]
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 88,
+          "name": "getAdminHierarchy",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 642,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L642"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 89,
+              "name": "getAdminHierarchy",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Get admin hierarchy for a point\nReturns district, governorate, and region information"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 642,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L642"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 90,
+                  "name": "lat",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "number"
+                  }
+                },
+                {
+                  "id": 91,
+                  "name": "lon",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "number"
+                  }
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "reflection",
+                    "declaration": {
+                      "id": 92,
+                      "name": "__type",
+                      "variant": "declaration",
+                      "kind": 65536,
+                      "flags": {},
+                      "children": [
+                        {
+                          "id": 93,
+                          "name": "district",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 646,
+                              "character": 4,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L646"
+                            }
+                          ],
+                          "type": {
+                            "type": "reflection",
+                            "declaration": {
+                              "id": 94,
+                              "name": "__type",
+                              "variant": "declaration",
+                              "kind": 65536,
+                              "flags": {},
+                              "children": [
+                                {
+                                  "id": 95,
+                                  "name": "name_ar",
+                                  "variant": "declaration",
+                                  "kind": 1024,
+                                  "flags": {},
+                                  "sources": [
+                                    {
+                                      "fileName": "geocoder-h3.ts",
+                                      "line": 646,
+                                      "character": 17,
+                                      "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L646"
+                                    }
+                                  ],
+                                  "type": {
+                                    "type": "intrinsic",
+                                    "name": "string"
+                                  }
+                                },
+                                {
+                                  "id": 96,
+                                  "name": "name_en",
+                                  "variant": "declaration",
+                                  "kind": 1024,
+                                  "flags": {},
+                                  "sources": [
+                                    {
+                                      "fileName": "geocoder-h3.ts",
+                                      "line": 646,
+                                      "character": 34,
+                                      "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L646"
+                                    }
+                                  ],
+                                  "type": {
+                                    "type": "intrinsic",
+                                    "name": "string"
+                                  }
+                                }
+                              ],
+                              "groups": [
+                                {
+                                  "title": "Properties",
+                                  "children": [95, 96]
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "id": 97,
+                          "name": "governorate",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 647,
+                              "character": 4,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L647"
+                            }
+                          ],
+                          "type": {
+                            "type": "reflection",
+                            "declaration": {
+                              "id": 98,
+                              "name": "__type",
+                              "variant": "declaration",
+                              "kind": 65536,
+                              "flags": {},
+                              "children": [
+                                {
+                                  "id": 99,
+                                  "name": "name_ar",
+                                  "variant": "declaration",
+                                  "kind": 1024,
+                                  "flags": {},
+                                  "sources": [
+                                    {
+                                      "fileName": "geocoder-h3.ts",
+                                      "line": 647,
+                                      "character": 20,
+                                      "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L647"
+                                    }
+                                  ],
+                                  "type": {
+                                    "type": "intrinsic",
+                                    "name": "string"
+                                  }
+                                },
+                                {
+                                  "id": 100,
+                                  "name": "name_en",
+                                  "variant": "declaration",
+                                  "kind": 1024,
+                                  "flags": {},
+                                  "sources": [
+                                    {
+                                      "fileName": "geocoder-h3.ts",
+                                      "line": 647,
+                                      "character": 37,
+                                      "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L647"
+                                    }
+                                  ],
+                                  "type": {
+                                    "type": "intrinsic",
+                                    "name": "string"
+                                  }
+                                }
+                              ],
+                              "groups": [
+                                {
+                                  "title": "Properties",
+                                  "children": [99, 100]
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "id": 101,
+                          "name": "region",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 648,
+                              "character": 4,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L648"
+                            }
+                          ],
+                          "type": {
+                            "type": "reflection",
+                            "declaration": {
+                              "id": 102,
+                              "name": "__type",
+                              "variant": "declaration",
+                              "kind": 65536,
+                              "flags": {},
+                              "children": [
+                                {
+                                  "id": 103,
+                                  "name": "name_ar",
+                                  "variant": "declaration",
+                                  "kind": 1024,
+                                  "flags": {},
+                                  "sources": [
+                                    {
+                                      "fileName": "geocoder-h3.ts",
+                                      "line": 648,
+                                      "character": 15,
+                                      "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L648"
+                                    }
+                                  ],
+                                  "type": {
+                                    "type": "intrinsic",
+                                    "name": "string"
+                                  }
+                                },
+                                {
+                                  "id": 104,
+                                  "name": "name_en",
+                                  "variant": "declaration",
+                                  "kind": 1024,
+                                  "flags": {},
+                                  "sources": [
+                                    {
+                                      "fileName": "geocoder-h3.ts",
+                                      "line": 648,
+                                      "character": 32,
+                                      "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L648"
+                                    }
+                                  ],
+                                  "type": {
+                                    "type": "intrinsic",
+                                    "name": "string"
+                                  }
+                                }
+                              ],
+                              "groups": [
+                                {
+                                  "title": "Properties",
+                                  "children": [103, 104]
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "title": "Properties",
+                          "children": [93, 97, 101]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 105,
+          "name": "getTilesForBbox",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 694,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L694"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 106,
+              "name": "getTilesForBbox",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Get H3 tiles that intersect a bounding box\nThis is the key optimization for forward geocoding with visible map area"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 694,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L694"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 107,
+                  "name": "minLat",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "number"
+                  }
+                },
+                {
+                  "id": 108,
+                  "name": "minLon",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "number"
+                  }
+                },
+                {
+                  "id": 109,
+                  "name": "maxLat",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "number"
+                  }
+                },
+                {
+                  "id": 110,
+                  "name": "maxLon",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "number"
+                  }
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "array",
+                    "elementType": {
+                      "type": "intrinsic",
+                      "name": "string"
+                    }
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 111,
+          "name": "geocode",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 719,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L719"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 112,
+              "name": "geocode",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Forward geocoding with bounding box optimization\n\nWhen the user is viewing a map, pass the visible bbox to only search\ntiles that intersect the visible area. This dramatically reduces\nthe search space and data transfer."
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 719,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L719"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 113,
+                  "name": "address",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "comment": {
+                    "summary": [
+                      {
+                        "kind": "text",
+                        "text": "Search query (Arabic or English)"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                },
+                {
+                  "id": 114,
+                  "name": "options",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "reflection",
+                    "declaration": {
+                      "id": 115,
+                      "name": "__type",
+                      "variant": "declaration",
+                      "kind": 65536,
+                      "flags": {},
+                      "children": [
+                        {
+                          "id": 116,
+                          "name": "limit",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "comment": {
+                            "summary": [
+                              {
+                                "kind": "text",
+                                "text": "Max results to return"
+                              }
+                            ]
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 722,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L722"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        },
+                        {
+                          "id": 117,
+                          "name": "bbox",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "comment": {
+                            "summary": [
+                              {
+                                "kind": "text",
+                                "text": "Visible map bounding box [minLat, minLon, maxLat, maxLon]"
+                              }
+                            ]
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 723,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L723"
+                            }
+                          ],
+                          "type": {
+                            "type": "tuple",
+                            "elements": [
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": 118,
+                          "name": "region",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 724,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L724"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "string"
+                          }
+                        },
+                        {
+                          "id": 119,
+                          "name": "regions",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 725,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L725"
+                            }
+                          ],
+                          "type": {
+                            "type": "array",
+                            "elementType": {
+                              "type": "intrinsic",
+                              "name": "string"
+                            }
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "title": "Properties",
+                          "children": [116, 117, 118, 119]
+                        }
+                      ]
+                    }
+                  },
+                  "defaultValue": "{}"
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "array",
+                    "elementType": {
+                      "type": "reference",
+                      "target": 223,
+                      "name": "GeocodingResult",
+                      "package": "@tabaqat/geocoding-sdk"
+                    }
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 120,
+          "name": "geocodeFTS",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 918,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L918"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 121,
+              "name": "geocodeFTS",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Search with FTS (Full-Text Search) if available\nRequires FTS index to be built during preprocessing\n\nNote: FTS provides better ranking than JACCARD for text search\nbut requires the FTS extension and pre-built index"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 918,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L918"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 122,
+                  "name": "query",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                },
+                {
+                  "id": 123,
+                  "name": "options",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "reflection",
+                    "declaration": {
+                      "id": 124,
+                      "name": "__type",
+                      "variant": "declaration",
+                      "kind": 65536,
+                      "flags": {},
+                      "children": [
+                        {
+                          "id": 125,
+                          "name": "limit",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 921,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L921"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        },
+                        {
+                          "id": 126,
+                          "name": "bbox",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 922,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L922"
+                            }
+                          ],
+                          "type": {
+                            "type": "tuple",
+                            "elements": [
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "title": "Properties",
+                          "children": [125, 126]
+                        }
+                      ]
+                    }
+                  },
+                  "defaultValue": "{}"
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "array",
+                    "elementType": {
+                      "type": "reference",
+                      "target": 223,
+                      "name": "GeocodingResult",
+                      "package": "@tabaqat/geocoding-sdk"
+                    }
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 127,
+          "name": "searchByPostcode",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 950,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L950"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 128,
+              "name": "searchByPostcode",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Search addresses by postcode (highly optimized!)\n\nUses postcode index to query only 1-3 tiles instead of all 717.\nAverage 1.29 tiles per postcode = very fast lookups."
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 950,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L950"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 129,
+                  "name": "postcode",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "comment": {
+                    "summary": [
+                      {
+                        "kind": "text",
+                        "text": "The postcode to search for (e.g., \"13847\", \"24231\")"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                },
+                {
+                  "id": 130,
+                  "name": "options",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "reflection",
+                    "declaration": {
+                      "id": 131,
+                      "name": "__type",
+                      "variant": "declaration",
+                      "kind": 65536,
+                      "flags": {},
+                      "children": [
+                        {
+                          "id": 132,
+                          "name": "limit",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "comment": {
+                            "summary": [
+                              {
+                                "kind": "text",
+                                "text": "Max results to return"
+                              }
+                            ]
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 953,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L953"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        },
+                        {
+                          "id": 133,
+                          "name": "number",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "comment": {
+                            "summary": [
+                              {
+                                "kind": "text",
+                                "text": "Optional house number filter"
+                              }
+                            ]
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 954,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L954"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "string"
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "title": "Properties",
+                          "children": [132, 133]
+                        }
+                      ]
+                    }
+                  },
+                  "defaultValue": "{}"
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "array",
+                    "elementType": {
+                      "type": "reference",
+                      "target": 223,
+                      "name": "GeocodingResult",
+                      "package": "@tabaqat/geocoding-sdk"
+                    }
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 134,
+          "name": "searchByNumber",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 1030,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1030"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 135,
+              "name": "searchByNumber",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Search by house number within a region or bbox\n\nNote: House numbers are not unique, so region filtering is recommended."
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 1030,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1030"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 136,
+                  "name": "number",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "comment": {
+                    "summary": [
+                      {
+                        "kind": "text",
+                        "text": "House number to search (e.g., \"2808\", \"4037\")"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                },
+                {
+                  "id": 137,
+                  "name": "options",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "reflection",
+                    "declaration": {
+                      "id": 138,
+                      "name": "__type",
+                      "variant": "declaration",
+                      "kind": 65536,
+                      "flags": {},
+                      "children": [
+                        {
+                          "id": 139,
+                          "name": "region",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "comment": {
+                            "summary": [
+                              {
+                                "kind": "text",
+                                "text": "Region name to filter by (e.g., \"منطقة الرياض\")"
+                              }
+                            ]
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1033,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1033"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "string"
+                          }
+                        },
+                        {
+                          "id": 140,
+                          "name": "bbox",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "comment": {
+                            "summary": [
+                              {
+                                "kind": "text",
+                                "text": "Bounding box to filter [minLat, minLon, maxLat, maxLon]"
+                              }
+                            ]
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1034,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1034"
+                            }
+                          ],
+                          "type": {
+                            "type": "tuple",
+                            "elements": [
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": 141,
+                          "name": "limit",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "comment": {
+                            "summary": [
+                              {
+                                "kind": "text",
+                                "text": "Max results to return"
+                              }
+                            ]
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1035,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1035"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "title": "Properties",
+                          "children": [139, 140, 141]
+                        }
+                      ]
+                    }
+                  },
+                  "defaultValue": "{}"
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "array",
+                    "elementType": {
+                      "type": "reference",
+                      "target": 223,
+                      "name": "GeocodingResult",
+                      "package": "@tabaqat/geocoding-sdk"
+                    }
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 142,
+          "name": "getPostcodes",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 1112,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1112"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 143,
+              "name": "getPostcodes",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Get list of available postcodes (for autocomplete)"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 1112,
+                  "character": 2,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1112"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 144,
+                  "name": "prefix",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {
+                    "isOptional": true
+                  },
+                  "comment": {
+                    "summary": [
+                      {
+                        "kind": "text",
+                        "text": "Optional prefix to filter (e.g., \"138\" -> \"13844\", \"13847\", \"13848\")"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                }
+              ],
+              "type": {
+                "type": "array",
+                "elementType": {
+                  "type": "reference",
+                  "target": 212,
+                  "name": "PostcodeInfo",
+                  "package": "@tabaqat/geocoding-sdk"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": 145,
+          "name": "getAutocompleteSuggestions",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 1130,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1130"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 146,
+              "name": "getAutocompleteSuggestions",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Get autocomplete suggestions for address search\nReturns matching districts, regions, and postcodes for quick selection"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 1130,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1130"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 147,
+                  "name": "query",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "comment": {
+                    "summary": [
+                      {
+                        "kind": "text",
+                        "text": "Partial search query"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                },
+                {
+                  "id": 148,
+                  "name": "options",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "type": {
+                    "type": "reflection",
+                    "declaration": {
+                      "id": 149,
+                      "name": "__type",
+                      "variant": "declaration",
+                      "kind": 65536,
+                      "flags": {},
+                      "children": [
+                        {
+                          "id": 150,
+                          "name": "limit",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "comment": {
+                            "summary": [
+                              {
+                                "kind": "text",
+                                "text": "Max suggestions (default: 10)"
+                              }
+                            ]
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1133,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1133"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        },
+                        {
+                          "id": 151,
+                          "name": "types",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "comment": {
+                            "summary": [
+                              {
+                                "kind": "text",
+                                "text": "Types to include: 'district' | 'region' | 'postcode' | 'all'"
+                              }
+                            ]
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1134,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1134"
+                            }
+                          ],
+                          "type": {
+                            "type": "union",
+                            "types": [
+                              {
+                                "type": "array",
+                                "elementType": {
+                                  "type": "union",
+                                  "types": [
+                                    {
+                                      "type": "literal",
+                                      "value": "postcode"
+                                    },
+                                    {
+                                      "type": "literal",
+                                      "value": "region"
+                                    },
+                                    {
+                                      "type": "literal",
+                                      "value": "district"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "type": "literal",
+                                "value": "all"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "title": "Properties",
+                          "children": [150, 151]
+                        }
+                      ]
+                    }
+                  },
+                  "defaultValue": "{}"
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "array",
+                    "elementType": {
+                      "type": "reflection",
+                      "declaration": {
+                        "id": 152,
+                        "name": "__type",
+                        "variant": "declaration",
+                        "kind": 65536,
+                        "flags": {},
+                        "children": [
+                          {
+                            "id": 153,
+                            "name": "type",
+                            "variant": "declaration",
+                            "kind": 1024,
+                            "flags": {},
+                            "sources": [
+                              {
+                                "fileName": "geocoder-h3.ts",
+                                "line": 1138,
+                                "character": 6,
+                                "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1138"
+                              }
+                            ],
+                            "type": {
+                              "type": "union",
+                              "types": [
+                                {
+                                  "type": "literal",
+                                  "value": "postcode"
+                                },
+                                {
+                                  "type": "literal",
+                                  "value": "region"
+                                },
+                                {
+                                  "type": "literal",
+                                  "value": "district"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "id": 154,
+                            "name": "value",
+                            "variant": "declaration",
+                            "kind": 1024,
+                            "flags": {},
+                            "sources": [
+                              {
+                                "fileName": "geocoder-h3.ts",
+                                "line": 1139,
+                                "character": 6,
+                                "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1139"
+                              }
+                            ],
+                            "type": {
+                              "type": "intrinsic",
+                              "name": "string"
+                            }
+                          },
+                          {
+                            "id": 155,
+                            "name": "label_ar",
+                            "variant": "declaration",
+                            "kind": 1024,
+                            "flags": {},
+                            "sources": [
+                              {
+                                "fileName": "geocoder-h3.ts",
+                                "line": 1140,
+                                "character": 6,
+                                "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1140"
+                              }
+                            ],
+                            "type": {
+                              "type": "intrinsic",
+                              "name": "string"
+                            }
+                          },
+                          {
+                            "id": 156,
+                            "name": "label_en",
+                            "variant": "declaration",
+                            "kind": 1024,
+                            "flags": {},
+                            "sources": [
+                              {
+                                "fileName": "geocoder-h3.ts",
+                                "line": 1141,
+                                "character": 6,
+                                "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1141"
+                              }
+                            ],
+                            "type": {
+                              "type": "intrinsic",
+                              "name": "string"
+                            }
+                          },
+                          {
+                            "id": 157,
+                            "name": "metadata",
+                            "variant": "declaration",
+                            "kind": 1024,
+                            "flags": {
+                              "isOptional": true
+                            },
+                            "sources": [
+                              {
+                                "fileName": "geocoder-h3.ts",
+                                "line": 1142,
+                                "character": 6,
+                                "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1142"
+                              }
+                            ],
+                            "type": {
+                              "type": "reference",
+                              "target": {
+                                "packageName": "typescript",
+                                "packagePath": "lib/lib.es5.d.ts",
+                                "qualifiedName": "Record"
+                              },
+                              "typeArguments": [
+                                {
+                                  "type": "intrinsic",
+                                  "name": "string"
+                                },
+                                {
+                                  "type": "intrinsic",
+                                  "name": "unknown"
+                                }
+                              ],
+                              "name": "Record",
+                              "package": "typescript"
+                            }
+                          }
+                        ],
+                        "groups": [
+                          {
+                            "title": "Properties",
+                            "children": [153, 154, 155, 156, 157]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 160,
+          "name": "geocodeCached",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 1252,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1252"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 161,
+              "name": "geocodeCached",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Fast geocode with caching - ideal for autocomplete/typeahead\nReturns cached results if available, otherwise performs search"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 1252,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1252"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 162,
+                  "name": "query",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "comment": {
+                    "summary": [
+                      {
+                        "kind": "text",
+                        "text": "Search query"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                },
+                {
+                  "id": 163,
+                  "name": "options",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "comment": {
+                    "summary": [
+                      {
+                        "kind": "text",
+                        "text": "Same as geocode()"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "type": "reflection",
+                    "declaration": {
+                      "id": 164,
+                      "name": "__type",
+                      "variant": "declaration",
+                      "kind": 65536,
+                      "flags": {},
+                      "children": [
+                        {
+                          "id": 165,
+                          "name": "limit",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1255,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1255"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        },
+                        {
+                          "id": 166,
+                          "name": "bbox",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1256,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1256"
+                            }
+                          ],
+                          "type": {
+                            "type": "tuple",
+                            "elements": [
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": 167,
+                          "name": "region",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1257,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1257"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "string"
+                          }
+                        },
+                        {
+                          "id": 168,
+                          "name": "regions",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1258,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1258"
+                            }
+                          ],
+                          "type": {
+                            "type": "array",
+                            "elementType": {
+                              "type": "intrinsic",
+                              "name": "string"
+                            }
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "title": "Properties",
+                          "children": [165, 166, 167, 168]
+                        }
+                      ]
+                    }
+                  },
+                  "defaultValue": "{}"
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "array",
+                    "elementType": {
+                      "type": "reference",
+                      "target": 223,
+                      "name": "GeocodingResult",
+                      "package": "@tabaqat/geocoding-sdk"
+                    }
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 178,
+          "name": "clearCache",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 1302,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1302"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 179,
+              "name": "clearCache",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Clear search cache"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 1302,
+                  "character": 2,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1302"
+                }
+              ],
+              "type": {
+                "type": "intrinsic",
+                "name": "void"
+              }
+            }
+          ]
+        },
+        {
+          "id": 180,
+          "name": "smartGeocode",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 1314,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1314"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 181,
+              "name": "smartGeocode",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Smart geocode - analyzes query to optimize search strategy\nDetects postcodes, districts, regions in query for faster results"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 1314,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1314"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 182,
+                  "name": "query",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "comment": {
+                    "summary": [
+                      {
+                        "kind": "text",
+                        "text": "Search query (can include postcode, district, region hints)"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                },
+                {
+                  "id": 183,
+                  "name": "options",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "comment": {
+                    "summary": [
+                      {
+                        "kind": "text",
+                        "text": "Search options"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "type": "reflection",
+                    "declaration": {
+                      "id": 184,
+                      "name": "__type",
+                      "variant": "declaration",
+                      "kind": 65536,
+                      "flags": {},
+                      "children": [
+                        {
+                          "id": 185,
+                          "name": "limit",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1317,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1317"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        },
+                        {
+                          "id": 186,
+                          "name": "bbox",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {
+                            "isOptional": true
+                          },
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1318,
+                              "character": 6,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1318"
+                            }
+                          ],
+                          "type": {
+                            "type": "tuple",
+                            "elements": [
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              },
+                              {
+                                "type": "intrinsic",
+                                "name": "number"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "title": "Properties",
+                          "children": [185, 186]
+                        }
+                      ]
+                    }
+                  },
+                  "defaultValue": "{}"
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "array",
+                    "elementType": {
+                      "type": "reference",
+                      "target": 223,
+                      "name": "GeocodingResult",
+                      "package": "@tabaqat/geocoding-sdk"
+                    }
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 190,
+          "name": "getTilesByRegion",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 1404,
+              "character": 2,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1404"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 191,
+              "name": "getTilesByRegion",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Get tiles filtered by region"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 1404,
+                  "character": 2,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1404"
+                }
+              ],
+              "parameters": [
+                {
+                  "id": 192,
+                  "name": "region",
+                  "variant": "param",
+                  "kind": 32768,
+                  "flags": {},
+                  "comment": {
+                    "summary": [
+                      {
+                        "kind": "text",
+                        "text": "Region name (Arabic or English)"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "type": "intrinsic",
+                    "name": "string"
+                  }
+                }
+              ],
+              "type": {
+                "type": "array",
+                "elementType": {
+                  "type": "reference",
+                  "target": 202,
+                  "name": "TileInfo",
+                  "package": "@tabaqat/geocoding-sdk"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": 193,
+          "name": "getStats",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 1411,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1411"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 194,
+              "name": "getStats",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Get stats about tiles"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 1411,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1411"
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "reflection",
+                    "declaration": {
+                      "id": 195,
+                      "name": "__type",
+                      "variant": "declaration",
+                      "kind": 65536,
+                      "flags": {},
+                      "children": [
+                        {
+                          "id": 196,
+                          "name": "tilesLoaded",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {},
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1412,
+                              "character": 4,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1412"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        },
+                        {
+                          "id": 197,
+                          "name": "totalTiles",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {},
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1413,
+                              "character": 4,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1413"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        },
+                        {
+                          "id": 198,
+                          "name": "totalAddresses",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {},
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1414,
+                              "character": 4,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1414"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        },
+                        {
+                          "id": 199,
+                          "name": "totalSizeKb",
+                          "variant": "declaration",
+                          "kind": 1024,
+                          "flags": {},
+                          "sources": [
+                            {
+                              "fileName": "geocoder-h3.ts",
+                              "line": 1415,
+                              "character": 4,
+                              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1415"
+                            }
+                          ],
+                          "type": {
+                            "type": "intrinsic",
+                            "name": "number"
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "title": "Properties",
+                          "children": [196, 197, 198, 199]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        },
+        {
+          "id": 200,
+          "name": "close",
+          "variant": "declaration",
+          "kind": 2048,
+          "flags": {},
+          "sources": [
+            {
+              "fileName": "geocoder-h3.ts",
+              "line": 1430,
+              "character": 8,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1430"
+            }
+          ],
+          "signatures": [
+            {
+              "id": 201,
+              "name": "close",
+              "variant": "signature",
+              "kind": 4096,
+              "flags": {},
+              "comment": {
+                "summary": [
+                  {
+                    "kind": "text",
+                    "text": "Close and cleanup"
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "fileName": "geocoder-h3.ts",
+                  "line": 1430,
+                  "character": 8,
+                  "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L1430"
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "target": {
+                  "packageName": "typescript",
+                  "packagePath": "lib/lib.es5.d.ts",
+                  "qualifiedName": "Promise"
+                },
+                "typeArguments": [
+                  {
+                    "type": "intrinsic",
+                    "name": "void"
+                  }
+                ],
+                "name": "Promise",
+                "package": "typescript"
+              }
+            }
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "title": "Constructors",
+          "children": [2]
+        },
+        {
+          "title": "Methods",
+          "children": [
+            24, 35, 48, 50, 52, 54, 63, 67, 84, 88, 105, 111, 120, 127, 134, 142, 145, 160, 178,
+            180, 190, 193, 200
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "fileName": "geocoder-h3.ts",
+          "line": 113,
+          "character": 13,
+          "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/geocoder-h3.ts#L113"
+        }
+      ]
+    },
+    {
+      "id": 265,
+      "name": "LogLevel",
+      "variant": "declaration",
+      "kind": 2097152,
+      "flags": {},
+      "comment": {
+        "summary": [
+          {
+            "kind": "text",
+            "text": "Debug logger for GeoSDK\nControlled by the "
+          },
+          {
+            "kind": "code",
+            "text": "`debug`"
+          },
+          {
+            "kind": "text",
+            "text": " config option"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "fileName": "logger.ts",
+          "line": 6,
+          "character": 12,
+          "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/logger.ts#L6"
+        }
+      ],
+      "type": {
+        "type": "union",
+        "types": [
+          {
+            "type": "literal",
+            "value": "debug"
+          },
+          {
+            "type": "literal",
+            "value": "info"
+          },
+          {
+            "type": "literal",
+            "value": "warn"
+          },
+          {
+            "type": "literal",
+            "value": "error"
+          },
+          {
+            "type": "literal",
+            "value": "none"
+          }
+        ]
+      }
+    },
+    {
+      "id": 261,
+      "name": "logger",
+      "variant": "declaration",
+      "kind": 32,
+      "flags": {
+        "isConst": true
+      },
+      "sources": [
+        {
+          "fileName": "logger.ts",
+          "line": 110,
+          "character": 13,
+          "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/logger.ts#L110"
+        }
+      ],
+      "type": {
+        "type": "reference",
+        "target": {
+          "packageName": "@tabaqat/geocoding-sdk",
+          "packagePath": "src/logger.ts",
+          "qualifiedName": "Logger"
+        },
+        "name": "Logger",
+        "package": "@tabaqat/geocoding-sdk"
+      },
+      "defaultValue": "..."
+    },
+    {
+      "id": 262,
+      "name": "createLogger",
+      "variant": "declaration",
+      "kind": 64,
+      "flags": {},
+      "sources": [
+        {
+          "fileName": "logger.ts",
+          "line": 115,
+          "character": 16,
+          "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/logger.ts#L115"
+        }
+      ],
+      "signatures": [
+        {
+          "id": 263,
+          "name": "createLogger",
+          "variant": "signature",
+          "kind": 4096,
+          "flags": {},
+          "comment": {
+            "summary": [
+              {
+                "kind": "text",
+                "text": "Create a logger with a custom prefix"
+              }
+            ]
+          },
+          "sources": [
+            {
+              "fileName": "logger.ts",
+              "line": 115,
+              "character": 16,
+              "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/logger.ts#L115"
+            }
+          ],
+          "parameters": [
+            {
+              "id": 264,
+              "name": "prefix",
+              "variant": "param",
+              "kind": 32768,
+              "flags": {},
+              "type": {
+                "type": "intrinsic",
+                "name": "string"
+              }
+            }
+          ],
+          "type": {
+            "type": "reference",
+            "target": {
+              "packageName": "@tabaqat/geocoding-sdk",
+              "packagePath": "src/logger.ts",
+              "qualifiedName": "Logger"
+            },
+            "name": "Logger",
+            "package": "@tabaqat/geocoding-sdk"
+          }
+        }
+      ]
+    },
+    {
+      "id": 266,
+      "name": "DEFAULT_DATA_URL",
+      "variant": "declaration",
+      "kind": 32,
+      "flags": {
+        "isConst": true
+      },
+      "comment": {
+        "summary": [
+          {
+            "kind": "text",
+            "text": "Default data URL hosted on source.coop"
+          }
+        ]
+      },
+      "sources": [
+        {
+          "fileName": "types.ts",
+          "line": 6,
+          "character": 13,
+          "url": "https://github.com/tabaqatdev/geocoding-sdk/blob/1fc406210936996b98a548ace3e738b192d7b6f8/src/types.ts#L6"
+        }
+      ],
+      "type": {
+        "type": "literal",
+        "value": "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0"
+      },
+      "defaultValue": "'https://data.source.coop/tabaqat/geocoding-cng/v0.1.0'"
+    }
+  ],
+  "groups": [
+    {
+      "title": "Classes",
+      "children": [1]
+    },
+    {
+      "title": "Interfaces",
+      "children": [202, 212, 218, 223, 241, 248]
+    },
+    {
+      "title": "Type Aliases",
+      "children": [247, 265]
+    },
+    {
+      "title": "Variables",
+      "children": [261, 266]
+    },
+    {
+      "title": "Functions",
+      "children": [262]
+    }
+  ],
+  "packageName": "@tabaqat/geocoding-sdk",
+  "packageVersion": "0.1.2",
+  "symbolIdMap": {
+    "0": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/index.ts",
+      "qualifiedName": ""
+    },
+    "1": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK"
+    },
+    "2": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.__constructor"
+    },
+    "3": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK"
+    },
+    "4": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "config"
+    },
+    "24": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.setDebug"
+    },
+    "25": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.setDebug"
+    },
+    "26": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "enabled"
+    },
+    "27": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "level"
+    },
+    "35": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.initialize"
+    },
+    "36": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.initialize"
+    },
+    "37": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "options"
+    },
+    "38": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "39": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.onProgress"
+    },
+    "40": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "41": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "42": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "step"
+    },
+    "43": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "status"
+    },
+    "44": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "timeMs"
+    },
+    "45": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "details"
+    },
+    "48": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getTiles"
+    },
+    "49": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getTiles"
+    },
+    "50": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getLoadedTiles"
+    },
+    "51": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getLoadedTiles"
+    },
+    "52": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.isFTSAvailable"
+    },
+    "53": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.isFTSAvailable"
+    },
+    "54": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getSearchMode"
+    },
+    "55": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getSearchMode"
+    },
+    "63": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.isInSaudiArabia"
+    },
+    "64": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.isInSaudiArabia"
+    },
+    "65": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "lat"
+    },
+    "66": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "lon"
+    },
+    "67": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.reverseGeocode"
+    },
+    "68": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.reverseGeocode"
+    },
+    "69": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "lat"
+    },
+    "70": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "lon"
+    },
+    "71": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "options"
+    },
+    "72": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "73": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.limit"
+    },
+    "74": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.radiusMeters"
+    },
+    "75": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.detailLevel"
+    },
+    "76": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.includeNeighbors"
+    },
+    "84": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.detectCountry"
+    },
+    "85": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.detectCountry"
+    },
+    "86": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "lat"
+    },
+    "87": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "lon"
+    },
+    "88": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getAdminHierarchy"
+    },
+    "89": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getAdminHierarchy"
+    },
+    "90": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "lat"
+    },
+    "91": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "lon"
+    },
+    "92": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "93": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.district"
+    },
+    "94": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "95": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.name_ar"
+    },
+    "96": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.name_en"
+    },
+    "97": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.governorate"
+    },
+    "98": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "99": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.name_ar"
+    },
+    "100": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.name_en"
+    },
+    "101": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.region"
+    },
+    "102": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "103": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.name_ar"
+    },
+    "104": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.name_en"
+    },
+    "105": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getTilesForBbox"
+    },
+    "106": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getTilesForBbox"
+    },
+    "107": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "minLat"
+    },
+    "108": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "minLon"
+    },
+    "109": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "maxLat"
+    },
+    "110": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "maxLon"
+    },
+    "111": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.geocode"
+    },
+    "112": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.geocode"
+    },
+    "113": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "address"
+    },
+    "114": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "options"
+    },
+    "115": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "116": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.limit"
+    },
+    "117": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.bbox"
+    },
+    "118": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.region"
+    },
+    "119": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.regions"
+    },
+    "120": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.geocodeFTS"
+    },
+    "121": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.geocodeFTS"
+    },
+    "122": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "query"
+    },
+    "123": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "options"
+    },
+    "124": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "125": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.limit"
+    },
+    "126": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.bbox"
+    },
+    "127": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.searchByPostcode"
+    },
+    "128": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.searchByPostcode"
+    },
+    "129": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "postcode"
+    },
+    "130": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "options"
+    },
+    "131": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "132": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.limit"
+    },
+    "133": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.number"
+    },
+    "134": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.searchByNumber"
+    },
+    "135": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.searchByNumber"
+    },
+    "136": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "number"
+    },
+    "137": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "options"
+    },
+    "138": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "139": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.region"
+    },
+    "140": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.bbox"
+    },
+    "141": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.limit"
+    },
+    "142": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getPostcodes"
+    },
+    "143": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getPostcodes"
+    },
+    "144": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "prefix"
+    },
+    "145": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getAutocompleteSuggestions"
+    },
+    "146": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getAutocompleteSuggestions"
+    },
+    "147": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "query"
+    },
+    "148": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "options"
+    },
+    "149": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "150": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.limit"
+    },
+    "151": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.types"
+    },
+    "152": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "153": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.type"
+    },
+    "154": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.value"
+    },
+    "155": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.label_ar"
+    },
+    "156": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.label_en"
+    },
+    "157": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.metadata"
+    },
+    "160": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.geocodeCached"
+    },
+    "161": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.geocodeCached"
+    },
+    "162": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "query"
+    },
+    "163": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "options"
+    },
+    "164": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "165": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.limit"
+    },
+    "166": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.bbox"
+    },
+    "167": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.region"
+    },
+    "168": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.regions"
+    },
+    "178": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.clearCache"
+    },
+    "179": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.clearCache"
+    },
+    "180": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.smartGeocode"
+    },
+    "181": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.smartGeocode"
+    },
+    "182": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "query"
+    },
+    "183": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "options"
+    },
+    "184": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "185": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.limit"
+    },
+    "186": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.bbox"
+    },
+    "190": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getTilesByRegion"
+    },
+    "191": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getTilesByRegion"
+    },
+    "192": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "region"
+    },
+    "193": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getStats"
+    },
+    "194": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.getStats"
+    },
+    "195": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "196": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.tilesLoaded"
+    },
+    "197": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.totalTiles"
+    },
+    "198": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.totalAddresses"
+    },
+    "199": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.totalSizeKb"
+    },
+    "200": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.close"
+    },
+    "201": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDK.close"
+    },
+    "202": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "TileInfo"
+    },
+    "203": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "TileInfo.h3_tile"
+    },
+    "204": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "TileInfo.addr_count"
+    },
+    "205": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "TileInfo.min_lon"
+    },
+    "206": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "TileInfo.max_lon"
+    },
+    "207": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "TileInfo.min_lat"
+    },
+    "208": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "TileInfo.max_lat"
+    },
+    "209": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "TileInfo.file_size_kb"
+    },
+    "210": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "TileInfo.region_ar"
+    },
+    "211": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "TileInfo.region_en"
+    },
+    "212": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "PostcodeInfo"
+    },
+    "213": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "PostcodeInfo.postcode"
+    },
+    "214": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "PostcodeInfo.tiles"
+    },
+    "215": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "PostcodeInfo.addr_count"
+    },
+    "216": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "PostcodeInfo.region_ar"
+    },
+    "217": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "PostcodeInfo.region_en"
+    },
+    "218": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDKConfig"
+    },
+    "219": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDKConfig.dataUrl"
+    },
+    "220": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDKConfig.language"
+    },
+    "221": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDKConfig.debug"
+    },
+    "222": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeoSDKConfig.logLevel"
+    },
+    "223": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult"
+    },
+    "224": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.addr_id"
+    },
+    "225": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.longitude"
+    },
+    "226": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.latitude"
+    },
+    "227": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.number"
+    },
+    "228": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.street"
+    },
+    "229": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.postcode"
+    },
+    "230": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.district_ar"
+    },
+    "231": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.district_en"
+    },
+    "232": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.city"
+    },
+    "233": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.gov_ar"
+    },
+    "234": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.gov_en"
+    },
+    "235": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.region_ar"
+    },
+    "236": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.region_en"
+    },
+    "237": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.full_address_ar"
+    },
+    "238": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.full_address_en"
+    },
+    "239": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.h3_index"
+    },
+    "240": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "GeocodingResult.distance_m"
+    },
+    "241": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "CountryResult"
+    },
+    "242": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "CountryResult.iso_a3"
+    },
+    "243": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "CountryResult.iso_a2"
+    },
+    "244": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "CountryResult.name_en"
+    },
+    "245": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "CountryResult.name_ar"
+    },
+    "246": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "CountryResult.continent"
+    },
+    "247": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "CountryDetectionResult"
+    },
+    "248": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "AdminHierarchy"
+    },
+    "249": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "AdminHierarchy.district"
+    },
+    "250": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "251": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.name_ar"
+    },
+    "252": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.name_en"
+    },
+    "253": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "AdminHierarchy.governorate"
+    },
+    "254": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "255": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.name_ar"
+    },
+    "256": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.name_en"
+    },
+    "257": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "AdminHierarchy.region"
+    },
+    "258": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type"
+    },
+    "259": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.name_ar"
+    },
+    "260": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/geocoder-h3.ts",
+      "qualifiedName": "__type.name_en"
+    },
+    "261": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/logger.ts",
+      "qualifiedName": "logger"
+    },
+    "262": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/logger.ts",
+      "qualifiedName": "createLogger"
+    },
+    "263": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/logger.ts",
+      "qualifiedName": "createLogger"
+    },
+    "264": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/logger.ts",
+      "qualifiedName": "prefix"
+    },
+    "265": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/logger.ts",
+      "qualifiedName": "LogLevel"
+    },
+    "266": {
+      "packageName": "@tabaqat/geocoding-sdk",
+      "packagePath": "src/types.ts",
+      "qualifiedName": "DEFAULT_DATA_URL"
+    }
+  },
+  "files": {
+    "entries": {
+      "1": "src/index.ts"
+    },
+    "reflections": {
+      "1": 0
+    }
+  }
+}

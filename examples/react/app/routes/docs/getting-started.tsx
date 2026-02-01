@@ -165,7 +165,7 @@ sdk.setDebug(false);  // Disable`}
   type AdminHierarchy,
   type TileInfo,
   type PostcodeInfo,
-  type GeoSDKH3Config,
+  type GeoSDKConfig,
   type LogLevel
 } from "@tabaqat/geocoding-sdk";
 

@@ -4,7 +4,6 @@ import { Button } from "~/components/ui/button";
 import { ThemeToggle } from "./theme-toggle";
 import { LanguageToggle } from "./language-toggle";
 import { useTranslation } from "~/i18n/context";
-import { cn } from "~/lib/utils";
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -12,72 +11,61 @@ interface HeaderProps {
 
 export function Header({ onMenuClick }: HeaderProps) {
   const { t, language } = useTranslation();
-  const isRTL = language === "ar";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center" dir={isRTL ? "rtl" : "ltr"}>
-        {/* Mobile menu button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn("md:hidden shrink-0", isRTL ? "ml-2" : "mr-2")}
-          onClick={onMenuClick}
-          aria-label="Toggle menu"
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
+    <header className="h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <div className="flex h-full items-center justify-between px-4 max-w-7xl mx-auto">
+        {/* Left: Menu + Logo */}
+        <div className="flex items-center gap-2">
+          {/* Mobile menu button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={onMenuClick}
+            aria-label="Toggle menu"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
 
-        {/* Logo */}
-        <Link
-          to="/"
-          className={cn(
-            "flex items-center shrink-0",
-            isRTL ? "flex-row-reverse gap-2 ml-4" : "gap-2 mr-4"
-          )}
-        >
-          <MapPin className="h-6 w-6 text-primary shrink-0" />
-          <span className="hidden font-bold sm:inline-block whitespace-nowrap">
-            {t("common.appName")}
-          </span>
-        </Link>
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2">
+            <MapPin className="h-5 w-5 text-primary" />
+            <span className="font-semibold text-sm sm:text-base truncate max-w-[150px] sm:max-w-none">
+              {language === "ar" ? "الترميز الجغرافي" : "Geocoding SDK"}
+            </span>
+          </Link>
+        </div>
 
-        {/* Desktop Navigation */}
-        <nav
-          className={cn(
-            "hidden md:flex items-center text-sm flex-1",
-            isRTL ? "gap-6 flex-row-reverse" : "gap-6"
-          )}
-        >
+        {/* Center: Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-6 text-sm">
           <Link
             to="/playground"
-            className="transition-colors hover:text-foreground/80 text-foreground/60 whitespace-nowrap"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             {t("nav.playground")}
           </Link>
           <Link
             to="/docs/getting-started"
-            className="transition-colors hover:text-foreground/80 text-foreground/60 whitespace-nowrap"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             {t("nav.docs")}
           </Link>
           <Link
             to="/docs/api-reference"
-            className="transition-colors hover:text-foreground/80 text-foreground/60 whitespace-nowrap"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             {t("nav.apiReference")}
           </Link>
         </nav>
 
-        {/* Right side controls */}
-        <div
-          className={cn("flex items-center shrink-0", isRTL ? "gap-2 mr-auto" : "gap-2 ml-auto")}
-        >
+        {/* Right: Controls */}
+        <div className="flex items-center gap-1 sm:gap-2">
           <LanguageToggle />
           <ThemeToggle />
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" size="icon" asChild className="hidden sm:flex">
             <a
-              href="https://github.com/tabaqatdev/geocoding-wasm"
+              href="https://github.com/tabaqatdev/geocoding-sdk"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Layout } from "~/components/layout/layout";
 import { useTranslation } from "~/i18n/context";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -11,6 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { parseTypeDocJson, type MethodInfo, type InterfaceInfo } from "~/lib/api-docs-parser";
+import apiDocsJson from "~/data/api-docs.json";
 import type { Route } from "./+types/api-reference";
 
 export function meta(_args: Route.MetaArgs) {
@@ -21,372 +24,112 @@ export function meta(_args: Route.MetaArgs) {
 }
 
 export default function ApiReference() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
-  const methods = [
-    // Initialization
-    {
-      name: "initialize()",
-      returns: "Promise<void>",
-      description: "Initialize the SDK (loads index files ~140KB)",
-    },
-    { name: "close()", returns: "Promise<void>", description: "Cleanup and close SDK" },
+  // Parse the TypeDoc JSON
+  const { methods, interfaces } = useMemo(() => parseTypeDocJson(apiDocsJson), []);
 
-    // Forward Geocoding
-    {
-      name: "geocode(query, options?)",
-      returns: "Promise<GeocodingResult[]>",
-      description: "Forward geocoding - address/place to coordinates",
-    },
-    {
-      name: "geocodeCached(query, options?)",
-      returns: "Promise<GeocodingResult[]>",
-      description: "Cached forward geocoding with LRU cache",
-    },
-    {
-      name: "smartGeocode(query, options?)",
-      returns: "Promise<GeocodingResult[]>",
-      description: "Auto-detects postcode/region in query for optimized search",
-    },
-    {
-      name: "getAutocompleteSuggestions(query, options?)",
-      returns: "Promise<{suggestions, type}>",
-      description: "Get autocomplete suggestions (districts, postcodes)",
-    },
-
-    // Reverse Geocoding
-    {
-      name: "reverseGeocode(lat, lon, options?)",
-      returns: "Promise<GeocodingResult[]>",
-      description: "Reverse geocoding - coordinates to addresses",
-    },
-
-    // Specialized Search
-    {
-      name: "searchByPostcode(postcode, options?)",
-      returns: "Promise<GeocodingResult[]>",
-      description: "Search by postcode (optimized tile loading)",
-    },
-    {
-      name: "searchByNumber(number, options?)",
-      returns: "Promise<GeocodingResult[]>",
-      description: "Search by house number with optional region filter",
-    },
-
-    // Location Detection
-    {
-      name: "detectCountry(lat, lon)",
-      returns: "Promise<CountryResult | null>",
-      description: "Detect country from coordinates (worldwide)",
-    },
-    {
-      name: "isInSaudiArabia(lat, lon)",
-      returns: "Promise<boolean>",
-      description: "Quick check if point is in Saudi Arabia",
-    },
-    {
-      name: "getAdminHierarchy(lat, lon)",
-      returns: "Promise<AdminHierarchy>",
-      description: "Get region/governorate/district for SA coordinates",
-    },
-
-    // Tile Management
-    {
-      name: "getTiles()",
-      returns: "TileInfo[]",
-      description: "Get list of all available H3 tiles",
-    },
-    {
-      name: "getLoadedTiles()",
-      returns: "string[]",
-      description: "Get list of currently loaded tile IDs",
-    },
-    {
-      name: "getTilesByRegion(region)",
-      returns: "TileInfo[]",
-      description: "Get tiles filtered by region name",
-    },
-    {
-      name: "getTilesForBbox(bbox)",
-      returns: "string[]",
-      description: "Get tile IDs that intersect a bounding box",
-    },
-
-    // Postcode Index
-    {
-      name: "getPostcodes(prefix?)",
-      returns: "PostcodeInfo[]",
-      description: "Get postcodes matching prefix (for autocomplete)",
-    },
-
-    // Stats & Diagnostics
-    { name: "getStats()", returns: "Promise<SDKStats>", description: "Get SDK statistics" },
-    {
-      name: "isFTSAvailable()",
-      returns: "boolean",
-      description: "Check if FTS extension is available",
-    },
-    {
-      name: "getSearchMode()",
-      returns: "'fts-bm25' | 'jaccard'",
-      description: "Get current text search mode",
-    },
-
-    // Debug & Cache
-    {
-      name: "setDebug(enabled, level?)",
-      returns: "void",
-      description: "Enable/disable debug logging at runtime",
-    },
-    {
-      name: "clearCache()",
-      returns: "void",
-      description: "Clear the internal search result cache",
-    },
-  ];
+  // Group methods by category
+  const methodsByCategory = useMemo(() => {
+    const grouped = new Map<string, MethodInfo[]>();
+    for (const method of methods) {
+      const existing = grouped.get(method.category) || [];
+      existing.push(method);
+      grouped.set(method.category, existing);
+    }
+    return grouped;
+  }, [methods]);
 
   return (
     <Layout>
       <div className="p-6 max-w-5xl mx-auto">
         <div className="mb-8">
           <Badge variant="secondary" className="mb-2">
-            Reference
+            {language === "ar" ? "مرجع" : "Reference"}
           </Badge>
           <h1 className="text-3xl font-bold mb-2">{t("docs.apiReference.title")}</h1>
           <p className="text-muted-foreground">{t("docs.apiReference.description")}</p>
+          <p className="text-xs text-muted-foreground mt-2">
+            {language === "ar"
+              ? "يتم إنشاء هذه الوثائق تلقائيًا من الكود المصدري"
+              : "Auto-generated from source code using TypeDoc"}
+          </p>
         </div>
 
-        {/* Methods Table */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>GeoSDK Methods</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="border rounded-lg overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[300px]">Method</TableHead>
-                    <TableHead className="w-[200px]">Returns</TableHead>
-                    <TableHead>Description</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {methods.map((m, i) => (
-                    <TableRow key={i}>
-                      <TableCell className="font-mono text-sm">{m.name}</TableCell>
-                      <TableCell className="font-mono text-sm text-muted-foreground">
-                        {m.returns}
-                      </TableCell>
-                      <TableCell>{m.description}</TableCell>
+        {/* Methods by Category */}
+        {Array.from(methodsByCategory.entries()).map(([category, categoryMethods]) => (
+          <Card key={category} className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span>{category}</span>
+                <Badge variant="outline" className="text-xs">
+                  {categoryMethods.length}
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="border rounded-lg overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[300px]">
+                        {language === "ar" ? "الدالة" : "Method"}
+                      </TableHead>
+                      <TableHead className="w-[200px]">
+                        {language === "ar" ? "النوع المُرجع" : "Returns"}
+                      </TableHead>
+                      <TableHead>{language === "ar" ? "الوصف" : "Description"}</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {categoryMethods.map((m) => (
+                      <TableRow key={m.name}>
+                        <TableCell className="font-mono text-sm">
+                          <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{m.name}()</code>
+                        </TableCell>
+                        <TableCell className="font-mono text-sm text-muted-foreground">
+                          {m.returns}
+                        </TableCell>
+                        <TableCell className="text-sm">{m.description || "-"}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
 
-        {/* GeocodingResult Type */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>GeocodingResult</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CodeBlock
-              language="typescript"
-              code={`interface GeocodingResult {
-  addr_id: number;
-  longitude: number;
-  latitude: number;
-  number?: string;           // House number
-  street?: string;           // Street name
-  postcode?: string;         // Postal code
-  district_ar?: string;      // District (Arabic)
-  district_en?: string;      // District (English)
-  city?: string;             // City name
-  gov_ar?: string;           // Governorate (Arabic)
-  gov_en?: string;           // Governorate (English)
-  region_ar?: string;        // Region (Arabic)
-  region_en?: string;        // Region (English)
-  full_address_ar?: string;  // Full address (Arabic)
-  full_address_en?: string;  // Full address (English)
-  h3_index?: string;         // H3 cell index
-  distance_m?: number;       // Distance in meters (reverse geocoding)
-  similarity?: number;       // Match score (forward geocoding)
-}`}
-            />
-          </CardContent>
-        </Card>
+        {/* Interfaces */}
+        <h2 className="text-2xl font-bold mt-12 mb-6">{language === "ar" ? "الأنواع" : "Types"}</h2>
 
-        {/* TileInfo Type */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>TileInfo</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CodeBlock
-              language="typescript"
-              code={`interface TileInfo {
-  h3_tile: string;      // H3 cell ID at resolution 5
-  addr_count: number;   // Number of addresses in tile
-  min_lon: number;      // Bounding box
-  max_lon: number;
-  min_lat: number;
-  max_lat: number;
-  file_size_kb: number; // Tile file size
-  region_ar?: string;   // Primary region (Arabic)
-  region_en?: string;   // Primary region (English)
-}`}
-            />
-          </CardContent>
-        </Card>
-
-        {/* PostcodeInfo Type */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>PostcodeInfo</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CodeBlock
-              language="typescript"
-              code={`interface PostcodeInfo {
-  postcode: string;     // The postcode
-  tiles: string[];      // H3 tiles containing this postcode
-  addr_count: number;   // Number of addresses
-  region_ar?: string;   // Region (Arabic)
-  region_en?: string;   // Region (English)
-}`}
-            />
-          </CardContent>
-        </Card>
-
-        {/* CountryResult Type */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>CountryResult</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CodeBlock
-              language="typescript"
-              code={`interface CountryResult {
-  iso_a3: string;    // ISO 3166-1 alpha-3 code
-  iso_a2: string;    // ISO 3166-1 alpha-2 code
-  name_en: string;   // Country name (English)
-  name_ar: string;   // Country name (Arabic)
-  continent: string; // Continent
-}`}
-            />
-          </CardContent>
-        </Card>
-
-        {/* AdminHierarchy Type */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>AdminHierarchy</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CodeBlock
-              language="typescript"
-              code={`interface AdminHierarchy {
-  region?: {
-    name_ar: string;  // e.g., "منطقة الرياض"
-    name_en: string;  // e.g., "Riyadh Region"
-  };
-  governorate?: {
-    name_ar: string;  // e.g., "محافظة الرياض"
-    name_en: string;  // e.g., "Riyadh Governorate"
-  };
-  district?: {
-    name_ar: string;  // e.g., "حي العليا"
-    name_en: string;  // e.g., "Al Olaya"
-  };
-}`}
-            />
-          </CardContent>
-        </Card>
-
-        {/* GeocodeOptions Type */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>GeocodeOptions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CodeBlock
-              language="typescript"
-              code={`interface GeocodeOptions {
-  limit?: number;    // Max results (default: 10)
-  bbox?: [           // Bounding box filter
-    south: number,   // Min latitude
-    west: number,    // Min longitude
-    north: number,   // Max latitude
-    east: number     // Max longitude
-  ];
-  region?: string;   // Filter by single region name
-  regions?: string[]; // Filter by multiple regions
-}`}
-            />
-          </CardContent>
-        </Card>
-
-        {/* ReverseGeocodeOptions Type */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>ReverseGeocodeOptions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CodeBlock
-              language="typescript"
-              code={`interface ReverseGeocodeOptions {
-  limit?: number;           // Max results (default: 5)
-  radiusMeters?: number;    // Search radius (default: 1000)
-  detailLevel?: 'minimal' | 'postcode' | 'region' | 'full';
-  includeNeighbors?: boolean; // Include adjacent H3 cells
-}`}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Config Type */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>GeoSDKH3Config</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CodeBlock
-              language="typescript"
-              code={`interface GeoSDKH3Config {
-  dataUrl?: string;         // Base URL for parquet data
-  language?: 'ar' | 'en';   // Default language
-  debug?: boolean;          // Enable debug logging
-  logLevel?: LogLevel;      // 'debug' | 'info' | 'warn' | 'error' | 'none'
-}
-
-// Default data URL
-const DEFAULT_DATA_URL =
-  'https://data.source.coop/tabaqat/geocoding-cng/v0.1.0';`}
-            />
-          </CardContent>
-        </Card>
-
-        {/* SDKStats Type */}
-        <Card>
-          <CardHeader>
-            <CardTitle>SDKStats</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CodeBlock
-              language="typescript"
-              code={`interface SDKStats {
-  totalTiles: number;      // Total available tiles (717)
-  totalAddresses: number;  // Total addresses (~4.5M)
-  totalSizeKb: number;     // Total data size
-  tilesLoaded: number;     // Currently loaded tiles
-}`}
-            />
-          </CardContent>
-        </Card>
+        {interfaces.map((iface) => (
+          <InterfaceCard key={iface.name} iface={iface} />
+        ))}
       </div>
     </Layout>
+  );
+}
+
+function InterfaceCard({ iface }: { iface: InterfaceInfo }) {
+  const code = useMemo(() => {
+    const props = iface.properties
+      .map((p) => {
+        const comment = p.description ? `  /** ${p.description} */\n` : "";
+        return `${comment}  ${p.name}${p.optional ? "?" : ""}: ${p.type};`;
+      })
+      .join("\n");
+    return `interface ${iface.name} {\n${props}\n}`;
+  }, [iface]);
+
+  return (
+    <Card className="mb-6">
+      <CardHeader>
+        <CardTitle className="font-mono text-lg">{iface.name}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <CodeBlock language="typescript" code={code} />
+      </CardContent>
+    </Card>
   );
 }

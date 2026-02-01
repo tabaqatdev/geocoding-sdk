@@ -9,7 +9,9 @@
  *
  * Usage:
  * ```ts
- * const sdk = new GeoSDKH3({ dataUrl: 'https://...' });
+ * import { GeoSDK } from '@tabaqat/geocoding-sdk';
+ *
+ * const sdk = new GeoSDK();
  * await sdk.initialize();
  *
  * const nearby = await sdk.reverseGeocode(24.7, 46.6);  // <4s first time
@@ -57,7 +59,7 @@ export interface PostcodeInfo {
   region_en?: string;
 }
 
-export interface GeoSDKH3Config {
+export interface GeoSDKConfig {
   /** Base URL for parquet data files */
   dataUrl?: string;
   /** Default language for results */
@@ -108,10 +110,10 @@ export interface AdminHierarchy {
 // H3 resolution for tile partitioning (matches build script)
 const H3_TILE_RESOLUTION = 5;
 
-export class GeoSDKH3 {
+export class GeoSDK {
   private db: duckdb.AsyncDuckDB | null = null;
   private conn: duckdb.AsyncDuckDBConnection | null = null;
-  private config: Required<GeoSDKH3Config>;
+  private config: Required<GeoSDKConfig>;
   private initialized = false;
   private ftsAvailable = false;
 
@@ -126,7 +128,7 @@ export class GeoSDKH3 {
   private readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
   private readonly MAX_CACHE_SIZE = 100;
 
-  constructor(config: GeoSDKH3Config = {}) {
+  constructor(config: GeoSDKConfig = {}) {
     this.config = {
       dataUrl: config.dataUrl ?? DEFAULT_DATA_URL,
       language: config.language ?? 'ar',
@@ -138,7 +140,7 @@ export class GeoSDKH3 {
     sdkLogger.configure({
       enabled: this.config.debug,
       level: this.config.logLevel,
-      prefix: '[GeoSDK-H3]',
+      prefix: '[GeoSDK]',
     });
   }
 

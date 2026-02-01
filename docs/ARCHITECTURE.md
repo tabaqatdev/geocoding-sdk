@@ -23,7 +23,7 @@
 flowchart TB
     subgraph Browser["Browser Runtime"]
         App["React App"]
-        SDK["GeoSDK-H3"]
+        SDK["GeoSDK"]
         DuckDB["DuckDB-WASM"]
 
         subgraph Extensions["DuckDB Extensions"]
@@ -491,7 +491,7 @@ SELECT fts_main_table.match_bm25(id, 'query') as score FROM table
 ```
 geocoding-sdk/
 ├── src/
-│   ├── index.ts          # Main exports (GeoSDK, GeoSDKH3, types)
+│   ├── index.ts          # Main exports (GeoSDK, types)
 │   ├── geocoder-h3.ts    # Main SDK implementation
 │   ├── logger.ts         # Debug logging system
 │   └── types.ts          # Shared constants (DEFAULT_DATA_URL)

@@ -84,10 +84,10 @@ export default function ApiReference() {
                   <TableBody>
                     {categoryMethods.map((m) => (
                       <TableRow key={m.name}>
-                        <TableCell className="font-mono text-sm">
+                        <TableCell className="font-mono text-sm" dir="ltr">
                           <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{m.name}()</code>
                         </TableCell>
-                        <TableCell className="font-mono text-sm text-muted-foreground">
+                        <TableCell className="font-mono text-sm text-muted-foreground" dir="ltr">
                           {m.returns}
                         </TableCell>
                         <TableCell className="text-sm">{m.description || "-"}</TableCell>

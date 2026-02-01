@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'examples/react/**'
+      - 'src/**'
       - '.github/workflows/deploy-examples.yml'
   workflow_dispatch:
 
@@ -38,6 +39,10 @@ jobs:
 
       - name: Build SDK
         run: bun run build
+        working-directory: .
+
+      - name: Generate API docs JSON
+        run: bun run docs:json
         working-directory: .
 
       - name: Install example dependencies

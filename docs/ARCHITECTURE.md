@@ -491,12 +491,10 @@ SELECT fts_main_table.match_bm25(id, 'query') as score FROM table
 ```
 geocoding-sdk/
 ├── src/
-│   ├── index.ts          # Exports GeoSDK (alias for GeoSDKH3)
-│   ├── types.ts          # Shared types, DEFAULT_DATA_URL
-│   ├── geocoder-h3.ts    # Main SDK (~1440 lines) ← USE THIS
+│   ├── index.ts          # Main exports (GeoSDK, GeoSDKH3, types)
+│   ├── geocoder-h3.ts    # Main SDK implementation
 │   ├── logger.ts         # Debug logging system
-│   ├── geocoder.ts       # Legacy region-based
-│   └── geocoder-lazy.ts  # Legacy lazy-loading
+│   └── types.ts          # Shared constants (DEFAULT_DATA_URL)
 ├── examples/react/
 │   └── app/
 │       ├── context/geo-sdk-context.tsx  # SDK provider with all types

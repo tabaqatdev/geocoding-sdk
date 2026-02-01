@@ -658,20 +658,6 @@ Close the database connection and free resources.
 await sdk.close();
 ```
 
-## Legacy SDK (V2)
-
-For backward compatibility, region-based SDKs are available:
-
-```typescript
-import { GeoSDKLegacy, GeoSDKLazyLegacy } from '@tabaqat/geocoding-sdk';
-
-// GeoSDKLegacy - auto-loads regions (~10-70MB each)
-const sdk = new GeoSDKLegacy();
-
-// GeoSDKLazyLegacy - manual region loading control
-const sdkLazy = new GeoSDKLazyLegacy();
-```
-
 ## Result Types
 
 ### `GeocodingResult`

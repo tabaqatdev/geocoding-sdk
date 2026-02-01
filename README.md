@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/@tabaqat%2Fgeocoding-sdk.svg)](https://www.npmjs.com/package/@tabaqat/geocoding-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**v0.1.2** - A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser with automatic fallback to default data source.
+**v0.2.0** - A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser with automatic fallback to default data source.
 
 ## Live Examples
 

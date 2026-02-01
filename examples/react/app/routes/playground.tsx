@@ -282,7 +282,7 @@ export default function Playground() {
         setMapLoading(false);
       }
     },
-    [sdk, language, reverseRadius]
+    [sdk, language, reverseRadius, mapRef]
   );
 
   // Fly to location on map

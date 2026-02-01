@@ -26,6 +26,9 @@ export type {
   CountryDetectionResult,
 } from './geocoder-h3';
 
+// Export logger utilities
+export { logger, createLogger, type LogLevel } from './logger';
+
 // Legacy SDKs (region-based) - for backward compatibility
 export { GeoSDK as GeoSDKLegacy } from './geocoder';
 export { GeoSDKLazy as GeoSDKLazyLegacy } from './geocoder-lazy';
@@ -35,6 +38,7 @@ export type {
   GeocodingResult,
   CountryResult,
   AdminResult,
+  AdminHierarchy as AdminHierarchyType,
   GeoSDKConfig,
   GeocodeOptions,
   ReverseGeocodeOptions,

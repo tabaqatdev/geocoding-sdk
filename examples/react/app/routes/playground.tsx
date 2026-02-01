@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { Switch } from "~/components/ui/switch";
 import {
   Loader2,
   RotateCcw,
@@ -82,6 +83,11 @@ export default function Playground() {
   const [forwardResults, setForwardResults] = useState<GeocodingResult[]>([]);
   const [forwardLoading, setForwardLoading] = useState(false);
 
+  // Search scope options
+  const [useBboxScope, setUseBboxScope] = useState(true);
+  const [useRegionScope, setUseRegionScope] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState("");
+
   // Reverse geocoding state
   const [reverseLat, setReverseLat] = useState("24.7136");
   const [reverseLon, setReverseLon] = useState("46.6753");
@@ -107,6 +113,7 @@ export default function Playground() {
     country?: string;
     region?: string;
     governorate?: string;
+    city?: string;
     district?: string;
   } | null>(null);
 
@@ -167,6 +174,7 @@ export default function Playground() {
         });
       } catch (err) {
         console.error("Failed to get location hierarchy:", err);
+        setAdminHierarchy(null);
       }
 
       // Perform reverse geocoding
@@ -256,10 +264,22 @@ export default function Playground() {
     if (!sdk || !forwardQuery.trim()) return;
     setForwardLoading(true);
     try {
-      const bbox = mapRef?.getBounds();
+      const bounds = mapRef?.getBounds();
+      const bbox =
+        useBboxScope && bounds
+          ? ([bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()] as [
+              number,
+              number,
+              number,
+              number,
+            ])
+          : undefined;
+      const regions = useRegionScope && selectedRegion ? [selectedRegion] : undefined;
+
       const results = await sdk.geocode(forwardQuery, {
         limit: 10,
-        bbox: bbox ? [bbox.getSouth(), bbox.getWest(), bbox.getNorth(), bbox.getEast()] : undefined,
+        bbox,
+        regions,
       });
       setForwardResults(results);
       showResultsOnMap(results);
@@ -577,6 +597,76 @@ export default function Playground() {
                             )}
                           </Button>
                         </div>
+
+                        {/* Search Scope Options */}
+                        <div className="space-y-2 p-3 rounded-lg bg-muted/50">
+                          <div className="text-xs font-medium text-muted-foreground mb-2">
+                            {language === "ar" ? "نطاق البحث" : "Search Scope"}
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <label htmlFor="bbox-scope" className="text-sm cursor-pointer">
+                              {language === "ar"
+                                ? "استخدام حدود الخريطة المرئية"
+                                : "Use visible map bounds"}
+                            </label>
+                            <Switch
+                              id="bbox-scope"
+                              checked={useBboxScope}
+                              onCheckedChange={setUseBboxScope}
+                            />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <label htmlFor="region-scope" className="text-sm cursor-pointer">
+                              {language === "ar" ? "تصفية حسب المنطقة" : "Filter by region"}
+                            </label>
+                            <Switch
+                              id="region-scope"
+                              checked={useRegionScope}
+                              onCheckedChange={setUseRegionScope}
+                            />
+                          </div>
+                          {useRegionScope && (
+                            <Select
+                              value={selectedRegion || "none"}
+                              onValueChange={(v) => setSelectedRegion(v === "none" ? "" : v)}
+                            >
+                              <SelectTrigger className="text-sm mt-1">
+                                <SelectValue
+                                  placeholder={
+                                    language === "ar" ? "اختر منطقة..." : "Select region..."
+                                  }
+                                />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">
+                                  {language === "ar" ? "-- اختر --" : "-- Select --"}
+                                </SelectItem>
+                                <SelectItem value="منطقة الرياض">{t("regions.riyadh")}</SelectItem>
+                                <SelectItem value="منطقة مكة المكرمة">
+                                  {t("regions.makkah")}
+                                </SelectItem>
+                                <SelectItem value="المنطقة الشرقية">
+                                  {t("regions.eastern")}
+                                </SelectItem>
+                                <SelectItem value="منطقة المدينة المنورة">
+                                  {t("regions.madinah")}
+                                </SelectItem>
+                                <SelectItem value="منطقة القصيم">{t("regions.qassim")}</SelectItem>
+                                <SelectItem value="منطقة عسير">{t("regions.asir")}</SelectItem>
+                                <SelectItem value="منطقة جازان">{t("regions.jazan")}</SelectItem>
+                                <SelectItem value="منطقة تبوك">{t("regions.tabuk")}</SelectItem>
+                                <SelectItem value="منطقة حائل">{t("regions.hail")}</SelectItem>
+                                <SelectItem value="منطقة نجران">{t("regions.najran")}</SelectItem>
+                                <SelectItem value="منطقة الجوف">{t("regions.jawf")}</SelectItem>
+                                <SelectItem value="منطقة الباحة">{t("regions.bahah")}</SelectItem>
+                                <SelectItem value="منطقة الحدود الشمالية">
+                                  {t("regions.northern")}
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        </div>
+
                         {forwardResults.length > 0 && (
                           <ResultsList
                             results={forwardResults}

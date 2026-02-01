@@ -24,47 +24,78 @@ export default function ApiReference() {
   const { t } = useTranslation();
 
   const methods = [
+    // Initialization
     {
       name: "initialize()",
       returns: "Promise<void>",
       description: "Initialize the SDK (loads index files ~140KB)",
     },
+    { name: "close()", returns: "Promise<void>", description: "Cleanup and close SDK" },
+
+    // Forward Geocoding
     {
-      name: "geocode(address, options?)",
+      name: "geocode(query, options?)",
       returns: "Promise<GeocodingResult[]>",
-      description: "Forward geocoding - address to coordinates",
+      description: "Forward geocoding - address/place to coordinates",
     },
+    {
+      name: "geocodeCached(query, options?)",
+      returns: "Promise<GeocodingResult[]>",
+      description: "Cached forward geocoding with LRU cache",
+    },
+    {
+      name: "smartGeocode(query, options?)",
+      returns: "Promise<GeocodingResult[]>",
+      description: "Auto-detects postcode/region in query for optimized search",
+    },
+    {
+      name: "getAutocompleteSuggestions(query, options?)",
+      returns: "Promise<{suggestions, type}>",
+      description: "Get autocomplete suggestions (districts, postcodes)",
+    },
+
+    // Reverse Geocoding
     {
       name: "reverseGeocode(lat, lon, options?)",
       returns: "Promise<GeocodingResult[]>",
       description: "Reverse geocoding - coordinates to addresses",
     },
+
+    // Specialized Search
     {
       name: "searchByPostcode(postcode, options?)",
       returns: "Promise<GeocodingResult[]>",
-      description: "Search by postcode (optimized)",
+      description: "Search by postcode (optimized tile loading)",
     },
     {
       name: "searchByNumber(number, options?)",
       returns: "Promise<GeocodingResult[]>",
-      description: "Search by house number",
+      description: "Search by house number with optional region filter",
     },
+
+    // Location Detection
     {
       name: "detectCountry(lat, lon)",
       returns: "Promise<CountryResult | null>",
-      description: "Detect country from coordinates",
+      description: "Detect country from coordinates (worldwide)",
     },
     {
       name: "isInSaudiArabia(lat, lon)",
       returns: "Promise<boolean>",
-      description: "Check if point is in Saudi Arabia",
+      description: "Quick check if point is in Saudi Arabia",
     },
     {
       name: "getAdminHierarchy(lat, lon)",
       returns: "Promise<AdminHierarchy>",
-      description: "Get admin hierarchy for SA coordinates",
+      description: "Get region/governorate/district for SA coordinates",
     },
-    { name: "getTiles()", returns: "TileInfo[]", description: "Get list of available H3 tiles" },
+
+    // Tile Management
+    {
+      name: "getTiles()",
+      returns: "TileInfo[]",
+      description: "Get list of all available H3 tiles",
+    },
     {
       name: "getLoadedTiles()",
       returns: "string[]",
@@ -73,13 +104,22 @@ export default function ApiReference() {
     {
       name: "getTilesByRegion(region)",
       returns: "TileInfo[]",
-      description: "Get tiles filtered by region",
+      description: "Get tiles filtered by region name",
     },
+    {
+      name: "getTilesForBbox(bbox)",
+      returns: "string[]",
+      description: "Get tile IDs that intersect a bounding box",
+    },
+
+    // Postcode Index
     {
       name: "getPostcodes(prefix?)",
       returns: "PostcodeInfo[]",
-      description: "Get available postcodes (for autocomplete)",
+      description: "Get postcodes matching prefix (for autocomplete)",
     },
+
+    // Stats & Diagnostics
     { name: "getStats()", returns: "Promise<SDKStats>", description: "Get SDK statistics" },
     {
       name: "isFTSAvailable()",
@@ -91,7 +131,18 @@ export default function ApiReference() {
       returns: "'fts-bm25' | 'jaccard'",
       description: "Get current text search mode",
     },
-    { name: "close()", returns: "Promise<void>", description: "Cleanup and close SDK" },
+
+    // Debug & Cache
+    {
+      name: "setDebug(enabled, level?)",
+      returns: "void",
+      description: "Enable/disable debug logging at runtime",
+    },
+    {
+      name: "clearCache()",
+      returns: "void",
+      description: "Clear the internal search result cache",
+    },
   ];
 
   return (
@@ -229,8 +280,75 @@ export default function ApiReference() {
           </CardContent>
         </Card>
 
+        {/* AdminHierarchy Type */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>AdminHierarchy</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CodeBlock
+              language="typescript"
+              code={`interface AdminHierarchy {
+  region?: {
+    name_ar: string;  // e.g., "منطقة الرياض"
+    name_en: string;  // e.g., "Riyadh Region"
+  };
+  governorate?: {
+    name_ar: string;  // e.g., "محافظة الرياض"
+    name_en: string;  // e.g., "Riyadh Governorate"
+  };
+  district?: {
+    name_ar: string;  // e.g., "حي العليا"
+    name_en: string;  // e.g., "Al Olaya"
+  };
+}`}
+            />
+          </CardContent>
+        </Card>
+
+        {/* GeocodeOptions Type */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>GeocodeOptions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CodeBlock
+              language="typescript"
+              code={`interface GeocodeOptions {
+  limit?: number;    // Max results (default: 10)
+  bbox?: [           // Bounding box filter
+    south: number,   // Min latitude
+    west: number,    // Min longitude
+    north: number,   // Max latitude
+    east: number     // Max longitude
+  ];
+  region?: string;   // Filter by single region name
+  regions?: string[]; // Filter by multiple regions
+}`}
+            />
+          </CardContent>
+        </Card>
+
+        {/* ReverseGeocodeOptions Type */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>ReverseGeocodeOptions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CodeBlock
+              language="typescript"
+              code={`interface ReverseGeocodeOptions {
+  limit?: number;           // Max results (default: 5)
+  radiusMeters?: number;    // Search radius (default: 1000)
+  detailLevel?: 'minimal' | 'postcode' | 'region' | 'full';
+  includeNeighbors?: boolean; // Include adjacent H3 cells
+}`}
+            />
+          </CardContent>
+        </Card>
+
         {/* Config Type */}
-        <Card>
+        <Card className="mb-6">
           <CardHeader>
             <CardTitle>GeoSDKH3Config</CardTitle>
           </CardHeader>
@@ -240,11 +358,31 @@ export default function ApiReference() {
               code={`interface GeoSDKH3Config {
   dataUrl?: string;         // Base URL for parquet data
   language?: 'ar' | 'en';   // Default language
+  debug?: boolean;          // Enable debug logging
+  logLevel?: LogLevel;      // 'debug' | 'info' | 'warn' | 'error' | 'none'
 }
 
 // Default data URL
-const DEFAULT_DATA_URL_V3 =
+const DEFAULT_DATA_URL =
   'https://data.source.coop/tabaqat/geocoding-cng/v0.1.0';`}
+            />
+          </CardContent>
+        </Card>
+
+        {/* SDKStats Type */}
+        <Card>
+          <CardHeader>
+            <CardTitle>SDKStats</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CodeBlock
+              language="typescript"
+              code={`interface SDKStats {
+  totalTiles: number;      // Total available tiles (717)
+  totalAddresses: number;  // Total addresses (~4.5M)
+  totalSizeKb: number;     // Total data size
+  tilesLoaded: number;     // Currently loaded tiles
+}`}
             />
           </CardContent>
         </Card>

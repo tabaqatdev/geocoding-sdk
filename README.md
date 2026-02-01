@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/@tabaqat%2Fgeocoding-sdk.svg)](https://www.npmjs.com/package/@tabaqat/geocoding-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**v0.1.0** - A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser with automatic fallback to default data source.
+**v0.1.2** - A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser with automatic fallback to default data source.
 
 ## Live Examples
 
@@ -45,7 +45,7 @@ flowchart TB
     subgraph Browser["Browser Runtime"]
         SDK["GeoSDK"]
         DUCKDB["DuckDB-WASM"]
-        CACHE["Tile Cache"]
+        CACHE["Tile Cache + Search Cache"]
 
         subgraph Queries["Query Types"]
             FWD["Forward Geocode<br/>(text → coords)"]
@@ -82,15 +82,19 @@ flowchart TB
 
 ## Features
 
-- **Forward Geocoding**: Convert addresses to coordinates with Jaccard similarity matching
+- **Forward Geocoding**: Convert addresses to coordinates with FTS/BM25 or Jaccard similarity matching
+- **Smart Geocoding**: Auto-detects postcodes and regions in query for optimized routing
+- **Cached Geocoding**: LRU cache (100 entries, 5min TTL) for faster repeated searches
 - **Reverse Geocoding**: Find nearest addresses from coordinates with H3 tile-based spatial indexing
 - **Postcode Search**: Ultra-fast postcode lookups using indexed tile mapping (~1.3 tiles per postcode)
 - **House Number Search**: Search by building number with region/bbox filtering
 - **Country Detection**: Identify country from coordinates using spatial containment
-- **Admin Hierarchy**: Get district and region info for Saudi Arabia coordinates
+- **Admin Hierarchy**: Get district, governorate, and region info for Saudi Arabia coordinates
+- **Autocomplete Suggestions**: Get district, postcode, and region suggestions for typeahead
 - **H3 Tile Loading**: Ultra-fast on-demand loading (~220KB average per tile)
-- **Region Filtering**: Filter searches by region name for targeted queries
+- **Region Filtering**: Filter searches by single or multiple region names
 - **Bbox Filtering**: Optimize forward geocoding by limiting search to visible map area
+- **Debug Logging**: Configurable logging with multiple levels
 - **Bilingual**: Full support for Arabic and English
 
 ## Performance
@@ -99,6 +103,8 @@ flowchart TB
 | ------------------------ | --------------------------- |
 | Reverse geocode (cold)   | **< 4 seconds**             |
 | Reverse geocode (cached) | **< 100ms**                 |
+| Forward geocode (bbox)   | **2-5 seconds**             |
+| Forward geocode (cached) | **< 500ms**                 |
 | Postcode search          | **< 500ms** (avg 1.3 tiles) |
 | Average tile size        | **220 KB**                  |
 | Largest tile             | **6 MB**                    |
@@ -129,8 +135,11 @@ yarn add @tabaqat/geocoding-sdk
 ```typescript
 import { GeoSDK } from '@tabaqat/geocoding-sdk';
 
-// Initialize SDK (uses H3 tiles by default)
-const sdk = new GeoSDK();
+// Initialize SDK with options
+const sdk = new GeoSDK({
+  debug: true, // Enable debug logging
+  logLevel: 'info', // 'debug' | 'info' | 'warn' | 'error' | 'none'
+});
 await sdk.initialize();
 
 // Forward geocoding (address → coordinates)
@@ -147,6 +156,33 @@ console.log(nearby[0]);
 const country = await sdk.detectCountry(24.7136, 46.6753);
 console.log(country);
 // { iso_a2: 'SA', name_ar: 'المملكة العربية السعودية', name_en: 'Saudi Arabia' }
+```
+
+### Smart Geocoding
+
+```typescript
+// Smart geocode auto-detects query patterns for optimized routing
+// Detects postcode → routes to searchByPostcode()
+const byPostcode = await sdk.smartGeocode('12345');
+
+// Detects region in query → adds region filter
+const withRegion = await sdk.smartGeocode('مكة الرياض');
+
+// Regular query → uses standard geocode()
+const regular = await sdk.smartGeocode('حي النخيل');
+```
+
+### Cached Geocoding
+
+```typescript
+// Use LRU cache for faster repeated searches (100 entries, 5min TTL)
+const results = await sdk.geocodeCached('الرياض', { limit: 10 });
+
+// Subsequent identical searches return cached results instantly
+const cached = await sdk.geocodeCached('الرياض', { limit: 10 }); // < 1ms
+
+// Clear cache manually when needed
+sdk.clearCache();
 ```
 
 ### Postcode Search (Ultra Fast!)
@@ -178,6 +214,22 @@ const results = await sdk.searchByNumber('4037', {
 });
 ```
 
+### Autocomplete Suggestions
+
+```typescript
+// Get district/postcode/region suggestions for typeahead
+const suggestions = await sdk.getAutocompleteSuggestions('الر', {
+  limit: 10,
+  types: 'all', // or ['district', 'postcode', 'region']
+});
+console.log(suggestions);
+// [
+//   { type: 'district', value: 'الروضة', label_ar: 'الروضة', label_en: 'Al Rawdah' },
+//   { type: 'region', value: 'الرياض', label_ar: 'منطقة الرياض', label_en: 'Riyadh Region' },
+//   ...
+// ]
+```
+
 ### Postcode Autocomplete
 
 ```typescript
@@ -196,10 +248,47 @@ const results = await sdk.geocode('شارع الملك فهد', {
   bbox: [24.5, 46.5, 24.9, 47.0], // [minLat, minLon, maxLat, maxLon]
 });
 
-// Or filter by region name
+// Filter by single region
 const results = await sdk.geocode('شارع الملك فهد', {
   region: 'منطقة الرياض',
 });
+
+// Filter by multiple regions
+const results = await sdk.geocode('شارع الملك فهد', {
+  regions: ['منطقة الرياض', 'المنطقة الشرقية'],
+});
+```
+
+### Admin Hierarchy
+
+```typescript
+// Get full admin hierarchy including governorate
+const admin = await sdk.getAdminHierarchy(24.7136, 46.6753);
+console.log(admin);
+// {
+//   district: { name_ar: 'العليا', name_en: 'Al Olaya' },
+//   governorate: { name_ar: 'الرياض', name_en: 'Riyadh' },
+//   region: { name_ar: 'منطقة الرياض', name_en: 'Riyadh Region' }
+// }
+
+// Quick check if coordinates are in Saudi Arabia
+const inSA = await sdk.isInSaudiArabia(24.7136, 46.6753);
+console.log(inSA); // true
+```
+
+### Debug Logging
+
+```typescript
+// Enable debug at initialization
+const sdk = new GeoSDK({
+  debug: true,
+  logLevel: 'debug', // 'debug' | 'info' | 'warn' | 'error' | 'none'
+});
+
+// Or toggle at runtime
+sdk.setDebug(true);
+sdk.setDebug(true, 'debug'); // With specific log level
+sdk.setDebug(false); // Disable
 ```
 
 ### React Integration
@@ -212,13 +301,15 @@ function useGeoSDK() {
   const [sdk, setSDK] = useState<GeoSDK | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [searchMode, setSearchMode] = useState<string | null>(null);
 
   useEffect(() => {
     const init = async () => {
       try {
-        const geoSDK = new GeoSDK();
+        const geoSDK = new GeoSDK({ debug: true });
         await geoSDK.initialize();
         setSDK(geoSDK);
+        setSearchMode(geoSDK.getSearchMode()); // 'fts-bm25' or 'jaccard'
       } catch (e) {
         setError(e as Error);
       } finally {
@@ -232,17 +323,18 @@ function useGeoSDK() {
     };
   }, []);
 
-  return { sdk, loading, error };
+  return { sdk, loading, error, searchMode };
 }
 
 function AddressSearch() {
-  const { sdk, loading, error } = useGeoSDK();
+  const { sdk, loading, error, searchMode } = useGeoSDK();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
 
   const handleSearch = async () => {
     if (!sdk || !query) return;
-    const addresses = await sdk.geocode(query, { limit: 5 });
+    // Use cached search for better performance
+    const addresses = await sdk.geocodeCached(query, { limit: 5 });
     setResults(addresses);
   };
 
@@ -251,6 +343,7 @@ function AddressSearch() {
 
   return (
     <div>
+      <span>Search mode: {searchMode}</span>
       <input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
@@ -282,7 +375,7 @@ const query = ref('');
 const results = ref([]);
 
 onMounted(async () => {
-  sdk.value = new GeoSDK();
+  sdk.value = new GeoSDK({ debug: true });
   await sdk.value.initialize();
   loading.value = false;
 });
@@ -293,7 +386,7 @@ onUnmounted(() => {
 
 async function search() {
   if (!sdk.value || !query.value) return;
-  results.value = await sdk.value.geocode(query.value, { limit: 5 });
+  results.value = await sdk.value.geocodeCached(query.value, { limit: 5 });
 }
 </script>
 
@@ -342,7 +435,7 @@ export default function GeocoderComponent() {
 
   useEffect(() => {
     const init = async () => {
-      const geoSDK = new GeoSDK();
+      const geoSDK = new GeoSDK({ debug: true });
       await geoSDK.initialize();
       setSDK(geoSDK);
     };
@@ -368,18 +461,23 @@ The default `GeoSDK` uses H3 tile-based partitioning (V3) for optimal performanc
 const sdk = new GeoSDK(config?: GeoSDKConfig);
 
 interface GeoSDKConfig {
-  dataUrl?: string;  // Custom data URL (default: source.coop V3 CDN)
-  language?: 'ar' | 'en';  // Preferred language
-  cache?: boolean;  // Enable caching
+  dataUrl?: string;           // Custom data URL (default: source.coop V3 CDN)
+  language?: 'ar' | 'en';     // Preferred language
+  debug?: boolean;            // Enable debug logging (default: false)
+  logLevel?: LogLevel;        // 'debug' | 'info' | 'warn' | 'error' | 'none'
 }
 ```
 
-#### `initialize(): Promise<void>`
+#### `initialize(options?): Promise<void>`
 
 Initialize the SDK. Must be called before any other methods.
 
 ```typescript
-await sdk.initialize();
+await sdk.initialize({
+  onProgress: (step, status, timeMs, details) => {
+    console.log(`${step}: ${status} (${timeMs}ms)`);
+  },
+});
 ```
 
 #### `geocode(address: string, options?: GeocodeOptions): Promise<GeocodingResult[]>`
@@ -390,12 +488,43 @@ Forward geocoding - convert an address to coordinates.
 const results = await sdk.geocode('حي الروضة الرياض', {
   limit: 10, // Max results (default: 10)
   bbox: [24.5, 46.5, 24.9, 47.0], // Optional: limit to visible map area
+  region: 'منطقة الرياض', // Optional: filter by single region
+  regions: ['منطقة الرياض', 'مكة'], // Optional: filter by multiple regions
 });
 ```
 
-**Bbox Optimization**: When a bounding box is provided, only H3 tiles overlapping that area are queried, dramatically reducing data transfer for map-based searches.
+#### `geocodeCached(address: string, options?): Promise<GeocodingResult[]>`
 
-#### `reverseGeocode(lat: number, lon: number, options?: ReverseGeocodeOptions): Promise<GeocodingResult[]>`
+Cached forward geocoding with LRU cache (100 entries, 5min TTL).
+
+```typescript
+const results = await sdk.geocodeCached('الرياض', { limit: 10 });
+```
+
+#### `smartGeocode(query: string, options?): Promise<GeocodingResult[]>`
+
+Smart geocoding that auto-detects query patterns for optimized routing.
+
+```typescript
+// Detects postcode → routes to searchByPostcode()
+// Detects region → adds region filter
+// Otherwise → uses standard geocode()
+const results = await sdk.smartGeocode('12345 الرياض');
+```
+
+#### `getAutocompleteSuggestions(query: string, options?): Promise<Suggestion[]>`
+
+Get autocomplete suggestions for districts, postcodes, and regions.
+
+```typescript
+const suggestions = await sdk.getAutocompleteSuggestions('الر', {
+  limit: 10,
+  types: 'all', // or ['district', 'postcode', 'region']
+});
+// Returns: [{ type, value, label_ar, label_en, metadata? }, ...]
+```
+
+#### `reverseGeocode(lat: number, lon: number, options?): Promise<GeocodingResult[]>`
 
 Reverse geocoding - find addresses near coordinates.
 
@@ -404,16 +533,15 @@ const nearby = await sdk.reverseGeocode(24.7136, 46.6753, {
   limit: 10, // Max results (default: 10)
   radiusMeters: 1000, // Search radius (default: 1000)
   detailLevel: 'postcode', // Column projection level (default: 'full')
+  includeNeighbors: false, // Include neighboring H3 tiles (default: false)
 });
 ```
 
-**H3 Tile Loading**: Automatically determines which H3 tile contains the point and loads only that tile (~220KB average).
+**Column Projection Optimization** (`detailLevel`):
 
-**Column Projection Optimization**: Control data transfer by specifying detail level:
-
-- `'minimal'`: Only coordinates + distance (3 columns)
-- `'postcode'`: + postcode + region (6 columns)
-- `'region'`: + district + city (9 columns)
+- `'minimal'`: Only coordinates + distance (3 columns, ~3MB)
+- `'postcode'`: + postcode + region (6 columns, ~4MB)
+- `'region'`: + district + city (9 columns, ~6MB)
 - `'full'`: All address fields (16 columns, default)
 
 #### `detectCountry(lat: number, lon: number): Promise<CountryResult | null>`
@@ -425,6 +553,15 @@ const country = await sdk.detectCountry(30.0444, 31.2357);
 // { iso_a2: 'EG', name_ar: 'مصر', name_en: 'Egypt', continent: 'Africa' }
 ```
 
+#### `isInSaudiArabia(lat: number, lon: number): Promise<boolean>`
+
+Quick check if coordinates are in Saudi Arabia.
+
+```typescript
+const inSA = await sdk.isInSaudiArabia(24.7136, 46.6753);
+// true
+```
+
 #### `getAdminHierarchy(lat: number, lon: number): Promise<AdminHierarchy>`
 
 Get administrative hierarchy for Saudi Arabia coordinates.
@@ -433,6 +570,7 @@ Get administrative hierarchy for Saudi Arabia coordinates.
 const admin = await sdk.getAdminHierarchy(24.7136, 46.6753);
 // {
 //   district: { name_ar: 'العليا', name_en: 'Al Olaya' },
+//   governorate: { name_ar: 'الرياض', name_en: 'Riyadh' },
 //   region: { name_ar: 'منطقة الرياض', name_en: 'Riyadh Region' }
 // }
 ```
@@ -465,21 +603,42 @@ const results = await sdk.searchByNumber('4037', {
 Get available postcodes for autocomplete. Returns from in-memory index (instant).
 
 ```typescript
-// Get all postcodes
 const all = sdk.getPostcodes();
-
-// Filter by prefix
 const filtered = sdk.getPostcodes('138');
 // [{ postcode: '13844', tiles: ['...'], addr_count: 500, region_ar: '...' }, ...]
 ```
 
-#### `getTilesByRegion(region: string): TileInfo[]`
-
-Get tiles for a specific region. Useful for preloading or statistics.
+#### Tile Management
 
 ```typescript
+// Get all tiles info
+const tiles = sdk.getTiles();
+
+// Get currently loaded tiles
+const loaded = sdk.getLoadedTiles();
+
+// Get tiles for a specific region
 const riyadhTiles = sdk.getTilesByRegion('منطقة الرياض');
-console.log(`${riyadhTiles.length} tiles in Riyadh region`);
+
+// Get tiles that intersect a bounding box
+const bboxTiles = await sdk.getTilesForBbox(24.5, 46.5, 24.9, 47.0);
+```
+
+#### Debug & Cache
+
+```typescript
+// Enable/disable debug at runtime
+sdk.setDebug(true);
+sdk.setDebug(true, 'debug');
+
+// Get search mode
+const mode = sdk.getSearchMode(); // 'fts-bm25' or 'jaccard'
+
+// Check if FTS is available
+const hasFTS = sdk.isFTSAvailable();
+
+// Clear search cache
+sdk.clearCache();
 ```
 
 #### `getStats(): Promise<Stats>`
@@ -488,7 +647,7 @@ Get statistics about the tile index.
 
 ```typescript
 const stats = await sdk.getStats();
-// { totalTiles: 717, totalAddresses: 5338646, totalSizeKb: 158234 }
+// { totalTiles: 717, totalAddresses: 5338646, totalSizeKb: 158234, tilesLoaded: 5 }
 ```
 
 #### `close(): Promise<void>`
@@ -522,18 +681,19 @@ interface GeocodingResult {
   addr_id: number;
   longitude: number;
   latitude: number;
-  number: string; // Building number
-  street: string; // Street name
-  postcode: string;
-  district_ar: string;
-  district_en: string;
-  city: string;
-  gov_ar: string; // Governorate (Arabic)
-  gov_en: string; // Governorate (English)
-  region_ar: string;
-  region_en: string;
-  full_address_ar: string;
-  full_address_en: string;
+  number?: string; // Building number
+  street?: string; // Street name
+  postcode?: string;
+  district_ar?: string;
+  district_en?: string;
+  city?: string;
+  gov_ar?: string; // Governorate (Arabic)
+  gov_en?: string; // Governorate (English)
+  region_ar?: string;
+  region_en?: string;
+  full_address_ar?: string;
+  full_address_en?: string;
+  h3_index?: string; // H3 cell index (high resolution)
   similarity?: number; // For forward geocoding (0-1)
   distance_m?: number; // For reverse geocoding (meters)
 }
@@ -548,6 +708,16 @@ interface CountryResult {
   name_en: string; // 'Saudi Arabia'
   name_ar: string; // 'المملكة العربية السعودية'
   continent: string; // 'Asia'
+}
+```
+
+### `AdminHierarchy`
+
+```typescript
+interface AdminHierarchy {
+  district?: { name_ar: string; name_en: string };
+  governorate?: { name_ar: string; name_en: string };
+  region?: { name_ar: string; name_en: string };
 }
 ```
 

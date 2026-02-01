@@ -41,6 +41,12 @@ export interface AdminResult {
   parent_id?: string;
 }
 
+export interface AdminHierarchy {
+  district?: { name_ar: string; name_en: string };
+  governorate?: { name_ar: string; name_en: string };
+  region?: { name_ar: string; name_en: string };
+}
+
 /** Default data URL hosted on source.coop */
 export const DEFAULT_DATA_URL = 'https://data.source.coop/tabaqat/geocoding-cng/v0.1.0';
 
@@ -58,8 +64,12 @@ export interface GeocodeOptions {
   limit?: number;
   /** Minimum similarity score (0-1) */
   minSimilarity?: number;
-  /** Filter by region (Arabic name) */
+  /** Filter by region (Arabic or English name) */
   region?: string;
+  /** Filter by multiple regions (Arabic or English names) */
+  regions?: string[];
+  /** Bounding box filter [minLat, minLon, maxLat, maxLon] */
+  bbox?: [number, number, number, number];
   /** Filter by city name */
   city?: string;
   /** Language for output */

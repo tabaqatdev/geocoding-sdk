@@ -51,18 +51,18 @@
     "provenance": true
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.2.0",
-    "@commitlint/config-conventional": "^20.2.0",
+    "@commitlint/cli": "^20.4.0",
+    "@commitlint/config-conventional": "^20.4.0",
     "@types/bun": "latest",
-    "@typescript-eslint/eslint-plugin": "^8.50.1",
-    "@typescript-eslint/parser": "^8.50.1",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
     "eslint": "^9.39.2",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
-    "prettier": "^3.7.4",
-    "typescript": "^5"
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@duckdb/duckdb-wasm": "^1.33.1-dev5.0"
+    "@duckdb/duckdb-wasm": "1.33.1-dev5.0"
   }
 }

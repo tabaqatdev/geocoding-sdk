@@ -78,7 +78,8 @@ export default function ForwardGeocoding() {
   options?: {
     limit?: number;        // Max results (default: 10)
     bbox?: [minLat, minLon, maxLat, maxLon];  // Visible map bounds
-    region?: string;       // Filter by region name
+    region?: string;       // Filter by single region name
+    regions?: string[];    // Filter by multiple region names
   }
 ): Promise<GeocodingResult[]>`}
             />
@@ -166,9 +167,14 @@ const results = await sdk.geocode("Riyadh", {
   bbox: [24.5, 46.5, 25.0, 47.0] // [minLat, minLon, maxLat, maxLon]
 });
 
-// With region filter
+// With single region filter
 const results = await sdk.geocode("address", {
   region: "منطقة الرياض"
+});
+
+// With multiple regions filter
+const results = await sdk.geocode("address", {
+  regions: ["منطقة الرياض", "المنطقة الشرقية"]
 });`}
             />
           </CardContent>

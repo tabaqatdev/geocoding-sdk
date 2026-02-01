@@ -25,6 +25,7 @@ export default function AdminHierarchy() {
   const [lon, setLon] = useState("46.6753");
   const [result, setResult] = useState<{
     region?: { name_ar: string; name_en: string };
+    governorate?: { name_ar: string; name_en: string };
     district?: { name_ar: string; name_en: string };
   } | null>(null);
   const [searching, setSearching] = useState(false);
@@ -71,6 +72,7 @@ export default function AdminHierarchy() {
   lon: number
 ): Promise<{
   district?: { name_ar: string; name_en: string };
+  governorate?: { name_ar: string; name_en: string };
   region?: { name_ar: string; name_en: string };
 }>`}
             />
@@ -132,10 +134,22 @@ export default function AdminHierarchy() {
                             </div>
                           </div>
                         )}
+                        {result.governorate && (
+                          <div>
+                            <div className="text-sm text-muted-foreground">
+                              {language === "ar" ? "المحافظة" : "Governorate"}
+                            </div>
+                            <div className="text-xl font-bold" dir="auto">
+                              {language === "ar"
+                                ? result.governorate.name_ar
+                                : result.governorate.name_en}
+                            </div>
+                          </div>
+                        )}
                         {result.district && (
                           <div>
                             <div className="text-sm text-muted-foreground">
-                              {language === "ar" ? "الحي / المحافظة" : "District / Governorate"}
+                              {language === "ar" ? "الحي" : "District"}
                             </div>
                             <div className="text-xl font-bold" dir="auto">
                               {language === "ar"
@@ -172,10 +186,12 @@ export default function AdminHierarchy() {
                 regions (منطقة)
               </li>
               <li>
-                <strong>
-                  {language === "ar" ? "المحافظات/الأحياء" : "Districts/Governorates"}
-                </strong>{" "}
-                - Sub-regional divisions
+                <strong>{language === "ar" ? "المحافظات" : "Governorates"}</strong> - Provincial
+                level divisions
+              </li>
+              <li>
+                <strong>{language === "ar" ? "الأحياء" : "Districts"}</strong> - Neighborhood level
+                divisions
               </li>
             </ul>
           </CardContent>
@@ -202,6 +218,11 @@ if (hierarchy.region) {
   // "Riyadh Region"
   console.log("المنطقة:", hierarchy.region.name_ar);
   // "منطقة الرياض"
+}
+
+if (hierarchy.governorate) {
+  console.log("Governorate:", hierarchy.governorate.name_en);
+  console.log("المحافظة:", hierarchy.governorate.name_ar);
 }
 
 if (hierarchy.district) {

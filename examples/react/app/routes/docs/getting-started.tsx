@@ -99,10 +99,20 @@ const sdk = new GeoSDK({
   dataUrl: "https://your-cdn.com/geocoding-data/v0.1.0",
 
   // Default language for results
-  language: "ar" // or "en"
+  language: "ar", // or "en"
+
+  // Enable debug logging (default: false)
+  debug: true,
+
+  // Log level: "debug" | "info" | "warn" | "error" | "none"
+  logLevel: "info"
 });
 
-await sdk.initialize();`}
+await sdk.initialize();
+
+// Toggle debug at runtime
+sdk.setDebug(true);   // Enable
+sdk.setDebug(false);  // Disable`}
             />
           </CardContent>
         </Card>
@@ -152,13 +162,16 @@ await sdk.initialize();`}
   GeoSDK,
   type GeocodingResult,
   type CountryResult,
+  type AdminHierarchy,
   type TileInfo,
   type PostcodeInfo,
-  type GeoSDKH3Config
+  type GeoSDKH3Config,
+  type LogLevel
 } from "@tabaqat/geocoding-sdk";
 
 // All methods are fully typed
-const results: GeocodingResult[] = await sdk.geocode("address");`}
+const results: GeocodingResult[] = await sdk.geocode("address");
+const hierarchy: AdminHierarchy = await sdk.getAdminHierarchy(lat, lon);`}
             />
           </CardContent>
         </Card>

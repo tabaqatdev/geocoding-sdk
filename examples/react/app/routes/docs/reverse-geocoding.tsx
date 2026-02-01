@@ -226,6 +226,13 @@ const nearby = await sdk.reverseGeocode(24.7136, 46.6753, {
   detailLevel: "postcode" // Faster, less data transfer
 });
 
+// Include neighboring H3 tiles (for edge cases near tile borders)
+const nearby = await sdk.reverseGeocode(24.7136, 46.6753, {
+  limit: 10,
+  radiusMeters: 2000,
+  includeNeighbors: true  // Loads 7 tiles instead of 1
+});
+
 // Performance:
 // - Cold start: < 4 seconds (single tile fetch ~200KB)
 // - Cached: < 100ms (same tile)`}

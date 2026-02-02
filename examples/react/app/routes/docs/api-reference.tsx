@@ -42,7 +42,7 @@ export default function ApiReference() {
 
   return (
     <Layout>
-      <div className="p-6 max-w-5xl mx-auto" dir="ltr">
+      <div className="p-6 max-w-5xl mx-auto">
         <div className="mb-8">
           <Badge variant="secondary" className="mb-2">
             {language === "ar" ? "مرجع" : "Reference"}
@@ -61,14 +61,14 @@ export default function ApiReference() {
           <Card key={category} className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <span>{category}</span>
+                <span dir="ltr">{category}</span>
                 <Badge variant="outline" className="text-xs">
                   {categoryMethods.length}
                 </Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="border rounded-lg overflow-x-auto">
+              <div className="border rounded-lg overflow-x-auto" dir="ltr">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -84,10 +84,10 @@ export default function ApiReference() {
                   <TableBody>
                     {categoryMethods.map((m) => (
                       <TableRow key={m.name}>
-                        <TableCell className="font-mono text-sm" dir="ltr">
+                        <TableCell className="font-mono text-sm">
                           <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{m.name}()</code>
                         </TableCell>
-                        <TableCell className="font-mono text-sm text-muted-foreground" dir="ltr">
+                        <TableCell className="font-mono text-sm text-muted-foreground">
                           {m.returns}
                         </TableCell>
                         <TableCell className="text-sm">{m.description || "-"}</TableCell>
@@ -125,12 +125,14 @@ function InterfaceCard({ iface }: { iface: InterfaceInfo }) {
   return (
     <Card className="mb-6">
       <CardHeader>
-        <CardTitle className="font-mono text-lg" dir="ltr">
-          {iface.name}
+        <CardTitle className="font-mono text-lg">
+          <span dir="ltr">{iface.name}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent dir="ltr">
-        <CodeBlock language="typescript" code={code} />
+      <CardContent>
+        <div dir="ltr">
+          <CodeBlock language="typescript" code={code} />
+        </div>
       </CardContent>
     </Card>
   );

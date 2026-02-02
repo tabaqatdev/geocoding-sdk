@@ -15,7 +15,12 @@
     "meters": "m",
     "kilometers": "km",
     "milliseconds": "ms",
-    "seconds": "s"
+    "seconds": "s",
+    "methodSignature": "Method Signature",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "getHierarchy": "Get Hierarchy",
+    "detect": "Detect"
   },
   "nav": {
     "home": "Home",
@@ -73,6 +78,15 @@
       "regions": "Regions",
       "tiles": "H3 Tiles",
       "initialLoad": "Initial Load"
+    },
+    "quickStart": {
+      "title": "Quick Start",
+      "description": "Get started with the SDK in minutes"
+    },
+    "typescript": {
+      "title": "TypeScript Support",
+      "description": "Fully typed with auto-generated documentation",
+      "viewFullReference": "View Full API Reference"
     }
   },
   "playground": {

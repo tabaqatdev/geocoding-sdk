@@ -15,20 +15,25 @@
     "meters": "م",
     "kilometers": "كم",
     "milliseconds": "مللي ثانية",
-    "seconds": "ث"
+    "seconds": "ث",
+    "methodSignature": "بصمة الدالة",
+    "latitude": "خط العرض",
+    "longitude": "خط الطول",
+    "getHierarchy": "عرض التقسيم الإداري",
+    "detect": "كشف"
   },
   "nav": {
     "home": "الرئيسية",
     "playground": "التجربة التفاعلية",
     "docs": "التوثيق",
     "gettingStarted": "البداية السريعة",
-    "forwardGeocoding": "الترميز الأمامي",
-    "reverseGeocoding": "الترميز العكسي",
+    "forwardGeocoding": "الترميز الجغرافي الأمامي",
+    "reverseGeocoding": "الترميز الجغرافي العكسي",
     "postcodeSearch": "البحث بالرمز البريدي",
     "houseNumber": "البحث برقم المبنى",
-    "countryDetection": "تحديد الدولة",
-    "adminHierarchy": "التقسيم الإداري",
-    "apiReference": "مرجع API",
+    "countryDetection": "كشف الدولة",
+    "adminHierarchy": "التسلسل الإداري",
+    "apiReference": "مرجع واجهة برمجة التطبيقات",
     "examples": "أمثلة",
     "mapIntegration": "تكامل الخريطة",
     "autocomplete": "الإكمال التلقائي"
@@ -73,6 +78,15 @@
       "regions": "منطقة",
       "tiles": "خلية H3",
       "initialLoad": "التحميل الأولي"
+    },
+    "quickStart": {
+      "title": "البداية السريعة",
+      "description": "ابدأ مع SDK في دقائق"
+    },
+    "typescript": {
+      "title": "دعم TypeScript",
+      "description": "مكتوب بالكامل مع توثيق تلقائي",
+      "viewFullReference": "عرض مرجع API الكامل"
     }
   },
   "playground": {
@@ -122,13 +136,13 @@
       "initialization": "التهيئة"
     },
     "forwardGeocoding": {
-      "title": "الترميز الأمامي",
+      "title": "الترميز الجغرافي الأمامي",
       "description": "تحويل العناوين إلى إحداثيات",
       "method": "geocode(address, options)",
       "addressPlaceholder": "أدخل عنوان (مثال: حي الروضة الرياض)"
     },
     "reverseGeocoding": {
-      "title": "الترميز العكسي",
+      "title": "الترميز الجغرافي العكسي",
       "description": "إيجاد العناوين القريبة من الإحداثيات",
       "method": "reverseGeocode(lat, lon, options)",
       "clickMap": "انقر على الخريطة للترميز العكسي",
@@ -150,18 +164,18 @@
       "regionFilter": "تصفية حسب المنطقة"
     },
     "countryDetection": {
-      "title": "تحديد الدولة",
-      "description": "تحديد الدولة من الإحداثيات",
+      "title": "كشف الدولة",
+      "description": "كشف الدولة من الإحداثيات",
       "method": "detectCountry(lat, lon)"
     },
     "adminHierarchy": {
-      "title": "التقسيم الإداري",
+      "title": "التسلسل الإداري",
       "description": "الحصول على التسلسل الإداري لإحداثيات في السعودية",
       "method": "getAdminHierarchy(lat, lon)"
     },
     "apiReference": {
-      "title": "مرجع API",
-      "description": "توثيق API الكامل بـ TypeScript"
+      "title": "مرجع واجهة برمجة التطبيقات",
+      "description": "توثيق واجهة برمجة التطبيقات الكامل بـ TypeScript"
     }
   },
   "results": {

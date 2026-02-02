@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Link } from "react-router";
 import { Layout } from "~/components/layout/layout";
 import { useTranslation } from "~/i18n/context";
@@ -18,6 +19,9 @@ import {
   Layers,
 } from "lucide-react";
 import type { Route } from "./+types/home";
+import packageJson from "../../../../package.json";
+import { parseTypeDocJson } from "~/lib/api-docs-parser";
+import apiDocsJson from "~/data/api-docs.json";
 
 export function meta(_args: Route.MetaArgs) {
   return [
@@ -28,6 +32,15 @@ export function meta(_args: Route.MetaArgs) {
 
 export default function Home() {
   const { t } = useTranslation();
+
+  // Parse API docs to get key types
+  const { interfaces } = useMemo(() => parseTypeDocJson(apiDocsJson), []);
+
+  // Select key interfaces to showcase
+  const keyInterfaces = useMemo(() => {
+    const showcase = ["GeocodingResult", "GeoSDKConfig", "AdminHierarchy"];
+    return interfaces.filter((iface) => showcase.includes(iface.name));
+  }, [interfaces]);
 
   const features = [
     {
@@ -75,7 +88,7 @@ export default function Home() {
       <section className="relative py-20 px-6 lg:py-32 bg-gradient-to-b from-primary/5 to-background">
         <div className="container mx-auto max-w-4xl text-center">
           <Badge variant="secondary" className="mb-4">
-            v0.1.0 - H3 Tile-Based
+            v{packageJson.version}
           </Badge>
           <h1 className="text-4xl font-bold tracking-tight sm:text-6xl mb-6">
             {t("home.hero.title")}
@@ -169,6 +182,46 @@ const addresses = await sdk.searchByPostcode("13847");`}
         </div>
       </section>
 
+      {/* TypeScript Types Section */}
+      <section className="py-20 px-6">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold text-center mb-4">TypeScript Support</h2>
+          <p className="text-center text-muted-foreground mb-12">
+            Fully typed with auto-generated documentation
+          </p>
+          <div className="grid gap-6" dir="ltr">
+            {keyInterfaces.map((iface) => {
+              const code = iface.properties
+                .map((p) => {
+                  const comment = p.description ? `  /** ${p.description} */\n` : "";
+                  return `${comment}  ${p.name}${p.optional ? "?" : ""}: ${p.type};`;
+                })
+                .join("\n");
+              const fullCode = `interface ${iface.name} {\n${code}\n}`;
+
+              return (
+                <Card key={iface.name}>
+                  <CardHeader>
+                    <CardTitle className="font-mono text-lg">{iface.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CodeBlock language="typescript" code={fullCode} />
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+          <div className="text-center mt-8">
+            <Button variant="outline" asChild>
+              <Link to="/docs/api-reference">
+                View Full API Reference
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="py-8 px-6 border-t">
         <div className="container mx-auto text-center text-sm text-muted-foreground">
@@ -177,7 +230,7 @@ const addresses = await sdk.searchByPostcode("13847");`}
           </p>
           <div className="flex justify-center gap-4 mt-2">
             <a
-              href="https://github.com/tabaqatdev/geocoding-wasm"
+              href="https://github.com/tabaqatdev/geocoding-sdk"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-foreground transition-colors"

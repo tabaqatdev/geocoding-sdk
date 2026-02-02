@@ -42,7 +42,7 @@ export default function ApiReference() {
 
   return (
     <Layout>
-      <div className="p-6 max-w-5xl mx-auto">
+      <div className="p-6 max-w-5xl mx-auto" dir="ltr">
         <div className="mb-8">
           <Badge variant="secondary" className="mb-2">
             {language === "ar" ? "مرجع" : "Reference"}
@@ -125,9 +125,11 @@ function InterfaceCard({ iface }: { iface: InterfaceInfo }) {
   return (
     <Card className="mb-6">
       <CardHeader>
-        <CardTitle className="font-mono text-lg">{iface.name}</CardTitle>
+        <CardTitle className="font-mono text-lg" dir="ltr">
+          {iface.name}
+        </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent dir="ltr">
         <CodeBlock language="typescript" code={code} />
       </CardContent>
     </Card>

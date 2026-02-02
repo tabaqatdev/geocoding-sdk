@@ -73,7 +73,7 @@ export default function PostcodeSearch() {
         {/* Method Signature */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Method Signature</CardTitle>
+            <CardTitle>{t("common.methodSignature")}</CardTitle>
           </CardHeader>
           <CardContent>
             <CodeBlock
@@ -143,9 +143,9 @@ export default function PostcodeSearch() {
                       <TableHeader>
                         <TableRow>
                           <TableHead>#</TableHead>
-                          <TableHead>Street</TableHead>
-                          <TableHead>District</TableHead>
-                          <TableHead>Coordinates</TableHead>
+                          <TableHead>{t("results.street")}</TableHead>
+                          <TableHead>{t("results.district")}</TableHead>
+                          <TableHead>{t("results.coordinates")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>

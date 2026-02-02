@@ -68,7 +68,7 @@ export default function ForwardGeocoding() {
         {/* Method Signature */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Method Signature</CardTitle>
+            <CardTitle>{t("common.methodSignature")}</CardTitle>
           </CardHeader>
           <CardContent>
             <CodeBlock
@@ -106,7 +106,7 @@ export default function ForwardGeocoding() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                    dir="auto"
+                    dir={language === "ar" ? "rtl" : "ltr"}
                   />
                   <Button onClick={handleSearch} disabled={searching}>
                     {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : t("common.search")}
@@ -117,9 +117,9 @@ export default function ForwardGeocoding() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Address</TableHead>
-                          <TableHead>Coordinates</TableHead>
-                          <TableHead>Similarity</TableHead>
+                          <TableHead>{t("results.address")}</TableHead>
+                          <TableHead>{t("results.coordinates")}</TableHead>
+                          <TableHead>{t("results.similarity")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>

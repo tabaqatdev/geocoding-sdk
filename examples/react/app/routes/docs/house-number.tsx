@@ -96,7 +96,7 @@ export default function HouseNumber() {
         {/* Method Signature */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Method Signature</CardTitle>
+            <CardTitle>{t("common.methodSignature")}</CardTitle>
           </CardHeader>
           <CardContent>
             <CodeBlock
@@ -177,9 +177,9 @@ export default function HouseNumber() {
                       <TableHeader>
                         <TableRow>
                           <TableHead>#</TableHead>
-                          <TableHead>Address</TableHead>
-                          <TableHead>Postcode</TableHead>
-                          <TableHead>Region</TableHead>
+                          <TableHead>{t("results.address")}</TableHead>
+                          <TableHead>{t("results.postcode")}</TableHead>
+                          <TableHead>{t("results.region")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>

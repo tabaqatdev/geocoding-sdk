@@ -86,7 +86,7 @@ export default function ReverseGeocoding() {
         {/* Method Signature */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Method Signature</CardTitle>
+            <CardTitle>{t("common.methodSignature")}</CardTitle>
           </CardHeader>
           <CardContent>
             <CodeBlock
@@ -121,7 +121,7 @@ export default function ReverseGeocoding() {
               <>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <label className="text-sm text-muted-foreground">Latitude</label>
+                    <label className="text-sm text-muted-foreground">{t("common.latitude")}</label>
                     <Input
                       type="number"
                       step="0.0001"
@@ -130,7 +130,7 @@ export default function ReverseGeocoding() {
                     />
                   </div>
                   <div>
-                    <label className="text-sm text-muted-foreground">Longitude</label>
+                    <label className="text-sm text-muted-foreground">{t("common.longitude")}</label>
                     <Input
                       type="number"
                       step="0.0001"
@@ -179,9 +179,9 @@ export default function ReverseGeocoding() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Address</TableHead>
-                          <TableHead>Distance</TableHead>
-                          <TableHead>Postcode</TableHead>
+                          <TableHead>{t("results.address")}</TableHead>
+                          <TableHead>{t("results.distance")}</TableHead>
+                          <TableHead>{t("results.postcode")}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>

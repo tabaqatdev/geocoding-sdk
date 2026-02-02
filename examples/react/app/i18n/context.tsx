@@ -43,8 +43,13 @@ interface LanguageProviderProps {
 export function LanguageProvider({ children, defaultLanguage = "en" }: LanguageProviderProps) {
   const [language, setLanguageState] = useState<Language>(() => {
     if (typeof window !== "undefined") {
+      // Priority 1: Check localStorage (user's explicit choice)
       const stored = localStorage.getItem("language") as Language;
       if (stored === "en" || stored === "ar") return stored;
+
+      // Priority 2: Auto-detect from browser language
+      const browserLang = navigator.language.toLowerCase();
+      if (browserLang.startsWith("ar")) return "ar";
     }
     return defaultLanguage;
   });

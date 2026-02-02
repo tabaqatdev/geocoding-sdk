@@ -64,7 +64,7 @@ export default function CountryDetection() {
         {/* Method Signature */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Method Signature</CardTitle>
+            <CardTitle>{t("common.methodSignature")}</CardTitle>
           </CardHeader>
           <CardContent>
             <CodeBlock
@@ -101,7 +101,7 @@ interface CountryResult {
               <>
                 <div className="flex gap-2 flex-wrap">
                   <div>
-                    <label className="text-sm text-muted-foreground">Latitude</label>
+                    <label className="text-sm text-muted-foreground">{t("common.latitude")}</label>
                     <Input
                       type="number"
                       step="0.0001"
@@ -111,7 +111,7 @@ interface CountryResult {
                     />
                   </div>
                   <div>
-                    <label className="text-sm text-muted-foreground">Longitude</label>
+                    <label className="text-sm text-muted-foreground">{t("common.longitude")}</label>
                     <Input
                       type="number"
                       step="0.0001"
@@ -122,7 +122,11 @@ interface CountryResult {
                   </div>
                   <div className="flex items-end">
                     <Button onClick={handleSearch} disabled={searching}>
-                      {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : "Detect"}
+                      {searching ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        t("common.detect")
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -131,19 +135,25 @@ interface CountryResult {
                     <CardContent className="pt-6">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <div className="text-sm text-muted-foreground">Country</div>
+                          <div className="text-sm text-muted-foreground">
+                            {t("results.country")}
+                          </div>
                           <div className="text-xl font-bold" dir="auto">
                             {language === "ar" ? result.name_ar : result.name_en}
                           </div>
                         </div>
                         <div>
-                          <div className="text-sm text-muted-foreground">ISO Codes</div>
+                          <div className="text-sm text-muted-foreground">
+                            {language === "ar" ? "أكواد ISO" : "ISO Codes"}
+                          </div>
                           <div className="font-mono">
                             {result.iso_a2} / {result.iso_a3}
                           </div>
                         </div>
                         <div>
-                          <div className="text-sm text-muted-foreground">Continent</div>
+                          <div className="text-sm text-muted-foreground">
+                            {language === "ar" ? "القارة" : "Continent"}
+                          </div>
                           <div>{result.continent}</div>
                         </div>
                       </div>

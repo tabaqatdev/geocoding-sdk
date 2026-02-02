@@ -62,7 +62,7 @@ export default function AdminHierarchy() {
         {/* Method Signature */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Method Signature</CardTitle>
+            <CardTitle>{t("common.methodSignature")}</CardTitle>
           </CardHeader>
           <CardContent>
             <CodeBlock
@@ -95,7 +95,7 @@ export default function AdminHierarchy() {
               <>
                 <div className="flex gap-2 flex-wrap">
                   <div>
-                    <label className="text-sm text-muted-foreground">Latitude</label>
+                    <label className="text-sm text-muted-foreground">{t("common.latitude")}</label>
                     <Input
                       type="number"
                       step="0.0001"
@@ -105,7 +105,7 @@ export default function AdminHierarchy() {
                     />
                   </div>
                   <div>
-                    <label className="text-sm text-muted-foreground">Longitude</label>
+                    <label className="text-sm text-muted-foreground">{t("common.longitude")}</label>
                     <Input
                       type="number"
                       step="0.0001"
@@ -116,7 +116,11 @@ export default function AdminHierarchy() {
                   </div>
                   <div className="flex items-end">
                     <Button onClick={handleSearch} disabled={searching}>
-                      {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : "Get Hierarchy"}
+                      {searching ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        t("common.getHierarchy")
+                      )}
                     </Button>
                   </div>
                 </div>

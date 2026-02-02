@@ -252,7 +252,7 @@ export default function Playground() {
 
           // Show other results as markers
           setResultMarkers(
-            results.slice(1).map((r) => ({
+            results.slice(1).map((r: GeocodingResult) => ({
               longitude: r.longitude,
               latitude: r.latitude,
               address: (language === "ar" ? r.full_address_ar : r.full_address_en) || "",
@@ -949,7 +949,8 @@ export default function Playground() {
                               dir="ltr"
                             >
                               <div className="p-1">
-                                {filteredPostcodes.map((pc) => (
+                                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                {filteredPostcodes.map((pc: any) => (
                                   <button
                                     key={pc.postcode}
                                     onClick={() => handleSelectPostcode(pc.postcode)}

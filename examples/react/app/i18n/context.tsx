@@ -6,7 +6,8 @@ export type Language = "en" | "ar";
 export type Direction = "ltr" | "rtl";
 
 type TranslationKey = string;
-type NestedTranslations = Record<string, string | Record<string, string | Record<string, string>>>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type NestedTranslations = Record<string, any>;
 
 const translations: Record<Language, NestedTranslations> = { en, ar };
 

@@ -7,4 +7,8 @@ export default {
   ssr: false,
   // Base path for GitHub Pages (only in production)
   basename: isProduction ? "/geocoding-sdk/" : "/",
+  // Enable lazy route discovery for better performance
+  future: {
+    unstable_optimizeDeps: true,
+  },
 } satisfies Config;

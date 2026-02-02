@@ -88,6 +88,7 @@ export interface GeocodingResult {
   full_address_en?: string;
   h3_index?: string;
   distance_m?: number;
+  similarity?: number;
 }
 
 export interface CountryResult {

@@ -22,9 +22,33 @@ export default defineConfig({
   // Optimize DuckDB-WASM bundle
   optimizeDeps: {
     exclude: ["@duckdb/duckdb-wasm"],
+    include: [
+      "react",
+      "react-dom",
+      "react-router",
+      "maplibre-gl",
+    ],
   },
   build: {
     // Ensure WASM files are properly handled
     target: "esnext",
+    // Optimize chunk splitting for better caching
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunks for better caching
+          "react-vendor": ["react", "react-dom", "react-router"],
+          "map-vendor": ["maplibre-gl", "react-map-gl"],
+          "ui-vendor": [
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-dropdown-menu",
+            "@radix-ui/react-select",
+            "@radix-ui/react-slider",
+            "@radix-ui/react-switch",
+            "@radix-ui/react-tabs",
+          ],
+        },
+      },
+    },
   },
 });

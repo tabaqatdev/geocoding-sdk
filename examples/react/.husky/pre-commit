@@ -1,1 +1,9 @@
-cd examples/react && bunx lint-staged
+#!/usr/bin/env sh
+
+cd examples/react
+
+# Run lint-staged for formatting and linting
+bunx lint-staged
+
+# Run typecheck to ensure no type errors
+bun run typecheck

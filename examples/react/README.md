@@ -24,6 +24,23 @@ Install the dependencies:
 npm install
 ```
 
+### Environment Variables
+
+Create a `.env` file in the root directory based on `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Configure your PostHog analytics (optional):
+
+```env
+VITE_PUBLIC_POSTHOG_KEY=your_posthog_api_key_here
+VITE_PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com
+```
+
+Get your PostHog API key from: https://eu.posthog.com/project/settings
+
 ### Development
 
 Start the development server with HMR:

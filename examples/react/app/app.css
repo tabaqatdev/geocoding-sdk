@@ -156,3 +156,34 @@ body {
   direction: rtl;
   text-align: right;
 }
+
+/* View Transitions for smoother navigation */
+@view-transition {
+  navigation: auto;
+}
+
+/* Smooth fade transition for route changes */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.2s;
+}
+
+::view-transition-old(root) {
+  animation-name: fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: fade-in;
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}

@@ -1,6 +1,12 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
+import type { GeocodingResult as SDKGeocodingResult } from "@tabaqat/geocoding-sdk";
+
+// Re-export for consumers
+export type GeocodingResult = SDKGeocodingResult;
 
 // SDK type definition (the actual import is dynamic)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type GeoSDKType = any;
 type LogLevel = "debug" | "info" | "warn" | "error" | "none";
 
 interface TileInfo {
@@ -13,130 +19,6 @@ interface TileInfo {
   file_size_kb: number;
   region_ar?: string;
   region_en?: string;
-}
-
-interface AutocompleteOptions {
-  limit?: number;
-  bbox?: [number, number, number, number];
-  regions?: string[];
-  types?: "all" | "district" | "postcode" | "region";
-}
-
-interface GeoSDKType {
-  // Core methods
-  initialize(): Promise<void>;
-  close(): Promise<void>;
-  getStats(): Promise<SDKStats>;
-  getSearchMode(): "fts-bm25" | "jaccard";
-
-  // Search methods
-  geocode(query: string, options?: GeocodeOptions): Promise<GeocodingResult[]>;
-  geocodeCached(query: string, options?: GeocodeOptions): Promise<GeocodingResult[]>;
-  smartGeocode(query: string, options?: GeocodeOptions): Promise<GeocodingResult[]>;
-  getAutocompleteSuggestions(
-    query: string,
-    options?: AutocompleteOptions
-  ): Promise<{
-    suggestions: Array<{
-      type: "district" | "postcode" | "region";
-      value: string;
-      label_ar: string;
-      label_en: string;
-    }>;
-    type: "district" | "postcode" | "general";
-  }>;
-  reverseGeocode(
-    lat: number,
-    lon: number,
-    options?: ReverseGeocodeOptions
-  ): Promise<GeocodingResult[]>;
-  searchByPostcode(postcode: string, options?: PostcodeSearchOptions): Promise<GeocodingResult[]>;
-  searchByNumber(number: string, options?: NumberSearchOptions): Promise<GeocodingResult[]>;
-
-  // Location detection
-  detectCountry(lat: number, lon: number): Promise<CountryDetectionResult | null>;
-  getAdminHierarchy(lat: number, lon: number): Promise<AdminHierarchy>;
-  isInSaudiArabia(lat: number, lon: number): Promise<boolean>;
-
-  // Tile management
-  getPostcodes(prefix?: string): PostcodeInfo[];
-  getTiles(): TileInfo[];
-  getLoadedTiles(): string[];
-  getTilesByRegion(region: string): TileInfo[];
-  getTilesForBbox(bbox: [number, number, number, number]): string[];
-
-  // Debug & cache
-  setDebug(enabled: boolean, level?: LogLevel): void;
-  clearCache(): void;
-  isFTSAvailable(): boolean;
-}
-
-interface GeocodeOptions {
-  limit?: number;
-  bbox?: [number, number, number, number];
-  region?: string;
-  regions?: string[];
-}
-
-interface ReverseGeocodeOptions {
-  limit?: number;
-  radiusMeters?: number;
-  detailLevel?: "minimal" | "postcode" | "region" | "full";
-  includeNeighbors?: boolean;
-}
-
-interface PostcodeSearchOptions {
-  limit?: number;
-  number?: string;
-}
-
-interface NumberSearchOptions {
-  limit?: number;
-  region?: string;
-  bbox?: [number, number, number, number];
-}
-
-interface CountryDetectionResult {
-  iso_a3: string;
-  iso_a2: string;
-  name_en: string;
-  name_ar: string;
-  continent: string;
-}
-
-interface AdminHierarchy {
-  district?: { name_ar: string; name_en: string };
-  governorate?: { name_ar: string; name_en: string };
-  region?: { name_ar: string; name_en: string };
-}
-
-interface PostcodeInfo {
-  postcode: string;
-  region_ar?: string;
-  region_en?: string;
-  addr_count: number;
-  tiles: string[];
-}
-
-export interface GeocodingResult {
-  addr_id?: number;
-  longitude: number;
-  latitude: number;
-  full_address_ar?: string;
-  full_address_en?: string;
-  postcode?: string;
-  number?: string;
-  street?: string;
-  district_ar?: string;
-  district_en?: string;
-  city?: string;
-  gov_ar?: string;
-  gov_en?: string;
-  region_ar?: string;
-  region_en?: string;
-  distance_m?: number;
-  similarity?: number;
-  h3_index?: string;
 }
 
 interface SDKStats {

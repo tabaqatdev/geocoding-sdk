@@ -9,6 +9,7 @@ export default [
   route("docs/reverse-geocoding", "routes/docs/reverse-geocoding.tsx"),
   route("docs/postcode-search", "routes/docs/postcode-search.tsx"),
   route("docs/house-number", "routes/docs/house-number.tsx"),
+  route("docs/autocomplete", "routes/docs/autocomplete.tsx"),
   route("docs/country-detection", "routes/docs/country-detection.tsx"),
   route("docs/admin-hierarchy", "routes/docs/admin-hierarchy.tsx"),
   route("docs/api-reference", "routes/docs/api-reference.tsx"),

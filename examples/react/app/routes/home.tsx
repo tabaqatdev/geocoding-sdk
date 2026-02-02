@@ -149,7 +149,7 @@ export default function Home() {
       {/* Code Example Section */}
       <section className="py-20 px-6 bg-muted/30">
         <div className="container mx-auto max-w-4xl">
-          <h2 className="text-3xl font-bold text-center mb-8">Quick Start</h2>
+          <h2 className="text-3xl font-bold text-center mb-8">{t("home.quickStart.title")}</h2>
           <Card>
             <CardContent className="pt-6">
               <CodeBlock
@@ -185,9 +185,9 @@ const addresses = await sdk.searchByPostcode("13847");`}
       {/* TypeScript Types Section */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-4xl">
-          <h2 className="text-3xl font-bold text-center mb-4">TypeScript Support</h2>
+          <h2 className="text-3xl font-bold text-center mb-4">{t("home.typescript.title")}</h2>
           <p className="text-center text-muted-foreground mb-12">
-            Fully typed with auto-generated documentation
+            {t("home.typescript.description")}
           </p>
           <div className="grid gap-6" dir="ltr">
             {keyInterfaces.map((iface) => {
@@ -214,7 +214,7 @@ const addresses = await sdk.searchByPostcode("13847");`}
           <div className="text-center mt-8">
             <Button variant="outline" asChild>
               <Link to="/docs/api-reference">
-                View Full API Reference
+                {t("home.typescript.viewFullReference")}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>

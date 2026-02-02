@@ -12,5 +12,6 @@ export default [
   route("docs/autocomplete", "routes/docs/autocomplete.tsx"),
   route("docs/country-detection", "routes/docs/country-detection.tsx"),
   route("docs/admin-hierarchy", "routes/docs/admin-hierarchy.tsx"),
+  route("docs/architecture", "routes/docs/architecture.tsx"),
   route("docs/api-reference", "routes/docs/api-reference.tsx"),
 ] satisfies RouteConfig;

@@ -13,6 +13,7 @@ import {
   Layers,
   Code,
   Sparkles,
+  Network,
 } from "lucide-react";
 import { ScrollArea } from "~/components/ui/scroll-area";
 
@@ -54,6 +55,7 @@ export function Sidebar({ className }: SidebarProps) {
         { title: t("nav.autocomplete"), href: "/docs/autocomplete", icon: Sparkles },
         { title: t("nav.countryDetection"), href: "/docs/country-detection", icon: Globe },
         { title: t("nav.adminHierarchy"), href: "/docs/admin-hierarchy", icon: Layers },
+        { title: t("nav.architecture"), href: "/docs/architecture", icon: Network },
         { title: t("nav.apiReference"), href: "/docs/api-reference", icon: Code },
       ],
     },

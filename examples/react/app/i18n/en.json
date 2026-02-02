@@ -176,6 +176,12 @@
     "apiReference": {
       "title": "API Reference",
       "description": "Complete TypeScript API documentation"
+    },
+    "autocomplete": {
+      "title": "Autocomplete",
+      "description": "Get real-time address suggestions as you type",
+      "method": "getAutocompleteSuggestions(query, options)",
+      "placeholder": "Start typing an address (e.g., حي الروضة)"
     }
   },
   "results": {

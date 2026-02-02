@@ -176,6 +176,12 @@
     "apiReference": {
       "title": "مرجع واجهة برمجة التطبيقات",
       "description": "توثيق واجهة برمجة التطبيقات الكامل بـ TypeScript"
+    },
+    "autocomplete": {
+      "title": "الإكمال التلقائي",
+      "description": "احصل على اقتراحات العناوين الفورية أثناء الكتابة",
+      "method": "getAutocompleteSuggestions(query, options)",
+      "placeholder": "ابدأ بكتابة عنوان (مثال: حي الروضة)"
     }
   },
   "results": {

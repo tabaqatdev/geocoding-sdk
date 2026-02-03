@@ -677,7 +677,7 @@ export default function Playground() {
                               value={forwardQuery}
                               onChange={(e) => setForwardQuery(e.target.value)}
                               onKeyDown={(e) => e.key === "Enter" && handleForwardGeocode()}
-                              dir="auto"
+                              dir={language === "ar" ? "rtl" : "ltr"}
                               className="text-sm"
                             />
                             <Button

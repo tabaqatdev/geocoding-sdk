@@ -33,6 +33,17 @@ jobs:
         with:
           bun-version: latest
 
+      - name: Cache SDK dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: ${{ runner.os }}-bun-sdk-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-sdk-
+            ${{ runner.os }}-bun-
+
       - name: Install SDK dependencies
         run: bun install --frozen-lockfile
         working-directory: .
@@ -44,6 +55,17 @@ jobs:
       - name: Generate API docs JSON
         run: bun run docs:json
         working-directory: .
+
+      - name: Cache example dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            examples/react/node_modules
+          key: ${{ runner.os }}-bun-examples-${{ hashFiles('examples/react/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-examples-
+            ${{ runner.os }}-bun-
 
       - name: Install example dependencies
         run: bun install --frozen-lockfile

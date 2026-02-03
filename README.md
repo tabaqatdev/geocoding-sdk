@@ -1,7 +1,10 @@
 # Saudi Arabia Geocoding SDK
 
 [![npm version](https://badge.fury.io/js/@tabaqat%2Fgeocoding-sdk.svg)](https://www.npmjs.com/package/@tabaqat/geocoding-sdk)
+[![CI/CD](https://github.com/tabaqatdev/geocoding-wasm/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/tabaqatdev/geocoding-wasm/actions/workflows/ci-cd.yml)
+[![Deploy Examples](https://github.com/tabaqatdev/geocoding-wasm/actions/workflows/deploy-examples.yml/badge.svg)](https://github.com/tabaqatdev/geocoding-wasm/actions/workflows/deploy-examples.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@tabaqat/geocoding-sdk)](https://bundlephobia.com/package/@tabaqat/geocoding-sdk)
 
 **v0.2.1** - A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser with automatic fallback to default data source.
 

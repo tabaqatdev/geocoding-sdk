@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2026-02-03
+
+### Fixed
+
+- **Region and district filtering now works correctly in SQL queries** - Previously, region/district filters only worked at the tile-selection level. Now filters are properly applied in SQL WHERE clauses:
+  - `searchByNumber()` - Filters results by `region_ar`/`region_en` when `options.region` is provided
+  - `geocode()` FTS mode - Filters temp table creation by `region`/`regions` options
+  - `geocode()` JACCARD mode - Filters results by `region`/`regions` options
+  - Verified with DuckDB CLI testing (house number 3293: 73 total results → 63 Riyadh-only when filtered)
+
+### Changed
+
+- Removed misleading "backward compatible" comment from region filtering code
+
 ## [0.2.2] - 2026-02-02
 
 ### Fixed
@@ -147,6 +161,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 6,499 postcodes indexed
 - Initial load: ~140 KB (index + boundaries)
 
+[0.2.3]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.2.3
 [0.2.2]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.2.2
 [0.2.1]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.2.1
 [0.2.0]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.2.0

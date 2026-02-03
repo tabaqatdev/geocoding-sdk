@@ -755,7 +755,7 @@ export class GeoSDK {
         `Regions filter (${options.regions.length}): ${tilesToQuery.length}/${this.tileIndex.length} tiles`
       );
     } else if (options.region) {
-      // Filter tiles by single region (backward compatible)
+      // Filter tiles by single region
       tilesToQuery = this.tileIndex.filter(
         (t) => t.region_ar === options.region || t.region_en === options.region
       );
@@ -802,6 +802,15 @@ export class GeoSDK {
     // Use FTS with BM25 if available (better ranking for text search)
     if (this.ftsAvailable) {
       try {
+        // Build WHERE clause for region filtering
+        let regionFilter = `${addressField} IS NOT NULL`;
+        if (options.regions && options.regions.length > 0) {
+          const regionList = options.regions.map((r) => `'${r}'`).join(', ');
+          regionFilter += ` AND (region_ar IN (${regionList}) OR region_en IN (${regionList}))`;
+        } else if (options.region) {
+          regionFilter += ` AND (region_ar = '${options.region}' OR region_en = '${options.region}')`;
+        }
+
         // Create temp table with search data
         const tempTable = `fts_search_${Date.now()}`;
         await this.conn!.query(`
@@ -813,7 +822,7 @@ export class GeoSDK {
             gov_ar, gov_en, region_ar, region_en,
             full_address_ar, full_address_en
           FROM read_parquet([${parquetList}])
-          WHERE ${addressField} IS NOT NULL
+          WHERE ${regionFilter}
         `);
 
         // Create FTS index with Arabic stemmer
@@ -869,6 +878,15 @@ export class GeoSDK {
               .join(' OR ')
           : 'TRUE';
 
+      // Build region filter
+      let regionWhereClause = '';
+      if (options.regions && options.regions.length > 0) {
+        const regionList = options.regions.map((r) => `'${r}'`).join(', ');
+        regionWhereClause = ` AND (region_ar IN (${regionList}) OR region_en IN (${regionList}))`;
+      } else if (options.region) {
+        regionWhereClause = ` AND (region_ar = '${options.region}' OR region_en = '${options.region}')`;
+      }
+
       // Use combination of CONTAINS (for relevance) + JACCARD (for ranking)
       result = await this.conn!.query(`
         SELECT
@@ -883,7 +901,7 @@ export class GeoSDK {
           END as similarity
         FROM read_parquet([${parquetList}])
         WHERE ${addressField} IS NOT NULL
-          AND (${containsConditions})
+          AND (${containsConditions})${regionWhereClause}
         ORDER BY similarity DESC
         LIMIT ${limit}
       `);
@@ -1073,6 +1091,12 @@ export class GeoSDK {
     const tileUrls = tilesToQuery.map((t) => `'${baseUrl}/tiles/${t.h3_tile}.parquet'`);
     const parquetList = tileUrls.join(', ');
 
+    // Build WHERE clause with region filtering
+    let whereClause = `WHERE number = '${cleanNumber}'`;
+    if (options.region) {
+      whereClause += ` AND (region_ar = '${options.region}' OR region_en = '${options.region}')`;
+    }
+
     const result = await this.conn!.query(`
       SELECT
         addr_id, longitude, latitude,
@@ -1081,7 +1105,7 @@ export class GeoSDK {
         gov_ar, gov_en, region_ar, region_en,
         full_address_ar, full_address_en
       FROM read_parquet([${parquetList}])
-      WHERE number = '${cleanNumber}'
+      ${whereClause}
       ORDER BY postcode, street
       LIMIT ${limit}
     `);

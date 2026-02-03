@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "~/components/layout/layout";
 import { useTranslation } from "~/i18n/context";
 import { useGeoSDK } from "~/context/geo-sdk-context";
@@ -39,10 +39,45 @@ export default function ForwardGeocoding() {
   }
   const [results, setResults] = useState<GeocodingResult[]>([]);
   const [searching, setSearching] = useState(false);
+  const [suggestions, setSuggestions] = useState<
+    Array<{
+      type: "district" | "region" | "postcode";
+      value: string;
+      label_ar: string;
+      label_en: string;
+    }>
+  >([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Debounced autocomplete
+  useEffect(() => {
+    if (!sdk || !query.trim() || query.length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const result = await sdk.getAutocompleteSuggestions(query, {
+          limit: 8,
+          types: "all",
+        });
+        setSuggestions(result || []);
+        setShowSuggestions(true);
+      } catch (error) {
+        console.error("Autocomplete error:", error);
+        setSuggestions([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query, sdk]);
 
   const handleSearch = async () => {
     if (!sdk || !query.trim()) return;
     setSearching(true);
+    setShowSuggestions(false);
     try {
       const res = await sdk.geocode(query, { limit: 10 });
       setResults(res);
@@ -52,6 +87,13 @@ export default function ForwardGeocoding() {
     } finally {
       setSearching(false);
     }
+  };
+
+  const handleSuggestionClick = (suggestion: (typeof suggestions)[0]) => {
+    const label = language === "ar" ? suggestion.label_ar : suggestion.label_en;
+    setQuery(label);
+    setShowSuggestions(false);
+    setSuggestions([]);
   };
 
   return (
@@ -100,14 +142,57 @@ export default function ForwardGeocoding() {
               </div>
             ) : (
               <>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder={t("docs.forwardGeocoding.addressPlaceholder")}
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                    dir={language === "ar" ? "rtl" : "ltr"}
-                  />
+                <div className="flex gap-2 relative">
+                  <div className="flex-1 relative">
+                    <Input
+                      placeholder={t("docs.forwardGeocoding.addressPlaceholder")}
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleSearch();
+                        } else if (e.key === "Escape") {
+                          setShowSuggestions(false);
+                        }
+                      }}
+                      onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+                      dir={language === "ar" ? "rtl" : "ltr"}
+                    />
+                    {showSuggestions && suggestions.length > 0 && (
+                      <Card className="absolute z-10 w-full mt-1 shadow-lg">
+                        <CardContent className="p-2">
+                          <div className="space-y-1">
+                            {suggestions.map((suggestion, idx) => (
+                              <button
+                                key={idx}
+                                onClick={() => handleSuggestionClick(suggestion)}
+                                className="w-full text-start p-2 hover:bg-accent rounded-md transition-colors"
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="flex-1" dir={language === "ar" ? "rtl" : "ltr"}>
+                                    {language === "ar" ? suggestion.label_ar : suggestion.label_en}
+                                  </span>
+                                  <Badge variant="outline" className="text-xs shrink-0">
+                                    {suggestion.type === "district"
+                                      ? language === "ar"
+                                        ? "حي"
+                                        : "District"
+                                      : suggestion.type === "region"
+                                        ? language === "ar"
+                                          ? "منطقة"
+                                          : "Region"
+                                        : language === "ar"
+                                          ? "رمز بريدي"
+                                          : "Postcode"}
+                                  </Badge>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
                   <Button onClick={handleSearch} disabled={searching}>
                     {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : t("common.search")}
                   </Button>

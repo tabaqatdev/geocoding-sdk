@@ -148,7 +148,13 @@
       "method": "reverseGeocode(lat, lon, options)",
       "clickMap": "Click on the map to reverse geocode",
       "detailLevel": "Detail Level",
-      "radius": "Search Radius"
+      "radius": "Search Radius",
+      "detailLevels": {
+        "minimal": "Minimal (3 cols)",
+        "postcode": "Postcode (6 cols)",
+        "region": "Region (9 cols)",
+        "full": "Full (16 cols)"
+      }
     },
     "postcodeSearch": {
       "title": "Postcode Search",

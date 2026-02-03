@@ -72,6 +72,65 @@ export default function ReverseGeocoding() {
     }
   };
 
+  // Get dynamic columns from results
+  const getTableColumns = () => {
+    if (results.length === 0) return [];
+    const firstResult = results[0];
+    const columns: Array<{ key: string; label: string }> = [];
+
+    // Always show address first if available
+    if (firstResult.full_address_ar || firstResult.full_address_en) {
+      columns.push({ key: "address", label: t("results.address") });
+    }
+
+    // Distance
+    if (firstResult.distance_m !== undefined) {
+      columns.push({ key: "distance", label: t("results.distance") });
+    }
+
+    // Then add other columns dynamically
+    const excludeKeys = [
+      "latitude",
+      "longitude",
+      "full_address_ar",
+      "full_address_en",
+      "distance_m",
+    ];
+
+    Object.keys(firstResult).forEach((key) => {
+      if (
+        !excludeKeys.includes(key) &&
+        firstResult[key as keyof typeof firstResult] !== undefined
+      ) {
+        // Format the key to a readable label
+        const label = key
+          .split("_")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+        columns.push({ key, label });
+      }
+    });
+
+    // Add coordinates at the end
+    columns.push({ key: "coordinates", label: t("results.coordinates") });
+
+    return columns;
+  };
+
+  const getCellValue = (result: GeocodingResult, columnKey: string) => {
+    if (columnKey === "address") {
+      return language === "ar" ? result.full_address_ar : result.full_address_en;
+    }
+    if (columnKey === "distance") {
+      return result.distance_m ? `${result.distance_m.toFixed(0)} m` : "-";
+    }
+    if (columnKey === "coordinates") {
+      return `${result.latitude.toFixed(4)}, ${result.longitude.toFixed(4)}`;
+    }
+    const value = result[columnKey as keyof typeof result];
+    return value !== undefined && value !== null ? String(value) : "-";
+  };
+
   return (
     <Layout>
       <div className="p-6 max-w-4xl mx-auto">
@@ -163,10 +222,18 @@ export default function ReverseGeocoding() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="minimal">Minimal (3 cols)</SelectItem>
-                        <SelectItem value="postcode">Postcode (6 cols)</SelectItem>
-                        <SelectItem value="region">Region (9 cols)</SelectItem>
-                        <SelectItem value="full">Full (16 cols)</SelectItem>
+                        <SelectItem value="minimal">
+                          {t("docs.reverseGeocoding.detailLevels.minimal")}
+                        </SelectItem>
+                        <SelectItem value="postcode">
+                          {t("docs.reverseGeocoding.detailLevels.postcode")}
+                        </SelectItem>
+                        <SelectItem value="region">
+                          {t("docs.reverseGeocoding.detailLevels.region")}
+                        </SelectItem>
+                        <SelectItem value="full">
+                          {t("docs.reverseGeocoding.detailLevels.full")}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -179,19 +246,25 @@ export default function ReverseGeocoding() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>{t("results.address")}</TableHead>
-                          <TableHead>{t("results.distance")}</TableHead>
-                          <TableHead>{t("results.postcode")}</TableHead>
+                          {getTableColumns().map((col) => (
+                            <TableHead key={col.key}>{col.label}</TableHead>
+                          ))}
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {results.map((r, i) => (
                           <TableRow key={i}>
-                            <TableCell dir="auto">
-                              {language === "ar" ? r.full_address_ar : r.full_address_en}
-                            </TableCell>
-                            <TableCell>{r.distance_m?.toFixed(0)} m</TableCell>
-                            <TableCell>{r.postcode || "-"}</TableCell>
+                            {getTableColumns().map((col) => (
+                              <TableCell
+                                key={col.key}
+                                dir={col.key === "address" ? "auto" : undefined}
+                                className={
+                                  col.key === "coordinates" ? "font-mono text-xs" : undefined
+                                }
+                              >
+                                {getCellValue(r, col.key)}
+                              </TableCell>
+                            ))}
                           </TableRow>
                         ))}
                       </TableBody>

@@ -148,7 +148,13 @@
       "method": "reverseGeocode(lat, lon, options)",
       "clickMap": "انقر على الخريطة للترميز العكسي",
       "detailLevel": "مستوى التفاصيل",
-      "radius": "نطاق البحث"
+      "radius": "نطاق البحث",
+      "detailLevels": {
+        "minimal": "أساسي (3 أعمدة)",
+        "postcode": "رمز بريدي (6 أعمدة)",
+        "region": "منطقة (9 أعمدة)",
+        "full": "كامل (16 عمود)"
+      }
     },
     "postcodeSearch": {
       "title": "البحث بالرمز البريدي",

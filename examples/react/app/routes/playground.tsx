@@ -177,7 +177,7 @@ export default function Playground() {
           limit: 8,
           types: "all",
         });
-        setAutocompleteSuggestions(suggestions?.suggestions || []);
+        setAutocompleteSuggestions(suggestions || []);
       } catch {
         setAutocompleteSuggestions([]);
       }

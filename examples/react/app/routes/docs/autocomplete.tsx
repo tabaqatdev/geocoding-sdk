@@ -20,9 +20,14 @@ export default function Autocomplete() {
   const { t, language } = useTranslation();
   const { sdk, initialized, loading } = useGeoSDK();
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<Array<{ address_ar: string; address_en: string }>>(
-    []
-  );
+  const [suggestions, setSuggestions] = useState<
+    Array<{
+      type: "district" | "region" | "postcode";
+      value: string;
+      label_ar: string;
+      label_en: string;
+    }>
+  >([]);
   const [searching, setSearching] = useState(false);
 
   // Fetch autocomplete suggestions (debounced)
@@ -38,8 +43,9 @@ export default function Autocomplete() {
         const result = await sdk.getAutocompleteSuggestions(query, {
           limit: 10,
         });
-        setSuggestions(result?.suggestions || []);
+        setSuggestions(result || []);
       } catch (e) {
+        console.error("Autocomplete error:", e);
         setSuggestions([]);
       } finally {
         setSearching(false);
@@ -72,15 +78,15 @@ export default function Autocomplete() {
   query: string,
   options?: {
     limit?: number;        // Max suggestions (default: 10)
-    bbox?: [minLat, minLon, maxLat, maxLon];  // Visible map bounds
-    region?: string;       // Filter by single region name
+    types?: ('district' | 'region' | 'postcode')[] | 'all';  // Types to search
   }
-): Promise<{
-  suggestions: Array<{
-    address_ar: string;
-    address_en: string;
-  }>;
-}>`}
+): Promise<Array<{
+  type: 'district' | 'region' | 'postcode';
+  value: string;
+  label_ar: string;
+  label_en: string;
+  metadata?: Record<string, unknown>;
+}>>`}
             />
           </CardContent>
         </Card>
@@ -125,15 +131,30 @@ export default function Autocomplete() {
                             className="w-full px-4 py-3 text-left hover:bg-accent transition-colors"
                             onClick={() => {
                               setQuery(
-                                language === "ar" ? suggestion.address_ar : suggestion.address_en
+                                language === "ar" ? suggestion.label_ar : suggestion.label_en
                               );
                               setSuggestions([]);
                             }}
                           >
                             <div className="flex items-start gap-2">
                               <Sparkles className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                              <div className="flex-1" dir="auto">
-                                {language === "ar" ? suggestion.address_ar : suggestion.address_en}
+                              <div className="flex-1 space-y-1">
+                                <div dir="auto">
+                                  {language === "ar" ? suggestion.label_ar : suggestion.label_en}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {suggestion.type === "district"
+                                    ? language === "ar"
+                                      ? "حي"
+                                      : "District"
+                                    : suggestion.type === "region"
+                                      ? language === "ar"
+                                        ? "منطقة"
+                                        : "Region"
+                                      : language === "ar"
+                                        ? "رمز بريدي"
+                                        : "Postcode"}
+                                </div>
                               </div>
                             </div>
                           </button>
@@ -214,10 +235,11 @@ function AddressAutocomplete() {
     }
 
     const timer = setTimeout(async () => {
-      const result = await sdk.getAutocompleteSuggestions(query, {
+      const results = await sdk.getAutocompleteSuggestions(query, {
         limit: 10,
+        types: 'all', // or ['district', 'region', 'postcode']
       });
-      setSuggestions(result?.suggestions || []);
+      setSuggestions(results);
     }, 300); // 300ms debounce
 
     return () => clearTimeout(timer);
@@ -228,12 +250,12 @@ function AddressAutocomplete() {
       <input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Type an address..."
+        placeholder="Type a district, region, or postcode..."
       />
       <ul>
         {suggestions.map((s, i) => (
-          <li key={i} onClick={() => setQuery(s.address_en)}>
-            {s.address_en}
+          <li key={i} onClick={() => setQuery(s.value)}>
+            <strong>{s.label_en}</strong> ({s.type})
           </li>
         ))}
       </ul>

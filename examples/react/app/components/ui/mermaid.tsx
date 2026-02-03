@@ -18,10 +18,7 @@ export function Mermaid({ chart, className = "" }: MermaidProps) {
 
   // Detect theme changes
   useEffect(() => {
-    const isDark =
-      theme === "dark" ||
-      (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    setCurrentTheme(isDark ? "dark" : "light");
+    setCurrentTheme(theme === "dark" ? "dark" : "light");
   }, [theme]);
 
   useEffect(() => {

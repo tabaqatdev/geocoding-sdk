@@ -23,6 +23,9 @@ import * as duckdb from '@duckdb/duckdb-wasm';
 import { DEFAULT_DATA_URL } from './types';
 import { logger as sdkLogger, type LogLevel } from './logger';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DuckDBRow = Record<string, any>;
+
 /**
  * Convert Arabic-Indic numerals (٠١٢٣٤٥٦٧٨٩) to Western numerals (0123456789)
  * Also handles Persian digits (۰۱۲۳۴۵۶۷۸۹)
@@ -235,7 +238,7 @@ export class GeoSDK {
       this.ftsAvailable = true;
       sdkLogger.info('FTS extension loaded - BM25 search available');
       report('fts', 'success', performance.now() - stepStart, 'BM25 Arabic');
-    } catch (e) {
+    } catch {
       this.ftsAvailable = false;
       sdkLogger.info('FTS extension not available, using JACCARD fallback');
       report('fts', 'error', performance.now() - stepStart, 'Fallback: JACCARD');
@@ -269,7 +272,7 @@ export class GeoSDK {
           actualBaseUrl = DEFAULT_DATA_URL;
           this.config.dataUrl = DEFAULT_DATA_URL; // Update config to use fallback
           sdkLogger.info('Successfully loaded from fallback URL');
-        } catch (fallbackError) {
+        } catch {
           throw new Error(`Failed to load tile index from both custom and default URLs: ${error}`);
         }
       } else {
@@ -277,7 +280,7 @@ export class GeoSDK {
       }
     }
 
-    this.tileIndex = indexResult.toArray().map((row: any) => ({
+    this.tileIndex = indexResult.toArray().map((row: DuckDBRow) => ({
       h3_tile: row.h3_tile,
       addr_count: row.addr_count,
       min_lon: row.min_lon,
@@ -327,7 +330,7 @@ export class GeoSDK {
         performance.now() - stepStart,
         `${this.postcodeIndex.size} postcodes`
       );
-    } catch (e) {
+    } catch {
       sdkLogger.warn('Postcode index not available, searchByPostcode will be slower');
       report('postcodes', 'error', performance.now() - stepStart, 'Not available');
     }
@@ -404,7 +407,7 @@ export class GeoSDK {
       SELECT h3_h3_to_string(h3_latlng_to_cell(${lat}, ${lon}, ${H3_TILE_RESOLUTION})) as h3_tile
     `);
     const rows = result.toArray();
-    return rows.length > 0 ? (rows[0] as any).h3_tile : null;
+    return rows.length > 0 ? (rows[0] as DuckDBRow).h3_tile : null;
   }
 
   /**
@@ -417,7 +420,7 @@ export class GeoSDK {
         SELECT UNNEST(h3_grid_disk(h3_string_to_h3('${h3Tile}'), 1)) as cell
       )
     `);
-    return result.toArray().map((row: any) => row.neighbor);
+    return result.toArray().map((row: DuckDBRow) => row.neighbor);
   }
 
   /**
@@ -568,11 +571,11 @@ export class GeoSDK {
    * Map query results to GeocodingResult
    */
   private mapResultsToGeocodingResult(
-    rows: any[],
+    rows: DuckDBRow[],
     detailLevel: 'minimal' | 'postcode' | 'region' | 'full'
   ): GeocodingResult[] {
-    return rows.map((row: any) => {
-      const result: any = {
+    return rows.map((row: DuckDBRow) => {
+      const result: GeocodingResult = {
         addr_id: Number(row.addr_id),
         longitude: row.longitude,
         latitude: row.latitude,
@@ -632,7 +635,7 @@ export class GeoSDK {
     const rows = result.toArray();
     if (rows.length === 0) return null;
 
-    const row = rows[0] as any;
+    const row = rows[0] as DuckDBRow;
     return {
       iso_a3: row.iso_a3,
       iso_a2: row.iso_a2,
@@ -675,11 +678,11 @@ export class GeoSDK {
     const govRows = govResult.toArray();
     const regionRows = regionResult.toArray();
 
-    const govRow = govRows.length > 0 ? (govRows[0] as any) : null;
-    const regionRow = regionRows.length > 0 ? (regionRows[0] as any) : null;
+    const govRow = govRows.length > 0 ? (govRows[0] as DuckDBRow) : null;
+    const regionRow = regionRows.length > 0 ? (regionRows[0] as DuckDBRow) : null;
 
     if (districtRows.length > 0) {
-      const row = districtRows[0] as any;
+      const row = districtRows[0] as DuckDBRow;
       return {
         district: { id: row.district_id, name_ar: row.name_ar, name_en: row.name_en },
         governorate: govRow
@@ -691,7 +694,7 @@ export class GeoSDK {
       };
     }
 
-    if (regionRows.length > 0) {
+    if (regionRow) {
       return {
         governorate: govRow
           ? { id: govRow.gov_id, name_ar: govRow.name_ar, name_en: govRow.name_en }
@@ -922,7 +925,7 @@ export class GeoSDK {
       `);
     }
 
-    return result.toArray().map((row: any) => ({
+    return result.toArray().map((row: DuckDBRow) => ({
       addr_id: Number(row.addr_id),
       longitude: row.longitude,
       latitude: row.latitude,
@@ -1032,7 +1035,7 @@ export class GeoSDK {
       LIMIT ${limit}
     `);
 
-    return result.toArray().map((row: any) => ({
+    return result.toArray().map((row: DuckDBRow) => ({
       addr_id: Number(row.addr_id),
       longitude: row.longitude,
       latitude: row.latitude,
@@ -1125,7 +1128,7 @@ export class GeoSDK {
       LIMIT ${limit}
     `);
 
-    return result.toArray().map((row: any) => ({
+    return result.toArray().map((row: DuckDBRow) => ({
       addr_id: Number(row.addr_id),
       longitude: row.longitude,
       latitude: row.latitude,
@@ -1273,8 +1276,8 @@ export class GeoSDK {
       `);
 
       const rows = result.toArray();
-      this.districtNames.ar = rows.map((r: any) => r.name_ar).filter(Boolean);
-      this.districtNames.en = rows.map((r: any) => r.name_en).filter(Boolean);
+      this.districtNames.ar = rows.map((r: DuckDBRow) => r.name_ar).filter(Boolean);
+      this.districtNames.en = rows.map((r: DuckDBRow) => r.name_en).filter(Boolean);
 
       sdkLogger.info(`Loaded ${this.districtNames.ar.length} district names for autocomplete`);
     } catch (e) {

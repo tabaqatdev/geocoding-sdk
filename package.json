@@ -1,6 +1,6 @@
 {
   "name": "@tabaqat/geocoding-sdk",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Browser-based geocoding SDK using DuckDB-WASM",
   "module": "src/index.ts",
   "type": "module",

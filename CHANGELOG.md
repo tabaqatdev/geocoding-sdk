@@ -5,19 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.4] - 2026-02-10
+## [0.3.0] - 2026-02-10
 
 ### Added
 
 - **Governorate boundary layer** (`sa_governorates_simple.parquet`) - 133 governorates with geometry, derived from district boundaries
 - **Admin IDs in `getAdminHierarchy()`** - Returns `id` for district (`district_id`), governorate (`gov_id`), and region (`region_id`) alongside `name_ar`/`name_en`
 - **`sa_governorates` SQL view** created during SDK initialization
+- **`DuckDBRow` type alias** - Replaces scattered `any` annotations for DuckDB query results
 
 ### Changed
 
 - `AdminHierarchy` interface now includes `id: string` on `district`, `governorate`, and `region`
 - `getAdminHierarchy()` queries all three admin levels (district, governorate, region) in parallel for better performance
 - Governorate data now comes from dedicated boundary file instead of district table columns
+
+### Fixed
+
+- Resolved all 18 eslint warnings (unused catch variables, explicit `any` types)
 
 ## [0.2.3] - 2026-02-03
 

@@ -72,6 +72,7 @@ sequenceDiagram
     SDK->>CDN: GET postcode_index.parquet
     SDK->>DuckDB: CREATE VIEW world_countries
     SDK->>DuckDB: CREATE VIEW sa_regions
+    SDK->>DuckDB: CREATE VIEW sa_governorates
     SDK->>DuckDB: CREATE VIEW sa_districts
     SDK-->>App: Ready (~140KB loaded)
 ```
@@ -197,4 +198,5 @@ https://data.source.coop/tabaqat/geocoding-cng/v0.1.0
 | Postcode Index  | `https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/postcode_index.parquet`         | ~10KB  |
 | World Countries | `https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/world_countries_simple.parquet` | ~30KB  |
 | SA Regions      | `https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_regions_simple.parquet`      | ~20KB  |
+| SA Governorates | `https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_governorates_simple.parquet` | ~467KB |
 | SA Districts    | `https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_districts_simple.parquet`    | ~500KB |

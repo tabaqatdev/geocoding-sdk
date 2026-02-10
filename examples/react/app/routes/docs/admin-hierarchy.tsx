@@ -24,9 +24,9 @@ export default function AdminHierarchy() {
   const [lat, setLat] = useState("24.7136");
   const [lon, setLon] = useState("46.6753");
   const [result, setResult] = useState<{
-    region?: { name_ar: string; name_en: string };
-    governorate?: { name_ar: string; name_en: string };
-    district?: { name_ar: string; name_en: string };
+    region?: { id: string; name_ar: string; name_en: string };
+    governorate?: { id: string; name_ar: string; name_en: string };
+    district?: { id: string; name_ar: string; name_en: string };
   } | null>(null);
   const [searching, setSearching] = useState(false);
 
@@ -71,9 +71,9 @@ export default function AdminHierarchy() {
   lat: number,
   lon: number
 ): Promise<{
-  district?: { name_ar: string; name_en: string };
-  governorate?: { name_ar: string; name_en: string };
-  region?: { name_ar: string; name_en: string };
+  district?: { id: string; name_ar: string; name_en: string };
+  governorate?: { id: string; name_ar: string; name_en: string };
+  region?: { id: string; name_ar: string; name_en: string };
 }>`}
             />
           </CardContent>
@@ -136,6 +136,11 @@ export default function AdminHierarchy() {
                             <div className="text-xl font-bold" dir="auto">
                               {language === "ar" ? result.region.name_ar : result.region.name_en}
                             </div>
+                            {result.region.id && (
+                              <div className="text-xs text-muted-foreground font-mono">
+                                ID: {result.region.id}
+                              </div>
+                            )}
                           </div>
                         )}
                         {result.governorate && (
@@ -148,6 +153,11 @@ export default function AdminHierarchy() {
                                 ? result.governorate.name_ar
                                 : result.governorate.name_en}
                             </div>
+                            {result.governorate.id && (
+                              <div className="text-xs text-muted-foreground font-mono">
+                                ID: {result.governorate.id}
+                              </div>
+                            )}
                           </div>
                         )}
                         {result.district && (
@@ -160,6 +170,11 @@ export default function AdminHierarchy() {
                                 ? result.district.name_ar
                                 : result.district.name_en}
                             </div>
+                            {result.district.id && (
+                              <div className="text-xs text-muted-foreground font-mono">
+                                ID: {result.district.id}
+                              </div>
+                            )}
                           </div>
                         )}
                         {!result.region && !result.district && (
@@ -218,6 +233,8 @@ await sdk.initialize();
 const hierarchy = await sdk.getAdminHierarchy(24.7136, 46.6753);
 
 if (hierarchy.region) {
+  console.log("Region ID:", hierarchy.region.id);
+  // "001"
   console.log("Region:", hierarchy.region.name_en);
   // "Riyadh Region"
   console.log("المنطقة:", hierarchy.region.name_ar);
@@ -225,11 +242,15 @@ if (hierarchy.region) {
 }
 
 if (hierarchy.governorate) {
+  console.log("Governorate ID:", hierarchy.governorate.id);
+  // "00100"
   console.log("Governorate:", hierarchy.governorate.name_en);
   console.log("المحافظة:", hierarchy.governorate.name_ar);
 }
 
 if (hierarchy.district) {
+  console.log("District ID:", hierarchy.district.id);
+  // "00100001181"
   console.log("District:", hierarchy.district.name_en);
   console.log("الحي:", hierarchy.district.name_ar);
 }`}

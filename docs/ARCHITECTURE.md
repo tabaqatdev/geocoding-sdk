@@ -74,6 +74,7 @@ sequenceDiagram
     SDK->>CDN: GET postcode_index.parquet
     SDK->>DuckDB: CREATE VIEW world_countries
     SDK->>DuckDB: CREATE VIEW sa_regions
+    SDK->>DuckDB: CREATE VIEW sa_governorates
     SDK->>DuckDB: CREATE VIEW sa_districts
     SDK-->>App: Ready (~140KB loaded)
 ```
@@ -194,6 +195,9 @@ iso_a3, iso_a2, name_en, name_ar, continent, geometry
 
 -- sa_regions_simple.parquet
 region_id, name_ar, name_en, centroid, geometry
+
+-- sa_governorates_simple.parquet
+gov_id, name_ar, name_en, region_id, region_ar, region_en, district_count, geometry, centroid
 
 -- sa_districts_simple.parquet
 district_id, name_ar, name_en, city, region_ar, region_en, gov_ar, gov_en, centroid, geometry
@@ -319,9 +323,9 @@ interface GeocodingResult {
 }
 
 interface AdminHierarchy {
-  district?: { name_ar: string; name_en: string };
-  governorate?: { name_ar: string; name_en: string };
-  region?: { name_ar: string; name_en: string };
+  district?: { id: string; name_ar: string; name_en: string };
+  governorate?: { id: string; name_ar: string; name_en: string };
+  region?: { id: string; name_ar: string; name_en: string };
 }
 ```
 
@@ -358,9 +362,9 @@ await sdk.geocode(query, {
 ```typescript
 // getAdminHierarchy() now returns:
 {
-  district?: { name_ar: string; name_en: string },
-  governorate?: { name_ar: string; name_en: string },  // NEW
-  region?: { name_ar: string; name_en: string }
+  district?: { id: string; name_ar: string; name_en: string },
+  governorate?: { id: string; name_ar: string; name_en: string },
+  region?: { id: string; name_ar: string; name_en: string }
 }
 ```
 
@@ -523,6 +527,7 @@ https://data.source.coop/tabaqat/geocoding-cng/v0.1.0
 | Postcode Index  | `https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/postcode_index.parquet`         | ~10KB  |
 | World Countries | `https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/world_countries_simple.parquet` | ~30KB  |
 | SA Regions      | `https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_regions_simple.parquet`      | ~20KB  |
+| SA Governorates | `https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_governorates_simple.parquet` | ~467KB |
 | SA Districts    | `https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_districts_simple.parquet`    | ~500KB |
 
 ### Top 20 Tile Files (by address count)
@@ -572,6 +577,7 @@ flowchart TD
     subgraph Views["Boundary Views (SQL VIEWs)"]
         V1[world_countries]
         V2[sa_regions]
+        V4[sa_governorates]
         V3[sa_districts]
     end
 
@@ -625,12 +631,14 @@ flowchart TD
         C2 --> C3["Return CountryResult"]
     end
 
-    subgraph Admin["Admin Hierarchy"]
+    subgraph Admin["Admin Hierarchy (parallel)"]
         H1["Input: (lat, lon)"] --> H2["ST_Contains on sa_districts"]
-        H2 --> H3["Get district + governorate"]
+        H2 --> H3["Get district"]
+        H1 --> H7["ST_Contains on sa_governorates"]
+        H7 --> H8["Get governorate"]
         H1 --> H4["ST_Contains on sa_regions"]
         H4 --> H5["Get region"]
-        H3 & H5 --> H6["Return AdminHierarchy"]
+        H3 & H8 & H5 --> H6["Return AdminHierarchy"]
     end
 
     M1 --> R3 & F2

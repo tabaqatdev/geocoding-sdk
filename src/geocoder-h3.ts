@@ -103,9 +103,9 @@ export interface CountryResult {
 export type CountryDetectionResult = CountryResult;
 
 export interface AdminHierarchy {
-  district?: { name_ar: string; name_en: string };
-  governorate?: { name_ar: string; name_en: string };
-  region?: { name_ar: string; name_en: string };
+  district?: { id: string; name_ar: string; name_en: string };
+  governorate?: { id: string; name_ar: string; name_en: string };
+  region?: { id: string; name_ar: string; name_en: string };
 }
 
 // H3 resolution for tile partitioning (matches build script)
@@ -344,7 +344,13 @@ export class GeoSDK {
       SELECT * FROM read_parquet('${actualBaseUrl}/sa_regions_simple.parquet')
     `);
 
-    // Load SA districts boundaries (optional, ~500KB)
+    // Load SA governorates boundaries (~467KB)
+    await this.conn.query(`
+      CREATE VIEW sa_governorates AS
+      SELECT * FROM read_parquet('${actualBaseUrl}/sa_governorates_simple.parquet')
+    `);
+
+    // Load SA districts boundaries (~500KB)
     await this.conn.query(`
       CREATE VIEW sa_districts AS
       SELECT * FROM read_parquet('${actualBaseUrl}/sa_districts_simple.parquet')
@@ -640,48 +646,57 @@ export class GeoSDK {
    * Get admin hierarchy for a point
    * Returns district, governorate, and region information
    */
-  async getAdminHierarchy(
-    lat: number,
-    lon: number
-  ): Promise<{
-    district?: { name_ar: string; name_en: string };
-    governorate?: { name_ar: string; name_en: string };
-    region?: { name_ar: string; name_en: string };
-  }> {
+  async getAdminHierarchy(lat: number, lon: number): Promise<AdminHierarchy> {
     this.ensureInitialized();
 
-    const districtResult = await this.conn!.query(`
-      SELECT name_ar, name_en, gov_ar, gov_en, region_ar, region_en
-      FROM sa_districts
-      WHERE ST_Contains(geometry, ST_Point(${lon}, ${lat}))
-      LIMIT 1
-    `);
+    // Query all three admin levels in parallel
+    const [districtResult, govResult, regionResult] = await Promise.all([
+      this.conn!.query(`
+        SELECT district_id, name_ar, name_en, region_ar, region_en
+        FROM sa_districts
+        WHERE ST_Contains(geometry, ST_Point(${lon}, ${lat}))
+        LIMIT 1
+      `),
+      this.conn!.query(`
+        SELECT gov_id, name_ar, name_en
+        FROM sa_governorates
+        WHERE ST_Contains(geometry, ST_Point(${lon}, ${lat}))
+        LIMIT 1
+      `),
+      this.conn!.query(`
+        SELECT region_id, name_ar, name_en
+        FROM sa_regions
+        WHERE ST_Contains(geometry, ST_Point(${lon}, ${lat}))
+        LIMIT 1
+      `),
+    ]);
 
     const districtRows = districtResult.toArray();
+    const govRows = govResult.toArray();
+    const regionRows = regionResult.toArray();
+
+    const govRow = govRows.length > 0 ? (govRows[0] as any) : null;
+    const regionRow = regionRows.length > 0 ? (regionRows[0] as any) : null;
+
     if (districtRows.length > 0) {
       const row = districtRows[0] as any;
       return {
-        district: { name_ar: row.name_ar, name_en: row.name_en },
-        governorate:
-          row.gov_ar || row.gov_en
-            ? { name_ar: row.gov_ar || '', name_en: row.gov_en || '' }
-            : undefined,
-        region: { name_ar: row.region_ar, name_en: row.region_en },
+        district: { id: row.district_id, name_ar: row.name_ar, name_en: row.name_en },
+        governorate: govRow
+          ? { id: govRow.gov_id, name_ar: govRow.name_ar, name_en: govRow.name_en }
+          : undefined,
+        region: regionRow
+          ? { id: regionRow.region_id, name_ar: regionRow.name_ar, name_en: regionRow.name_en }
+          : { id: '', name_ar: row.region_ar, name_en: row.region_en },
       };
     }
 
-    const regionResult = await this.conn!.query(`
-      SELECT name_ar, name_en
-      FROM sa_regions
-      WHERE ST_Contains(geometry, ST_Point(${lon}, ${lat}))
-      LIMIT 1
-    `);
-
-    const regionRows = regionResult.toArray();
     if (regionRows.length > 0) {
-      const row = regionRows[0] as any;
       return {
-        region: { name_ar: row.name_ar, name_en: row.name_en },
+        governorate: govRow
+          ? { id: govRow.gov_id, name_ar: govRow.name_ar, name_en: govRow.name_en }
+          : undefined,
+        region: { id: regionRow.region_id, name_ar: regionRow.name_ar, name_en: regionRow.name_en },
       };
     }
 

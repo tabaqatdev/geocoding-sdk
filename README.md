@@ -269,9 +269,9 @@ const results = await sdk.geocode('شارع الملك فهد', {
 const admin = await sdk.getAdminHierarchy(24.7136, 46.6753);
 console.log(admin);
 // {
-//   district: { name_ar: 'العليا', name_en: 'Al Olaya' },
-//   governorate: { name_ar: 'الرياض', name_en: 'Riyadh' },
-//   region: { name_ar: 'منطقة الرياض', name_en: 'Riyadh Region' }
+//   district: { id: '00100001181', name_ar: 'الورود', name_en: 'Al Wurud' },
+//   governorate: { id: '00100', name_ar: 'امارة منطقة الرياض', name_en: 'Riyadh Region Principality' },
+//   region: { id: '001', name_ar: 'منطقة الرياض', name_en: 'Riyadh Region' }
 // }
 
 // Quick check if coordinates are in Saudi Arabia
@@ -572,9 +572,9 @@ Get administrative hierarchy for Saudi Arabia coordinates.
 ```typescript
 const admin = await sdk.getAdminHierarchy(24.7136, 46.6753);
 // {
-//   district: { name_ar: 'العليا', name_en: 'Al Olaya' },
-//   governorate: { name_ar: 'الرياض', name_en: 'Riyadh' },
-//   region: { name_ar: 'منطقة الرياض', name_en: 'Riyadh Region' }
+//   district: { id: '00100001181', name_ar: 'الورود', name_en: 'Al Wurud' },
+//   governorate: { id: '00100', name_ar: 'امارة منطقة الرياض', name_en: 'Riyadh Region Principality' },
+//   region: { id: '001', name_ar: 'منطقة الرياض', name_en: 'Riyadh Region' }
 // }
 ```
 
@@ -704,9 +704,9 @@ interface CountryResult {
 
 ```typescript
 interface AdminHierarchy {
-  district?: { name_ar: string; name_en: string };
-  governorate?: { name_ar: string; name_en: string };
-  region?: { name_ar: string; name_en: string };
+  district?: { id: string; name_ar: string; name_en: string };
+  governorate?: { id: string; name_ar: string; name_en: string };
+  region?: { id: string; name_ar: string; name_en: string };
 }
 ```
 
@@ -774,6 +774,7 @@ Your CDN should serve:
 - `postcode_index.parquet` - Postcode to tiles mapping
 - `world_countries_simple.parquet`
 - `sa_regions_simple.parquet`
+- `sa_governorates_simple.parquet`
 - `sa_districts_simple.parquet`
 - `tiles/*.parquet` (717 files)
 

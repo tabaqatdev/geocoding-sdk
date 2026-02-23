@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`settlement` field in `AdminHierarchy`** - Returns `id`, `name_ar`, `name_en`, `type` via nearest-point query
 - **R-tree spatial indexes** on all polygon boundary tables for fast ST_Contains queries (graceful fallback if unsupported)
 - **Country detection cache** - `detectCountry()` caches last result; `isInSaudiArabia()` reuses it to eliminate redundant world_countries queries
+- **Native `console.time` init profiling** - Each initialization step shows timing in browser DevTools (wasm, spatial, h3, fts, tile index, postcode index, world_countries, admin tables)
 
 ### Changed
 
@@ -24,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **3 tables instead of 5** - Region and governorate info derived from municipality columns (100% coverage), eliminating separate `sa_regions` and `sa_governorates` parquet fetches. Only `sa_municipalities` + `sa_districts` + `sa_settlements` loaded (~1.9MB total)
 - **Single LATERAL JOIN query** - `getAdminHierarchy()` uses one combined SQL query with 3 `LEFT JOIN LATERAL` instead of 5 separate queries, eliminating JS→Worker round-trips
 - **Lazy admin table loading** - Municipalities, districts, and settlements tables are loaded on first `getAdminHierarchy()` call (not at init), keeping SDK initialization fast
+- **Native console logging** - Replaced custom Logger class with `console.debug`/`console.info`/`console.warn`/`console.error` gated by `debug` config flag. Removed `logLevel` config — browser DevTools handles filtering natively. Production apps can strip via `esbuild: { drop: ['console'] }`
+- **DuckDB-WASM upgraded to 1.33.1-dev18.0** (from dev5.0)
+- **RTL text plugin downgraded to 0.2.3** — UMD format compatible with MapLibre's `importScripts` worker loading (0.3.0 ES modules broke it)
 - District autocomplete uses new `district_name_ar`/`district_name_en` column names
 - `close()` now properly drops in-memory tables and resets all state
 

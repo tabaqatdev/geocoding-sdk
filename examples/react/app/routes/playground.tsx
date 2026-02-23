@@ -135,8 +135,9 @@ export default function Playground() {
     country?: string;
     region?: string;
     governorate?: string;
-    city?: string;
+    municipality?: string;
     district?: string;
+    settlement?: string;
   } | null>(null);
 
   // Active tab for syncing with map
@@ -203,11 +204,19 @@ export default function Playground() {
       setReverseLat(lat.toFixed(6));
       setReverseLon(lng.toFixed(6));
 
-      // Get country and admin hierarchy for clicked location
       try {
-        const [countryResult, hierarchyResult] = await Promise.all([
-          sdk.detectCountry(lat, lng),
+        // Detect country first — populates SDK cache so reverseGeocode
+        // skips the redundant isInSaudiArabia query
+        const countryResult = await sdk.detectCountry(lat, lng);
+
+        // Run hierarchy + reverse geocode in parallel (both reuse cached country check)
+        const [hierarchyResult, results] = await Promise.all([
           sdk.getAdminHierarchy(lat, lng),
+          sdk.reverseGeocode(lat, lng, {
+            limit: 5,
+            radiusMeters: reverseRadius[0],
+            detailLevel: "full",
+          }),
         ]);
 
         setAdminHierarchy({
@@ -218,22 +227,18 @@ export default function Playground() {
             language === "ar"
               ? hierarchyResult?.governorate?.name_ar
               : hierarchyResult?.governorate?.name_en,
+          municipality:
+            language === "ar"
+              ? hierarchyResult?.municipality?.name_ar
+              : hierarchyResult?.municipality?.name_en,
           district:
             language === "ar"
               ? hierarchyResult?.district?.name_ar
               : hierarchyResult?.district?.name_en,
-        });
-      } catch (err) {
-        console.error("Failed to get location hierarchy:", err);
-        setAdminHierarchy(null);
-      }
-
-      // Perform reverse geocoding
-      try {
-        const results = await sdk.reverseGeocode(lat, lng, {
-          limit: 5,
-          radiusMeters: reverseRadius[0],
-          detailLevel: "full",
+          settlement:
+            language === "ar"
+              ? hierarchyResult?.settlement?.name_ar
+              : hierarchyResult?.settlement?.name_en,
         });
 
         if (results.length > 0) {
@@ -274,10 +279,13 @@ export default function Playground() {
           setClickMarker(null);
           setShowPopup(false);
           setResultMarkers([]);
+          setReverseResults([]);
           toast.info("No addresses found nearby");
         }
       } catch (err) {
+        console.error("Map click error:", err);
         toast.error(err instanceof Error ? err.message : "Geocoding failed");
+        setAdminHierarchy(null);
       } finally {
         setMapLoading(false);
       }
@@ -595,10 +603,22 @@ export default function Playground() {
                   <span>{adminHierarchy.governorate}</span>
                 </div>
               )}
-              {adminHierarchy.district && (
+              {adminHierarchy.municipality && (
                 <div className="flex items-center gap-2 ms-9">
                   <span className="text-muted-foreground">←</span>
+                  <span>{adminHierarchy.municipality}</span>
+                </div>
+              )}
+              {adminHierarchy.district && (
+                <div className="flex items-center gap-2 ms-11">
+                  <span className="text-muted-foreground">←</span>
                   <span>{adminHierarchy.district}</span>
+                </div>
+              )}
+              {adminHierarchy.settlement && (
+                <div className="flex items-center gap-2 ms-11">
+                  <span className="text-muted-foreground">⌖</span>
+                  <span className="italic">{adminHierarchy.settlement}</span>
                 </div>
               )}
             </div>

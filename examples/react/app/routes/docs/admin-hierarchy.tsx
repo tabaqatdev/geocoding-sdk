@@ -24,9 +24,11 @@ export default function AdminHierarchy() {
   const [lat, setLat] = useState("24.7136");
   const [lon, setLon] = useState("46.6753");
   const [result, setResult] = useState<{
-    region?: { id: string; name_ar: string; name_en: string };
-    governorate?: { id: string; name_ar: string; name_en: string };
     district?: { id: string; name_ar: string; name_en: string };
+    municipality?: { id: string; name_ar: string; name_en: string };
+    governorate?: { id: string; name_ar: string; name_en: string };
+    region?: { id: string; name_ar: string; name_en: string };
+    settlement?: { id: string; name_ar: string; name_en: string; type?: string };
   } | null>(null);
   const [searching, setSearching] = useState(false);
 
@@ -72,8 +74,10 @@ export default function AdminHierarchy() {
   lon: number
 ): Promise<{
   district?: { id: string; name_ar: string; name_en: string };
+  municipality?: { id: string; name_ar: string; name_en: string };
   governorate?: { id: string; name_ar: string; name_en: string };
   region?: { id: string; name_ar: string; name_en: string };
+  settlement?: { id: string; name_ar: string; name_en: string; type?: string };
 }>`}
             />
           </CardContent>
@@ -160,6 +164,23 @@ export default function AdminHierarchy() {
                             )}
                           </div>
                         )}
+                        {result.municipality && (
+                          <div>
+                            <div className="text-sm text-muted-foreground">
+                              {language === "ar" ? "البلدية" : "Municipality"}
+                            </div>
+                            <div className="text-xl font-bold" dir="auto">
+                              {language === "ar"
+                                ? result.municipality.name_ar
+                                : result.municipality.name_en}
+                            </div>
+                            {result.municipality.id && (
+                              <div className="text-xs text-muted-foreground font-mono">
+                                ID: {result.municipality.id}
+                              </div>
+                            )}
+                          </div>
+                        )}
                         {result.district && (
                           <div>
                             <div className="text-sm text-muted-foreground">
@@ -177,7 +198,29 @@ export default function AdminHierarchy() {
                             )}
                           </div>
                         )}
-                        {!result.region && !result.district && (
+                        {result.settlement && (
+                          <div>
+                            <div className="text-sm text-muted-foreground">
+                              {language === "ar" ? "المستوطنات البشرية" : "Nearest Settlement"}
+                              {result.settlement.type && (
+                                <Badge variant="outline" className="ms-2 text-xs">
+                                  {result.settlement.type}
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="text-xl font-bold" dir="auto">
+                              {language === "ar"
+                                ? result.settlement.name_ar
+                                : result.settlement.name_en}
+                            </div>
+                            {result.settlement.id && (
+                              <div className="text-xs text-muted-foreground font-mono">
+                                ID: {result.settlement.id}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        {!result.region && !result.district && !result.settlement && (
                           <div className="text-muted-foreground">
                             {language === "ar"
                               ? "النقطة خارج حدود المناطق الإدارية السعودية"
@@ -201,16 +244,26 @@ export default function AdminHierarchy() {
           <CardContent>
             <ul className="space-y-2 text-muted-foreground">
               <li>
-                <strong>{language === "ar" ? "المناطق" : "Regions"}</strong> - 13 administrative
-                regions (منطقة)
+                <strong>{language === "ar" ? "المناطق" : "Regions"}</strong> - 13{" "}
+                {language === "ar" ? "منطقة إدارية" : "administrative regions"}
               </li>
               <li>
-                <strong>{language === "ar" ? "المحافظات" : "Governorates"}</strong> - Provincial
-                level divisions
+                <strong>{language === "ar" ? "المحافظات" : "Governorates"}</strong> - 152{" "}
+                {language === "ar" ? "محافظة" : "provincial level divisions"}
               </li>
               <li>
-                <strong>{language === "ar" ? "الأحياء" : "Districts"}</strong> - Neighborhood level
-                divisions
+                <strong>{language === "ar" ? "البلديات" : "Municipalities"}</strong> - 285{" "}
+                {language === "ar" ? "بلدية (تغطية 100%)" : "municipalities (100% coverage)"}
+              </li>
+              <li>
+                <strong>{language === "ar" ? "الأحياء" : "Districts"}</strong> - 5,484{" "}
+                {language === "ar" ? "حي (مناطق حضرية)" : "urban neighborhood boundaries"}
+              </li>
+              <li>
+                <strong>{language === "ar" ? "المستوطنات" : "Settlements"}</strong> - 21,450{" "}
+                {language === "ar"
+                  ? "نقطة استيطان (أقرب نقطة)"
+                  : "settlement points (nearest-point lookup)"}
               </li>
             </ul>
           </CardContent>
@@ -229,30 +282,32 @@ export default function AdminHierarchy() {
 const sdk = new GeoSDK();
 await sdk.initialize();
 
-// Get admin hierarchy for a point
+// Get admin hierarchy for a point (5 levels)
 const hierarchy = await sdk.getAdminHierarchy(24.7136, 46.6753);
 
 if (hierarchy.region) {
-  console.log("Region ID:", hierarchy.region.id);
-  // "001"
-  console.log("Region:", hierarchy.region.name_en);
-  // "Riyadh Region"
-  console.log("المنطقة:", hierarchy.region.name_ar);
-  // "منطقة الرياض"
+  console.log("Region ID:", hierarchy.region.id);       // "001"
+  console.log("Region:", hierarchy.region.name_en);      // "Riyadh Region"
 }
 
 if (hierarchy.governorate) {
-  console.log("Governorate ID:", hierarchy.governorate.id);
-  // "00100"
+  console.log("Governorate ID:", hierarchy.governorate.id); // "00100"
   console.log("Governorate:", hierarchy.governorate.name_en);
-  console.log("المحافظة:", hierarchy.governorate.name_ar);
+}
+
+if (hierarchy.municipality) {
+  console.log("Municipality ID:", hierarchy.municipality.id); // "00100100"
+  console.log("Municipality:", hierarchy.municipality.name_en);
 }
 
 if (hierarchy.district) {
-  console.log("District ID:", hierarchy.district.id);
-  // "00100001181"
+  console.log("District ID:", hierarchy.district.id);   // "00100001181"
   console.log("District:", hierarchy.district.name_en);
-  console.log("الحي:", hierarchy.district.name_ar);
+}
+
+if (hierarchy.settlement) {
+  console.log("Settlement:", hierarchy.settlement.name_en);
+  console.log("Type:", hierarchy.settlement.type);       // "مدينة"
 }`}
             />
           </CardContent>

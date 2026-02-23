@@ -107,8 +107,10 @@ export type CountryDetectionResult = CountryResult;
 
 export interface AdminHierarchy {
   district?: { id: string; name_ar: string; name_en: string };
+  municipality?: { id: string; name_ar: string; name_en: string };
   governorate?: { id: string; name_ar: string; name_en: string };
   region?: { id: string; name_ar: string; name_en: string };
+  settlement?: { id: string; name_ar: string; name_en: string; type?: string };
 }
 
 // H3 resolution for tile partitioning (matches build script)
@@ -120,6 +122,9 @@ export class GeoSDK {
   private config: Required<GeoSDKConfig>;
   private initialized = false;
   private ftsAvailable = false;
+  private adminViewsReady = false;
+  private adminViewsPromise: Promise<void> | null = null;
+  private actualBaseUrl = '';
 
   private tileIndex: TileInfo[] = [];
   private postcodeIndex: Map<string, PostcodeInfo> = new Map();
@@ -127,6 +132,9 @@ export class GeoSDK {
 
   // Caches for performance
   private searchCache: Map<string, { results: GeocodingResult[]; timestamp: number }> = new Map();
+  private adminCache: Map<string, { result: AdminHierarchy; timestamp: number }> = new Map();
+  private lastCountryResult: { lat: number; lon: number; result: CountryResult | null } | null =
+    null;
   private districtNames: { ar: string[]; en: string[] } = { ar: [], en: [] };
   private streetNames: Map<string, string[]> = new Map(); // tile -> streets
   private readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
@@ -335,29 +343,28 @@ export class GeoSDK {
       report('postcodes', 'error', performance.now() - stepStart, 'Not available');
     }
 
-    // Load world countries (small)
+    // Load world countries into memory (needed for isInSaudiArabia/detectCountry)
+    // Region/governorate info is derived from municipality matches (100% coverage)
+    stepStart = performance.now();
+    report('boundaries', 'loading');
     await this.conn.query(`
-      CREATE VIEW world_countries AS
+      CREATE TABLE world_countries AS
       SELECT * FROM read_parquet('${actualBaseUrl}/world_countries_simple.parquet')
     `);
 
-    // Load SA regions boundaries (small)
-    await this.conn.query(`
-      CREATE VIEW sa_regions AS
-      SELECT * FROM read_parquet('${actualBaseUrl}/sa_regions_simple.parquet')
-    `);
+    // R-tree spatial index for fast ST_Contains queries
+    try {
+      await this.conn.query(
+        `CREATE INDEX idx_world_geom ON world_countries USING RTREE (geometry)`
+      );
+    } catch {
+      sdkLogger.warn('R-tree indexes not supported, continuing without spatial indexes');
+    }
+    report('boundaries', 'success', performance.now() - stepStart);
 
-    // Load SA governorates boundaries (~467KB)
-    await this.conn.query(`
-      CREATE VIEW sa_governorates AS
-      SELECT * FROM read_parquet('${actualBaseUrl}/sa_governorates_simple.parquet')
-    `);
-
-    // Load SA districts boundaries (~500KB)
-    await this.conn.query(`
-      CREATE VIEW sa_districts AS
-      SELECT * FROM read_parquet('${actualBaseUrl}/sa_districts_simple.parquet')
-    `);
+    // Admin boundary views (governorates, municipalities, districts, settlements)
+    // are created lazily on first getAdminHierarchy() call to speed up init
+    this.actualBaseUrl = actualBaseUrl;
 
     this.initialized = true;
     sdkLogger.info('Initialization complete');
@@ -367,6 +374,61 @@ export class GeoSDK {
     if (!this.initialized || !this.conn) {
       throw new Error('GeoSDK not initialized. Call initialize() first.');
     }
+  }
+
+  /**
+   * Lazily load admin boundary tables into memory on first use.
+   * Only 3 tables needed: municipalities (100% coverage, contains region+gov columns),
+   * districts (urban only), and settlements (nearest-point).
+   * Region and governorate info is derived from the municipality match.
+   */
+  private async ensureAdminViews(): Promise<void> {
+    if (this.adminViewsReady) return;
+
+    // Deduplicate concurrent calls
+    if (!this.adminViewsPromise) {
+      this.adminViewsPromise = (async () => {
+        const url = this.actualBaseUrl;
+        const start = performance.now();
+        sdkLogger.info('Loading admin boundary tables into memory...');
+        await Promise.all([
+          this.conn!.query(`
+            CREATE TABLE IF NOT EXISTS sa_municipalities AS
+            SELECT * FROM read_parquet('${url}/sa_municipalities_simple.parquet')
+          `),
+          this.conn!.query(`
+            CREATE TABLE IF NOT EXISTS sa_districts AS
+            SELECT * FROM read_parquet('${url}/sa_districts_simple.parquet')
+          `),
+          this.conn!.query(`
+            CREATE TABLE IF NOT EXISTS sa_settlements AS
+            SELECT * FROM read_parquet('${url}/sa_settlements.parquet')
+          `),
+        ]);
+
+        // R-tree spatial indexes for polygon containment queries
+        try {
+          await Promise.all([
+            this.conn!.query(
+              `CREATE INDEX IF NOT EXISTS idx_muni_geom ON sa_municipalities USING RTREE (geometry)`
+            ),
+            this.conn!.query(
+              `CREATE INDEX IF NOT EXISTS idx_dist_geom ON sa_districts USING RTREE (geometry)`
+            ),
+          ]);
+          sdkLogger.info('R-tree spatial indexes created');
+        } catch {
+          sdkLogger.warn('R-tree indexes not supported, continuing without');
+        }
+
+        this.adminViewsReady = true;
+        sdkLogger.info(
+          `Admin boundary tables loaded in ${(performance.now() - start).toFixed(0)}ms`
+        );
+      })();
+    }
+
+    await this.adminViewsPromise;
   }
 
   /**
@@ -424,7 +486,8 @@ export class GeoSDK {
   }
 
   /**
-   * Check if a point is in Saudi Arabia
+   * Check if a point is in Saudi Arabia.
+   * Reuses detectCountry() to avoid duplicate world_countries queries.
    */
   async isInSaudiArabia(lat: number, lon: number): Promise<boolean> {
     this.ensureInitialized();
@@ -432,13 +495,8 @@ export class GeoSDK {
     if (lon < 34.5 || lon > 55.7 || lat < 16.3 || lat > 32.2) {
       return false;
     }
-    // Precise polygon check
-    const result = await this.conn!.query(`
-      SELECT 1 FROM world_countries
-      WHERE iso_a2 = 'SA' AND ST_Contains(geometry, ST_Point(${lon}, ${lat}))
-      LIMIT 1
-    `);
-    return result.toArray().length > 0;
+    const country = await this.detectCountry(lat, lon);
+    return country?.iso_a2 === 'SA';
   }
 
   /**
@@ -620,10 +678,21 @@ export class GeoSDK {
   }
 
   /**
-   * Detect country from coordinates
+   * Detect country from coordinates.
+   * Caches the last result so consecutive calls with the same coordinates
+   * (e.g., detectCountry + reverseGeocode) don't re-query world_countries.
    */
   async detectCountry(lat: number, lon: number): Promise<CountryResult | null> {
     this.ensureInitialized();
+
+    // Return cached result for same coordinates
+    if (
+      this.lastCountryResult &&
+      this.lastCountryResult.lat === lat &&
+      this.lastCountryResult.lon === lon
+    ) {
+      return this.lastCountryResult.result;
+    }
 
     const result = await this.conn!.query(`
       SELECT iso_a3, iso_a2, name_en, name_ar, continent
@@ -633,77 +702,135 @@ export class GeoSDK {
     `);
 
     const rows = result.toArray();
-    if (rows.length === 0) return null;
+    const countryResult =
+      rows.length === 0
+        ? null
+        : {
+            iso_a3: (rows[0] as DuckDBRow).iso_a3,
+            iso_a2: (rows[0] as DuckDBRow).iso_a2,
+            name_en: (rows[0] as DuckDBRow).name_en,
+            name_ar: (rows[0] as DuckDBRow).name_ar,
+            continent: (rows[0] as DuckDBRow).continent,
+          };
 
-    const row = rows[0] as DuckDBRow;
-    return {
-      iso_a3: row.iso_a3,
-      iso_a2: row.iso_a2,
-      name_en: row.name_en,
-      name_ar: row.name_ar,
-      continent: row.continent,
-    };
+    this.lastCountryResult = { lat, lon, result: countryResult };
+    return countryResult;
+  }
+
+  /**
+   * Round coordinate to a grid cell for caching (~500m grid)
+   */
+  private adminCacheKey(lat: number, lon: number): string {
+    // ~0.005 degrees ≈ 500m — nearby clicks hit the same cache entry
+    return `${(lat * 200).toFixed(0)},${(lon * 200).toFixed(0)}`;
   }
 
   /**
    * Get admin hierarchy for a point
-   * Returns district, governorate, and region information
+   * Returns district, municipality, governorate, region, and nearest settlement
+   *
+   * Performance optimizations:
+   * - Grid-based cache (~500m) avoids re-querying for nearby clicks
+   * - Settlement uses bbox pre-filter on lat/lon columns (21K → ~tens of rows)
+   * - Polygon layers (region/gov/municipality) run as one batch, settlement separate
    */
   async getAdminHierarchy(lat: number, lon: number): Promise<AdminHierarchy> {
     this.ensureInitialized();
 
-    // Query all three admin levels in parallel
-    const [districtResult, govResult, regionResult] = await Promise.all([
-      this.conn!.query(`
-        SELECT district_id, name_ar, name_en, region_ar, region_en
-        FROM sa_districts
-        WHERE ST_Contains(geometry, ST_Point(${lon}, ${lat}))
-        LIMIT 1
-      `),
-      this.conn!.query(`
-        SELECT gov_id, name_ar, name_en
-        FROM sa_governorates
-        WHERE ST_Contains(geometry, ST_Point(${lon}, ${lat}))
-        LIMIT 1
-      `),
-      this.conn!.query(`
-        SELECT region_id, name_ar, name_en
-        FROM sa_regions
-        WHERE ST_Contains(geometry, ST_Point(${lon}, ${lat}))
-        LIMIT 1
-      `),
-    ]);
-
-    const districtRows = districtResult.toArray();
-    const govRows = govResult.toArray();
-    const regionRows = regionResult.toArray();
-
-    const govRow = govRows.length > 0 ? (govRows[0] as DuckDBRow) : null;
-    const regionRow = regionRows.length > 0 ? (regionRows[0] as DuckDBRow) : null;
-
-    if (districtRows.length > 0) {
-      const row = districtRows[0] as DuckDBRow;
-      return {
-        district: { id: row.district_id, name_ar: row.name_ar, name_en: row.name_en },
-        governorate: govRow
-          ? { id: govRow.gov_id, name_ar: govRow.name_ar, name_en: govRow.name_en }
-          : undefined,
-        region: regionRow
-          ? { id: regionRow.region_id, name_ar: regionRow.name_ar, name_en: regionRow.name_en }
-          : { id: '', name_ar: row.region_ar, name_en: row.region_en },
-      };
+    // Check cache first (~500m grid)
+    const cacheKey = this.adminCacheKey(lat, lon);
+    const cached = this.adminCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL_MS) {
+      sdkLogger.debug(`Admin hierarchy cache hit for (${lat}, ${lon})`);
+      return cached.result;
     }
 
-    if (regionRow) {
-      return {
-        governorate: govRow
-          ? { id: govRow.gov_id, name_ar: govRow.name_ar, name_en: govRow.name_en }
-          : undefined,
-        region: { id: regionRow.region_id, name_ar: regionRow.name_ar, name_en: regionRow.name_en },
-      };
+    // Ensure admin boundary tables are loaded (lazy, first call only)
+    await this.ensureAdminViews();
+
+    // Single combined query using 3 LATERAL JOINs on in-memory tables.
+    // Municipality (100% SA coverage) provides region + governorate columns,
+    // eliminating the need for separate sa_regions and sa_governorates tables.
+    const result = await this.conn!.query(`
+      WITH point AS (SELECT ST_Point(${lon}, ${lat}) AS geom)
+      SELECT
+        m.region_id, m.region_name_ar, m.region_name_en,
+        m.governorate_id, m.governorate_name_ar, m.governorate_name_en,
+        m.municipality_id, m.municipality_name_ar, m.municipality_name_en,
+        d.district_id, d.district_name_ar, d.district_name_en,
+        s.city_id, s.city_name_ar, s.city_name_en, s.city_type
+      FROM point p
+      LEFT JOIN LATERAL (
+        SELECT municipality_id, municipality_name_ar, municipality_name_en,
+               governorate_id, governorate_name_ar, governorate_name_en,
+               region_id, region_name_ar, region_name_en
+        FROM sa_municipalities WHERE ST_Contains(geometry, p.geom) LIMIT 1
+      ) m ON TRUE
+      LEFT JOIN LATERAL (
+        SELECT district_id, district_name_ar, district_name_en
+        FROM sa_districts WHERE ST_Contains(geometry, p.geom) LIMIT 1
+      ) d ON TRUE
+      LEFT JOIN LATERAL (
+        SELECT city_id, city_name_ar, city_name_en, city_type
+        FROM sa_settlements
+        WHERE longitude BETWEEN ${lon} - 0.1 AND ${lon} + 0.1
+          AND latitude BETWEEN ${lat} - 0.1 AND ${lat} + 0.1
+        ORDER BY ST_Distance(geometry, p.geom)
+        LIMIT 1
+      ) s ON TRUE
+    `);
+
+    const hierarchy: AdminHierarchy = {};
+    const rows = result.toArray();
+
+    if (rows.length > 0) {
+      const row = rows[0] as DuckDBRow;
+      if (row.region_id) {
+        hierarchy.region = {
+          id: row.region_id,
+          name_ar: row.region_name_ar,
+          name_en: row.region_name_en,
+        };
+      }
+      if (row.governorate_id) {
+        hierarchy.governorate = {
+          id: row.governorate_id,
+          name_ar: row.governorate_name_ar,
+          name_en: row.governorate_name_en,
+        };
+      }
+      if (row.municipality_id) {
+        hierarchy.municipality = {
+          id: row.municipality_id,
+          name_ar: row.municipality_name_ar,
+          name_en: row.municipality_name_en,
+        };
+      }
+      if (row.district_id) {
+        hierarchy.district = {
+          id: row.district_id,
+          name_ar: row.district_name_ar,
+          name_en: row.district_name_en,
+        };
+      }
+      if (row.city_id) {
+        hierarchy.settlement = {
+          id: row.city_id,
+          name_ar: row.city_name_ar,
+          name_en: row.city_name_en,
+          type: row.city_type,
+        };
+      }
     }
 
-    return {};
+    // Cache the result
+    if (this.adminCache.size >= this.MAX_CACHE_SIZE) {
+      const oldestKey = this.adminCache.keys().next().value;
+      if (oldestKey) this.adminCache.delete(oldestKey);
+    }
+    this.adminCache.set(cacheKey, { result: hierarchy, timestamp: Date.now() });
+
+    return hierarchy;
   }
 
   /**
@@ -1270,14 +1397,15 @@ export class GeoSDK {
    */
   private async loadDistrictNames(): Promise<void> {
     try {
+      await this.ensureAdminViews();
       const result = await this.conn!.query(`
-        SELECT DISTINCT name_ar, name_en FROM sa_districts
-        ORDER BY name_ar
+        SELECT DISTINCT district_name_ar, district_name_en FROM sa_districts
+        ORDER BY district_name_ar
       `);
 
       const rows = result.toArray();
-      this.districtNames.ar = rows.map((r: DuckDBRow) => r.name_ar).filter(Boolean);
-      this.districtNames.en = rows.map((r: DuckDBRow) => r.name_en).filter(Boolean);
+      this.districtNames.ar = rows.map((r: DuckDBRow) => r.district_name_ar).filter(Boolean);
+      this.districtNames.en = rows.map((r: DuckDBRow) => r.district_name_en).filter(Boolean);
 
       sdkLogger.info(`Loaded ${this.districtNames.ar.length} district names for autocomplete`);
     } catch (e) {
@@ -1344,6 +1472,7 @@ export class GeoSDK {
    */
   clearCache(): void {
     this.searchCache.clear();
+    this.adminCache.clear();
     sdkLogger.info('Search cache cleared');
   }
 
@@ -1468,12 +1597,29 @@ export class GeoSDK {
   }
 
   /**
-   * Close and cleanup
+   * Close and cleanup — drops in-memory tables to free memory
    */
   async close(): Promise<void> {
-    if (this.conn) await this.conn.close();
+    if (this.conn) {
+      try {
+        await this.conn.query(`
+          DROP TABLE IF EXISTS world_countries;
+          DROP TABLE IF EXISTS sa_municipalities;
+          DROP TABLE IF EXISTS sa_districts;
+          DROP TABLE IF EXISTS sa_settlements;
+        `);
+      } catch {
+        // Ignore errors during cleanup
+      }
+      await this.conn.close();
+    }
     if (this.db) await this.db.terminate();
     this.initialized = false;
+    this.adminViewsReady = false;
+    this.adminViewsPromise = null;
+    this.lastCountryResult = null;
     this.loadedTiles.clear();
+    this.searchCache.clear();
+    this.adminCache.clear();
   }
 }

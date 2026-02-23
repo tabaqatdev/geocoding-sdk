@@ -95,17 +95,15 @@ console.log("SDK ready:", await sdk.getStats());`}
               code={`import { GeoSDK } from "@tabaqat/geocoding-sdk";
 
 const sdk = new GeoSDK({
-  // Custom data URL (default: source.coop)
-  dataUrl: "https://your-cdn.com/geocoding-data/v0.1.0",
+  // Custom data URL (default: source.coop v0.4.0)
+  dataUrl: "https://your-cdn.com/geocoding-data/v0.4.0",
 
   // Default language for results
   language: "ar", // or "en"
 
   // Enable debug logging (default: false)
+  // Uses native console.* — filter in browser DevTools
   debug: true,
-
-  // Log level: "debug" | "info" | "warn" | "error" | "none"
-  logLevel: "info"
 });
 
 await sdk.initialize();
@@ -166,7 +164,7 @@ sdk.setDebug(false);  // Disable`}
   type TileInfo,
   type PostcodeInfo,
   type GeoSDKConfig,
-  type LogLevel
+  type SDKLogger
 } from "@tabaqat/geocoding-sdk";
 
 // All methods are fully typed
@@ -201,29 +199,33 @@ const hierarchy: AdminHierarchy = await sdk.getAdminHierarchy(lat, lon);`}
                   <CodeBlock
                     language="bash"
                     code={`# Download all required Parquet files
-mkdir -p ./public/geocoding-data/v0.1.0/tiles
+mkdir -p ./public/geocoding-data/v0.4.0/tiles
 
 # Download index files
-curl -o ./public/geocoding-data/v0.1.0/tile_index.parquet \\
-  https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/tile_index.parquet
+curl -o ./public/geocoding-data/v0.4.0/tile_index.parquet \\
+  https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/tile_index.parquet
 
-curl -o ./public/geocoding-data/v0.1.0/postcode_index.parquet \\
-  https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/postcode_index.parquet
+curl -o ./public/geocoding-data/v0.4.0/postcode_index.parquet \\
+  https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/postcode_index.parquet
 
 # Download boundary files
-curl -o ./public/geocoding-data/v0.1.0/world_countries_simple.parquet \\
-  https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/world_countries_simple.parquet
+curl -o ./public/geocoding-data/v0.4.0/world_countries_simple.parquet \\
+  https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/world_countries_simple.parquet
 
-curl -o ./public/geocoding-data/v0.1.0/sa_regions_simple.parquet \\
-  https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_regions_simple.parquet
+# Download admin boundary files (~1.9MB total)
+curl -o ./public/geocoding-data/v0.4.0/sa_municipalities_simple.parquet \\
+  https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/sa_municipalities_simple.parquet
 
-curl -o ./public/geocoding-data/v0.1.0/sa_districts_simple.parquet \\
-  https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_districts_simple.parquet
+curl -o ./public/geocoding-data/v0.4.0/sa_districts_simple.parquet \\
+  https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/sa_districts_simple.parquet
+
+curl -o ./public/geocoding-data/v0.4.0/sa_settlements.parquet \\
+  https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/sa_settlements.parquet
 
 # Download all tile files (717 files, ~158MB total)
-for tile in $(curl -s https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/tiles/ | grep -o 'href="[^"]*\\.parquet"' | cut -d'"' -f2); do
-  curl -o ./public/geocoding-data/v0.1.0/tiles/$tile \\
-    https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/tiles/$tile
+for tile in $(curl -s https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/tiles/ | grep -o 'href="[^"]*\\.parquet"' | cut -d'"' -f2); do
+  curl -o ./public/geocoding-data/v0.4.0/tiles/$tile \\
+    https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/tiles/$tile
 done`}
                   />
                 </TabsContent>
@@ -231,28 +233,32 @@ done`}
                   <CodeBlock
                     language="powershell"
                     code={`# PowerShell script to download all required Parquet files
-New-Item -ItemType Directory -Force -Path .\\public\\geocoding-data\\v0.1.0\\tiles
+New-Item -ItemType Directory -Force -Path .\\public\\geocoding-data\\v0.4.0\\tiles
 
 # Download index files
-Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/tile_index.parquet" \`
-  -OutFile ".\\public\\geocoding-data\\v0.1.0\\tile_index.parquet"
+Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/tile_index.parquet" \`
+  -OutFile ".\\public\\geocoding-data\\v0.4.0\\tile_index.parquet"
 
-Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/postcode_index.parquet" \`
-  -OutFile ".\\public\\geocoding-data\\v0.1.0\\postcode_index.parquet"
+Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/postcode_index.parquet" \`
+  -OutFile ".\\public\\geocoding-data\\v0.4.0\\postcode_index.parquet"
 
 # Download boundary files
-Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/world_countries_simple.parquet" \`
-  -OutFile ".\\public\\geocoding-data\\v0.1.0\\world_countries_simple.parquet"
+Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/world_countries_simple.parquet" \`
+  -OutFile ".\\public\\geocoding-data\\v0.4.0\\world_countries_simple.parquet"
 
-Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_regions_simple.parquet" \`
-  -OutFile ".\\public\\geocoding-data\\v0.1.0\\sa_regions_simple.parquet"
+# Download admin boundary files (~1.9MB total)
+Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/sa_municipalities_simple.parquet" \`
+  -OutFile ".\\public\\geocoding-data\\v0.4.0\\sa_municipalities_simple.parquet"
 
-Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/sa_districts_simple.parquet" \`
-  -OutFile ".\\public\\geocoding-data\\v0.1.0\\sa_districts_simple.parquet"
+Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/sa_districts_simple.parquet" \`
+  -OutFile ".\\public\\geocoding-data\\v0.4.0\\sa_districts_simple.parquet"
+
+Invoke-WebRequest -Uri "https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/sa_settlements.parquet" \`
+  -OutFile ".\\public\\geocoding-data\\v0.4.0\\sa_settlements.parquet"
 
 # Download all tile files (717 files, ~158MB total)
 # Note: This is a simplified example. For production, use a proper download script
-$baseUrl = "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/tiles/"
+$baseUrl = "https://data.source.coop/tabaqat/geocoding-cng/v0.4.0/tiles/"
 # Add your tile download logic here`}
                   />
                 </TabsContent>
@@ -272,7 +278,7 @@ $baseUrl = "https://data.source.coop/tabaqat/geocoding-cng/v0.1.0/tiles/"
 
 // Point to your local data directory
 const sdk = new GeoSDK({
-  dataUrl: '/geocoding-data/v0.1.0', // Relative to your public folder
+  dataUrl: '/geocoding-data/v0.4.0', // Relative to your public folder
   language: 'ar'
 });
 

@@ -58,7 +58,7 @@ jobs:
         working-directory: .
 
       - name: Generate API docs JSON
-        run: bun run docs:json
+        run: bunx typedoc --json examples/react/app/data/api-docs.json --emit none
         working-directory: .
 
       - name: Cache example dependencies

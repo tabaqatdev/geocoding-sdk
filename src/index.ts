@@ -23,8 +23,8 @@ export type {
   AdminHierarchy,
 } from './geocoder-h3';
 
-// Export logger utilities
-export { logger, createLogger, type LogLevel } from './logger';
+// Export logger utility
+export { createLogger, type SDKLogger } from './logger';
 
 // Export default data URL
 export { DEFAULT_DATA_URL } from './types';

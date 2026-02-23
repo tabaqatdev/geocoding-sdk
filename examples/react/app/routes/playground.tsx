@@ -67,9 +67,8 @@ const MAP_STYLES = {
   dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
 };
 
-// RTL text plugin URL
-const RTL_PLUGIN_URL =
-  "https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.3.0/dist/mapbox-gl-rtl-text.js";
+// RTL text plugin URL (0.2.3 uses UMD format compatible with MapLibre's importScripts worker loading)
+const RTL_PLUGIN_URL = "https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.js";
 
 // Default zoom level for fly-to animations
 const DEFAULT_FLYTO_ZOOM = 18;

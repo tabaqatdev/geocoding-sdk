@@ -7,7 +7,6 @@ export type GeocodingResult = SDKGeocodingResult;
 // SDK type definition (the actual import is dynamic)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type GeoSDKType = any;
-type LogLevel = "debug" | "info" | "warn" | "error" | "none";
 
 interface TileInfo {
   tile_id: string;
@@ -92,16 +91,21 @@ export function GeoSDKProvider({ children }: GeoSDKProviderProps) {
     initPromise = (async () => {
       try {
         // Dynamic import to avoid SSR issues
+        console.log("[GeoSDK-Context] Importing SDK module...");
         const { GeoSDK } = await import("@tabaqat/geocoding-sdk");
+        console.log("[GeoSDK-Context] SDK module imported, creating instance...");
 
         const geoSDK = new GeoSDK({
           debug: true,
-          logLevel: "debug",
         });
+
+        console.log("[GeoSDK-Context] Calling initialize()...");
         await geoSDK.initialize();
+        console.log("[GeoSDK-Context] initialize() complete");
 
         const sdkStats = await geoSDK.getStats();
         const mode = geoSDK.getSearchMode();
+        console.log("[GeoSDK-Context] Ready — mode:", mode, "tiles:", sdkStats.totalTiles);
 
         // Store in global singleton
         globalSDK = geoSDK;
@@ -115,6 +119,7 @@ export function GeoSDKProvider({ children }: GeoSDKProviderProps) {
         setSearchMode(mode);
         setStatus("ready");
       } catch (e) {
+        console.error("[GeoSDK-Context] Initialization failed:", e);
         const err = e instanceof Error ? e : new Error("Failed to initialize SDK");
         globalError = err;
         globalStatus = "error";

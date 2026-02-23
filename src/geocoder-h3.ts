@@ -21,7 +21,7 @@
 
 import * as duckdb from '@duckdb/duckdb-wasm';
 import { DEFAULT_DATA_URL } from './types';
-import { logger as sdkLogger, type LogLevel } from './logger';
+import { createLogger, type SDKLogger } from './logger';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DuckDBRow = Record<string, any>;
@@ -67,10 +67,8 @@ export interface GeoSDKConfig {
   dataUrl?: string;
   /** Default language for results */
   language?: 'ar' | 'en';
-  /** Enable debug logging (default: false) */
+  /** Enable debug logging (default: false). Uses native console.* — filter in browser DevTools. */
   debug?: boolean;
-  /** Log level when debug is enabled (default: 'info') */
-  logLevel?: LogLevel;
 }
 
 export interface GeocodingResult {
@@ -125,6 +123,7 @@ export class GeoSDK {
   private adminViewsReady = false;
   private adminViewsPromise: Promise<void> | null = null;
   private actualBaseUrl = '';
+  private log: SDKLogger;
 
   private tileIndex: TileInfo[] = [];
   private postcodeIndex: Map<string, PostcodeInfo> = new Map();
@@ -145,25 +144,16 @@ export class GeoSDK {
       dataUrl: config.dataUrl ?? DEFAULT_DATA_URL,
       language: config.language ?? 'ar',
       debug: config.debug ?? false,
-      logLevel: config.logLevel ?? 'info',
     };
 
-    // Configure logger
-    sdkLogger.configure({
-      enabled: this.config.debug,
-      level: this.config.logLevel,
-      prefix: '[GeoSDK]',
-    });
+    this.log = createLogger(() => this.config.debug);
   }
 
   /**
    * Enable or disable debug logging at runtime
    */
-  setDebug(enabled: boolean, level?: LogLevel): void {
+  setDebug(enabled: boolean): void {
     this.config.debug = enabled;
-    if (level) this.config.logLevel = level;
-    sdkLogger.setDebug(enabled);
-    if (level) sdkLogger.setLevel(level);
   }
 
   /**
@@ -202,14 +192,16 @@ export class GeoSDK {
       if (this.onProgress) this.onProgress(step, status, timeMs, details);
     };
 
+    this.log.time('total init');
     let stepStart = performance.now();
 
     // Step 1: Load DuckDB WASM
     report('wasm', 'loading');
-    sdkLogger.info('Initializing DuckDB-WASM...');
+    this.log.time('wasm');
 
     const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
     const bundle = await duckdb.selectBundle(JSDELIVR_BUNDLES);
+    this.log.debug('Bundle:', bundle.mainModule);
 
     const worker_url = URL.createObjectURL(
       new Blob([`importScripts("${bundle.mainWorker}");`], {
@@ -218,46 +210,51 @@ export class GeoSDK {
     );
 
     const worker = new Worker(worker_url);
-    const logger = new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING);
-    this.db = new duckdb.AsyncDuckDB(logger, worker);
+    const duckdbLogger = new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING);
+    this.db = new duckdb.AsyncDuckDB(duckdbLogger, worker);
     await this.db.instantiate(bundle.mainModule, bundle.pthreadWorker);
-
     this.conn = await this.db.connect();
+    this.log.timeEnd('wasm');
     report('wasm', 'success', performance.now() - stepStart);
 
     // Step 2: Load Spatial extension
     stepStart = performance.now();
     report('spatial', 'loading');
-    sdkLogger.info('Loading extensions...');
+    this.log.time('spatial');
     await this.conn.query('INSTALL spatial; LOAD spatial;');
+    this.log.timeEnd('spatial');
     report('spatial', 'success', performance.now() - stepStart);
 
     // Step 3: Load H3 extension
     stepStart = performance.now();
     report('h3', 'loading');
+    this.log.time('h3');
     await this.conn.query('INSTALL h3 FROM community; LOAD h3;');
+    this.log.timeEnd('h3');
     report('h3', 'success', performance.now() - stepStart);
 
     // Step 4: Try to load FTS extension
     stepStart = performance.now();
     report('fts', 'loading');
+    this.log.time('fts');
     try {
       await this.conn.query('INSTALL fts; LOAD fts;');
       this.ftsAvailable = true;
-      sdkLogger.info('FTS extension loaded - BM25 search available');
+      this.log.timeEnd('fts');
       report('fts', 'success', performance.now() - stepStart, 'BM25 Arabic');
     } catch {
       this.ftsAvailable = false;
-      sdkLogger.info('FTS extension not available, using JACCARD fallback');
+      this.log.timeEnd('fts');
+      this.log.warn('FTS not available, using JACCARD fallback');
       report('fts', 'error', performance.now() - stepStart, 'Fallback: JACCARD');
     }
 
     const baseUrl = this.config.dataUrl;
-    sdkLogger.info('Loading index files from:', baseUrl);
 
     // Step 5: Load tile index with fallback
     stepStart = performance.now();
     report('tiles', 'loading');
+    this.log.time('tile index');
 
     let indexResult;
     let actualBaseUrl = baseUrl;
@@ -267,19 +264,15 @@ export class GeoSDK {
         SELECT * FROM read_parquet('${baseUrl}/tile_index.parquet')
       `);
     } catch (error) {
-      // If custom URL fails, try fallback to default
       if (baseUrl !== DEFAULT_DATA_URL) {
-        sdkLogger.warn(`Failed to load from custom URL: ${baseUrl}`);
-        sdkLogger.info(`Falling back to default URL: ${DEFAULT_DATA_URL}`);
+        this.log.warn(`Custom URL failed, falling back to default: ${DEFAULT_DATA_URL}`);
         report('tiles', 'error', performance.now() - stepStart, 'Trying fallback URL');
-
         try {
           indexResult = await this.conn.query(`
             SELECT * FROM read_parquet('${DEFAULT_DATA_URL}/tile_index.parquet')
           `);
           actualBaseUrl = DEFAULT_DATA_URL;
-          this.config.dataUrl = DEFAULT_DATA_URL; // Update config to use fallback
-          sdkLogger.info('Successfully loaded from fallback URL');
+          this.config.dataUrl = DEFAULT_DATA_URL;
         } catch {
           throw new Error(`Failed to load tile index from both custom and default URLs: ${error}`);
         }
@@ -299,18 +292,19 @@ export class GeoSDK {
       region_ar: row.region_ar,
       region_en: row.region_en,
     }));
-    sdkLogger.info(`Found ${this.tileIndex.length} H3 tiles`);
+    this.log.timeEnd('tile index');
+    this.log.info(`${this.tileIndex.length} tiles loaded`);
     report('tiles', 'success', performance.now() - stepStart, `${this.tileIndex.length} tiles`);
 
     // Step 6: Load postcode index
     stepStart = performance.now();
     report('postcodes', 'loading');
+    this.log.time('postcode index');
     try {
       const postcodeResult = await this.conn.query(`
         SELECT * FROM read_parquet('${actualBaseUrl}/postcode_index.parquet')
       `);
       for (const row of postcodeResult.toArray()) {
-        // Convert DuckDB list to JavaScript array
         let tilesArray: string[];
         if (Array.isArray(row.tiles)) {
           tilesArray = row.tiles;
@@ -320,7 +314,7 @@ export class GeoSDK {
           tilesArray = Array.from(row.tiles);
         } else {
           tilesArray = [];
-          sdkLogger.warn(`Unexpected tiles format for postcode ${row.postcode}:`, typeof row.tiles);
+          this.log.warn(`Unexpected tiles format for postcode ${row.postcode}:`, typeof row.tiles);
         }
 
         this.postcodeIndex.set(row.postcode, {
@@ -331,7 +325,8 @@ export class GeoSDK {
           region_en: row.region_en,
         });
       }
-      sdkLogger.info(`Loaded ${this.postcodeIndex.size} postcodes`);
+      this.log.timeEnd('postcode index');
+      this.log.info(`${this.postcodeIndex.size} postcodes loaded`);
       report(
         'postcodes',
         'success',
@@ -339,35 +334,41 @@ export class GeoSDK {
         `${this.postcodeIndex.size} postcodes`
       );
     } catch {
-      sdkLogger.warn('Postcode index not available, searchByPostcode will be slower');
+      this.log.timeEnd('postcode index');
+      this.log.warn('Postcode index not available');
       report('postcodes', 'error', performance.now() - stepStart, 'Not available');
     }
 
-    // Load world countries into memory (needed for isInSaudiArabia/detectCountry)
-    // Region/governorate info is derived from municipality matches (100% coverage)
+    // Step 7: Load world countries into memory
     stepStart = performance.now();
     report('boundaries', 'loading');
-    await this.conn.query(`
-      CREATE TABLE world_countries AS
-      SELECT * FROM read_parquet('${actualBaseUrl}/world_countries_simple.parquet')
-    `);
+    this.log.time('world_countries');
+    try {
+      await this.conn.query(`
+        CREATE TABLE IF NOT EXISTS world_countries AS
+        SELECT * FROM read_parquet('${actualBaseUrl}/world_countries_simple.parquet')
+      `);
+    } catch (e) {
+      this.log.error('Failed to load world_countries:', e);
+      throw e;
+    }
+    this.log.timeEnd('world_countries');
 
     // R-tree spatial index for fast ST_Contains queries
     try {
       await this.conn.query(
-        `CREATE INDEX idx_world_geom ON world_countries USING RTREE (geometry)`
+        `CREATE INDEX IF NOT EXISTS idx_world_geom ON world_countries USING RTREE (geometry)`
       );
     } catch {
-      sdkLogger.warn('R-tree indexes not supported, continuing without spatial indexes');
+      this.log.warn('R-tree indexes not supported');
     }
     report('boundaries', 'success', performance.now() - stepStart);
 
-    // Admin boundary views (governorates, municipalities, districts, settlements)
-    // are created lazily on first getAdminHierarchy() call to speed up init
+    // Admin boundary tables are created lazily on first getAdminHierarchy() call
     this.actualBaseUrl = actualBaseUrl;
 
     this.initialized = true;
-    sdkLogger.info('Initialization complete');
+    this.log.timeEnd('total init');
   }
 
   private ensureInitialized(): void {
@@ -389,8 +390,7 @@ export class GeoSDK {
     if (!this.adminViewsPromise) {
       this.adminViewsPromise = (async () => {
         const url = this.actualBaseUrl;
-        const start = performance.now();
-        sdkLogger.info('Loading admin boundary tables into memory...');
+        this.log.time('admin tables');
         await Promise.all([
           this.conn!.query(`
             CREATE TABLE IF NOT EXISTS sa_municipalities AS
@@ -416,15 +416,12 @@ export class GeoSDK {
               `CREATE INDEX IF NOT EXISTS idx_dist_geom ON sa_districts USING RTREE (geometry)`
             ),
           ]);
-          sdkLogger.info('R-tree spatial indexes created');
         } catch {
-          sdkLogger.warn('R-tree indexes not supported, continuing without');
+          this.log.warn('R-tree indexes not supported');
         }
 
         this.adminViewsReady = true;
-        sdkLogger.info(
-          `Admin boundary tables loaded in ${(performance.now() - start).toFixed(0)}ms`
-        );
+        this.log.timeEnd('admin tables');
       })();
     }
 
@@ -526,25 +523,25 @@ export class GeoSDK {
     // Check if point is in Saudi Arabia
     const inSA = await this.isInSaudiArabia(lat, lon);
     if (!inSA) {
-      sdkLogger.info(`Point (${lat}, ${lon}) is outside Saudi Arabia`);
+      this.log.info(`Point (${lat}, ${lon}) is outside Saudi Arabia`);
       return [];
     }
 
     // Get H3 tile for this point
     const h3Tile = await this.getH3TileForPoint(lat, lon);
     if (!h3Tile) {
-      sdkLogger.warn(`Could not compute H3 tile for (${lat}, ${lon})`);
+      this.log.warn(`Could not compute H3 tile for (${lat}, ${lon})`);
       return [];
     }
 
     // Check if this tile exists in our index
     const tileInfo = this.tileIndex.find((t) => t.h3_tile === h3Tile);
     if (!tileInfo) {
-      sdkLogger.info(`No data tile for H3 cell: ${h3Tile}`);
+      this.log.info(`No data tile for H3 cell: ${h3Tile}`);
       return [];
     }
 
-    sdkLogger.info(
+    this.log.info(
       `Querying tile ${h3Tile} (${tileInfo.file_size_kb} KB, ${tileInfo.addr_count.toLocaleString()} addresses)`
     );
 
@@ -563,7 +560,7 @@ export class GeoSDK {
           tilesToQuery.push(neighbor);
         }
       }
-      sdkLogger.info(`Including ${tilesToQuery.length} tiles (neighbors)`);
+      this.log.info(`Including ${tilesToQuery.length} tiles (neighbors)`);
     }
 
     // Build bounding box for spatial filter
@@ -741,7 +738,7 @@ export class GeoSDK {
     const cacheKey = this.adminCacheKey(lat, lon);
     const cached = this.adminCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < this.CACHE_TTL_MS) {
-      sdkLogger.debug(`Admin hierarchy cache hit for (${lat}, ${lon})`);
+      this.log.debug(`Admin hierarchy cache hit for (${lat}, ${lon})`);
       return cached.result;
     }
 
@@ -888,7 +885,7 @@ export class GeoSDK {
         (t) =>
           t.min_lon <= maxLon && t.max_lon >= minLon && t.min_lat <= maxLat && t.max_lat >= minLat
       );
-      sdkLogger.info(`Bbox filter: ${tilesToQuery.length}/${this.tileIndex.length} tiles`);
+      this.log.info(`Bbox filter: ${tilesToQuery.length}/${this.tileIndex.length} tiles`);
     } else if (options.regions && options.regions.length > 0) {
       // Filter tiles by multiple regions
       tilesToQuery = this.tileIndex.filter(
@@ -896,7 +893,7 @@ export class GeoSDK {
           options.regions!.includes(t.region_ar ?? '') ||
           options.regions!.includes(t.region_en ?? '')
       );
-      sdkLogger.info(
+      this.log.info(
         `Regions filter (${options.regions.length}): ${tilesToQuery.length}/${this.tileIndex.length} tiles`
       );
     } else if (options.region) {
@@ -904,15 +901,15 @@ export class GeoSDK {
       tilesToQuery = this.tileIndex.filter(
         (t) => t.region_ar === options.region || t.region_en === options.region
       );
-      sdkLogger.info(`Region filter: ${tilesToQuery.length}/${this.tileIndex.length} tiles`);
+      this.log.info(`Region filter: ${tilesToQuery.length}/${this.tileIndex.length} tiles`);
     } else {
       // No filter - search all tiles (slow)
-      sdkLogger.warn('No bbox provided. Consider passing map bounds for faster search.');
+      this.log.warn('No bbox provided. Consider passing map bounds for faster search.');
       tilesToQuery = this.tileIndex;
     }
 
     if (tilesToQuery.length === 0) {
-      sdkLogger.info('No tiles match the search area');
+      this.log.info('No tiles match the search area');
       return [];
     }
 
@@ -925,13 +922,13 @@ export class GeoSDK {
         tilesToQuery = tilesToQuery
           .sort((a, b) => a.file_size_kb - b.file_size_kb)
           .slice(0, MAX_TILES);
-        sdkLogger.info(`Limited to ${MAX_TILES} smallest tiles`);
+        this.log.info(`Limited to ${MAX_TILES} smallest tiles`);
       } else {
         // Without filters, sample evenly for geographic coverage
         // Include mix of tile sizes to cover major cities too
         const step = Math.ceil(tilesToQuery.length / MAX_TILES);
         tilesToQuery = tilesToQuery.filter((_, i) => i % step === 0).slice(0, MAX_TILES);
-        sdkLogger.info(`Sampled ${tilesToQuery.length} tiles evenly for coverage`);
+        this.log.info(`Sampled ${tilesToQuery.length} tiles evenly for coverage`);
       }
     }
 
@@ -994,9 +991,9 @@ export class GeoSDK {
         // Cleanup temp table
         await this.conn!.query(`DROP TABLE IF EXISTS ${tempTable}`);
 
-        sdkLogger.info(`FTS BM25 search completed`);
+        this.log.info(`FTS BM25 search completed`);
       } catch (ftsError) {
-        sdkLogger.warn('FTS search failed, falling back to JACCARD:', ftsError);
+        this.log.warn('FTS search failed, falling back to JACCARD:', ftsError);
         // Fall through to JACCARD fallback
         result = null;
       }
@@ -1092,12 +1089,12 @@ export class GeoSDK {
     try {
       await this.conn!.query('LOAD fts;');
     } catch {
-      sdkLogger.warn('FTS extension not available, falling back to JACCARD');
+      this.log.warn('FTS extension not available, falling back to JACCARD');
       return this.geocode(query, options);
     }
 
     // TODO: Implement FTS-based search when phrase_index is available
-    sdkLogger.warn('FTS search not yet implemented, using JACCARD');
+    this.log.warn('FTS search not yet implemented, using JACCARD');
     return this.geocode(query, options);
   }
 
@@ -1131,11 +1128,11 @@ export class GeoSDK {
     const postcodeInfo = this.postcodeIndex.get(normalizedPostcode);
 
     if (!postcodeInfo) {
-      sdkLogger.info(`Postcode ${postcode} not found in index`);
+      this.log.info(`Postcode ${postcode} not found in index`);
       return [];
     }
 
-    sdkLogger.info(
+    this.log.info(
       `Postcode ${postcode}: ${postcodeInfo.addr_count} addresses in ${postcodeInfo.tiles.length} tiles`
     );
 
@@ -1213,16 +1210,16 @@ export class GeoSDK {
       tilesToQuery = this.tileIndex.filter(
         (t) => t.region_ar === options.region || t.region_en === options.region
       );
-      sdkLogger.info(`Region filter: ${tilesToQuery.length}/${this.tileIndex.length} tiles`);
+      this.log.info(`Region filter: ${tilesToQuery.length}/${this.tileIndex.length} tiles`);
     } else if (options.bbox) {
       const [minLat, minLon, maxLat, maxLon] = options.bbox;
       tilesToQuery = this.tileIndex.filter(
         (t) =>
           t.min_lon <= maxLon && t.max_lon >= minLon && t.min_lat <= maxLat && t.max_lat >= minLat
       );
-      sdkLogger.info(`Bbox filter: ${tilesToQuery.length}/${this.tileIndex.length} tiles`);
+      this.log.info(`Bbox filter: ${tilesToQuery.length}/${this.tileIndex.length} tiles`);
     } else {
-      sdkLogger.warn(
+      this.log.warn(
         'No region or bbox filter. House numbers are not unique - consider adding a filter.'
       );
       // Only search first 20 tiles to avoid huge queries
@@ -1407,9 +1404,9 @@ export class GeoSDK {
       this.districtNames.ar = rows.map((r: DuckDBRow) => r.district_name_ar).filter(Boolean);
       this.districtNames.en = rows.map((r: DuckDBRow) => r.district_name_en).filter(Boolean);
 
-      sdkLogger.info(`Loaded ${this.districtNames.ar.length} district names for autocomplete`);
+      this.log.info(`Loaded ${this.districtNames.ar.length} district names for autocomplete`);
     } catch (e) {
-      sdkLogger.warn('Failed to load district names:', e);
+      this.log.warn('Failed to load district names:', e);
     }
   }
 
@@ -1434,7 +1431,7 @@ export class GeoSDK {
     // Check cache
     const cached = this.searchCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < this.CACHE_TTL_MS) {
-      sdkLogger.debug(`Cache hit for: ${query}`);
+      this.log.debug(`Cache hit for: ${query}`);
       return cached.results;
     }
 
@@ -1473,7 +1470,7 @@ export class GeoSDK {
   clearCache(): void {
     this.searchCache.clear();
     this.adminCache.clear();
-    sdkLogger.info('Search cache cleared');
+    this.log.info('Search cache cleared');
   }
 
   /**
@@ -1501,7 +1498,7 @@ export class GeoSDK {
       const postcode = postcodeMatch[1];
       const postcodeInfo = this.postcodeIndex.get(postcode);
       if (postcodeInfo) {
-        sdkLogger.info(`Smart search: detected postcode ${postcode}`);
+        this.log.info(`Smart search: detected postcode ${postcode}`);
         // Search by postcode first, then filter by remaining query
         const results = await this.searchByPostcode(postcode, { limit: limit * 2 });
 
@@ -1524,7 +1521,7 @@ export class GeoSDK {
     // Detect region in query
     const detectedRegion = this.detectRegionInQuery(normalizedQuery);
     if (detectedRegion) {
-      sdkLogger.info(`Smart search: detected region ${detectedRegion}`);
+      this.log.info(`Smart search: detected region ${detectedRegion}`);
       return this.geocode(normalizedQuery, {
         ...options,
         region: detectedRegion,

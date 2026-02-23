@@ -20,7 +20,7 @@ export function meta(_args: Route.MetaArgs) {
 
 export default function AdminHierarchy() {
   const { t, language } = useTranslation();
-  const { sdk, initialized, loading } = useGeoSDK();
+  const { sdk, initialized, loading, error, retry } = useGeoSDK();
   const [lat, setLat] = useState("24.7136");
   const [lon, setLon] = useState("46.6753");
   const [result, setResult] = useState<{
@@ -90,7 +90,16 @@ export default function AdminHierarchy() {
             <CardDescription>{t("docs.adminHierarchy.description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {!initialized ? (
+            {error ? (
+              <div className="space-y-2">
+                <p className="text-destructive text-sm">
+                  SDK initialization failed: {error.message}
+                </p>
+                <Button variant="outline" size="sm" onClick={retry}>
+                  Retry
+                </Button>
+              </div>
+            ) : !initialized ? (
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>{loading ? "Initializing SDK..." : "Loading..."}</span>

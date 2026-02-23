@@ -68,6 +68,6 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@duckdb/duckdb-wasm": "1.33.1-dev5.0"
+    "@duckdb/duckdb-wasm": "1.33.1-dev18.0"
   }
 }

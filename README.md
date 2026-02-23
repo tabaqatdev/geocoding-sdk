@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@tabaqat/geocoding-sdk)](https://bundlephobia.com/package/@tabaqat/geocoding-sdk)
 
-**v0.2.1** - A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser with automatic fallback to default data source.
+**v0.4.0** - A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser with automatic fallback to default data source.
 
 ## Live Examples
 
@@ -42,7 +42,7 @@ flowchart TB
         TI[("tile_index.parquet<br/>717 tiles metadata")]
         PI[("postcode_index.parquet<br/>6,499 postcodes")]
         TILES[("tiles/*.parquet<br/>~220KB avg each")]
-        BOUNDS[("Boundary files<br/>countries/regions/districts")]
+        BOUNDS[("Boundary files<br/>countries/municipalities/districts/settlements")]
     end
 
     subgraph Browser["Browser Runtime"]
@@ -92,12 +92,12 @@ flowchart TB
 - **Postcode Search**: Ultra-fast postcode lookups using indexed tile mapping (~1.3 tiles per postcode)
 - **House Number Search**: Search by building number with region/bbox filtering
 - **Country Detection**: Identify country from coordinates using spatial containment
-- **Admin Hierarchy**: Get district, governorate, and region info for Saudi Arabia coordinates
+- **Admin Hierarchy**: Get 5-level admin info (region, governorate, municipality, district, settlement) for Saudi Arabia coordinates
 - **Autocomplete Suggestions**: Get district, postcode, and region suggestions for typeahead
 - **H3 Tile Loading**: Ultra-fast on-demand loading (~220KB average per tile)
 - **Region Filtering**: Filter searches by single or multiple region names
 - **Bbox Filtering**: Optimize forward geocoding by limiting search to visible map area
-- **Debug Logging**: Configurable logging with multiple levels
+- **Debug Logging**: Native `console.*` logging gated by `debug` flag — filter in browser DevTools
 - **Bilingual**: Full support for Arabic and English
 
 ## Performance
@@ -140,8 +140,7 @@ import { GeoSDK } from '@tabaqat/geocoding-sdk';
 
 // Initialize SDK with options
 const sdk = new GeoSDK({
-  debug: true, // Enable debug logging
-  logLevel: 'info', // 'debug' | 'info' | 'warn' | 'error' | 'none'
+  debug: true, // Enable debug logging (uses native console.*)
 });
 await sdk.initialize();
 
@@ -265,13 +264,15 @@ const results = await sdk.geocode('شارع الملك فهد', {
 ### Admin Hierarchy
 
 ```typescript
-// Get full admin hierarchy including governorate
+// Get full 5-level admin hierarchy
 const admin = await sdk.getAdminHierarchy(24.7136, 46.6753);
 console.log(admin);
 // {
-//   district: { id: '00100001181', name_ar: 'الورود', name_en: 'Al Wurud' },
+//   region: { id: '001', name_ar: 'منطقة الرياض', name_en: 'Riyadh Region' },
 //   governorate: { id: '00100', name_ar: 'امارة منطقة الرياض', name_en: 'Riyadh Region Principality' },
-//   region: { id: '001', name_ar: 'منطقة الرياض', name_en: 'Riyadh Region' }
+//   municipality: { id: '00100100', name_ar: 'أمانة منطقة الرياض', name_en: 'Riyadh Municipality' },
+//   district: { id: '00100001181', name_ar: 'الورود', name_en: 'Al Wurud' },
+//   settlement: { id: '...', name_ar: 'الرياض', name_en: 'Riyadh', type: 'مدينة' }
 // }
 
 // Quick check if coordinates are in Saudi Arabia
@@ -284,13 +285,11 @@ console.log(inSA); // true
 ```typescript
 // Enable debug at initialization
 const sdk = new GeoSDK({
-  debug: true,
-  logLevel: 'debug', // 'debug' | 'info' | 'warn' | 'error' | 'none'
+  debug: true, // Uses native console.* — filter in browser DevTools
 });
 
 // Or toggle at runtime
-sdk.setDebug(true);
-sdk.setDebug(true, 'debug'); // With specific log level
+sdk.setDebug(true);  // Enable
 sdk.setDebug(false); // Disable
 ```
 
@@ -464,10 +463,9 @@ The default `GeoSDK` uses H3 tile-based partitioning (V3) for optimal performanc
 const sdk = new GeoSDK(config?: GeoSDKConfig);
 
 interface GeoSDKConfig {
-  dataUrl?: string;           // Custom data URL (default: source.coop V3 CDN)
+  dataUrl?: string;           // Custom data URL (default: source.coop v0.4.0 CDN)
   language?: 'ar' | 'en';     // Preferred language
   debug?: boolean;            // Enable debug logging (default: false)
-  logLevel?: LogLevel;        // 'debug' | 'info' | 'warn' | 'error' | 'none'
 }
 ```
 
@@ -572,9 +570,11 @@ Get administrative hierarchy for Saudi Arabia coordinates.
 ```typescript
 const admin = await sdk.getAdminHierarchy(24.7136, 46.6753);
 // {
-//   district: { id: '00100001181', name_ar: 'الورود', name_en: 'Al Wurud' },
+//   region: { id: '001', name_ar: 'منطقة الرياض', name_en: 'Riyadh Region' },
 //   governorate: { id: '00100', name_ar: 'امارة منطقة الرياض', name_en: 'Riyadh Region Principality' },
-//   region: { id: '001', name_ar: 'منطقة الرياض', name_en: 'Riyadh Region' }
+//   municipality: { id: '00100100', name_ar: 'أمانة منطقة الرياض', name_en: 'Riyadh Municipality' },
+//   district: { id: '00100001181', name_ar: 'الورود', name_en: 'Al Wurud' },
+//   settlement: { id: '...', name_ar: 'الرياض', name_en: 'Riyadh', type: 'مدينة' }
 // }
 ```
 
@@ -632,7 +632,7 @@ const bboxTiles = await sdk.getTilesForBbox(24.5, 46.5, 24.9, 47.0);
 ```typescript
 // Enable/disable debug at runtime
 sdk.setDebug(true);
-sdk.setDebug(true, 'debug');
+sdk.setDebug(false);
 
 // Get search mode
 const mode = sdk.getSearchMode(); // 'fts-bm25' or 'jaccard'
@@ -705,8 +705,10 @@ interface CountryResult {
 ```typescript
 interface AdminHierarchy {
   district?: { id: string; name_ar: string; name_en: string };
+  municipality?: { id: string; name_ar: string; name_en: string };
   governorate?: { id: string; name_ar: string; name_en: string };
   region?: { id: string; name_ar: string; name_en: string };
+  settlement?: { id: string; name_ar: string; name_en: string; type?: string };
 }
 ```
 
@@ -762,7 +764,7 @@ To host your own data files:
 
 ```typescript
 const sdk = new GeoSDK({
-  dataUrl: 'https://your-cdn.com/geocoding-data/v0.1.0',
+  dataUrl: 'https://your-cdn.com/geocoding-data/v0.4.0',
 });
 ```
 
@@ -772,10 +774,10 @@ Your CDN should serve:
 
 - `tile_index.parquet` - H3 tile metadata (includes region info)
 - `postcode_index.parquet` - Postcode to tiles mapping
-- `world_countries_simple.parquet`
-- `sa_regions_simple.parquet`
-- `sa_governorates_simple.parquet`
-- `sa_districts_simple.parquet`
+- `world_countries_simple.parquet` - Country boundaries
+- `sa_municipalities_simple.parquet` - 285 municipalities (loaded lazily)
+- `sa_districts_simple.parquet` - 5,484 district boundaries (loaded lazily)
+- `sa_settlements.parquet` - 21,450 settlement points (loaded lazily)
 - `tiles/*.parquet` (717 files)
 
 ## Development

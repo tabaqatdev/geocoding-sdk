@@ -33,11 +33,6 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
       - name: Cache SDK dependencies
         uses: actions/cache@v4
         with:
@@ -58,7 +53,7 @@ jobs:
         working-directory: .
 
       - name: Generate API docs JSON
-        run: bunx typedoc --json examples/react/app/data/api-docs.json --emit none
+        run: bun node_modules/typedoc/bin/typedoc --json examples/react/app/data/api-docs.json --emit none
         working-directory: .
 
       - name: Cache example dependencies

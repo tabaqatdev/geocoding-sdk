@@ -1,6 +1,6 @@
 {
   "name": "@tabaqat/geocoding-sdk",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Browser-based geocoding SDK using DuckDB-WASM",
   "module": "src/index.ts",
   "type": "module",
@@ -55,16 +55,16 @@
     "provenance": true
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.1",
-    "@commitlint/config-conventional": "^20.4.1",
+    "@commitlint/cli": "^20.4.2",
+    "@commitlint/config-conventional": "^20.4.2",
     "@types/bun": "latest",
-    "@typescript-eslint/eslint-plugin": "^8.54.0",
-    "@typescript-eslint/parser": "^8.54.0",
-    "eslint": "^9.39.2",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
+    "eslint": "^9.39.3",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "^3.8.1",
-    "typedoc": "^0.28.16",
+    "typedoc": "^0.28.17",
     "typescript": "^5.9.3"
   },
   "dependencies": {

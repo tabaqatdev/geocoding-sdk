@@ -3,4 +3,4 @@
  */
 
 /** Default data URL hosted on source.coop */
-export const DEFAULT_DATA_URL = 'https://data.source.coop/tabaqat/geocoding-cng/v0.1.0';
+export const DEFAULT_DATA_URL = 'https://data.source.coop/tabaqat/geocoding-cng/v0.4.0';

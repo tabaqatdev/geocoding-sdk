@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-02-24
+
+### Added
+
+- **Municipality admin level** (`sa_municipalities_simple.parquet`) - 285 municipalities with polygon boundaries, 100% Saudi Arabia coverage
+- **Settlement admin level** (`sa_settlements.parquet`) - 21,450 settlement points with nearest-point lookup
+- **`municipality` field in `AdminHierarchy`** - Returns `id`, `name_ar`, `name_en` via ST_Contains polygon query
+- **`settlement` field in `AdminHierarchy`** - Returns `id`, `name_ar`, `name_en`, `type` via nearest-point query
+- **R-tree spatial indexes** on all polygon boundary tables for fast ST_Contains queries (graceful fallback if unsupported)
+- **Country detection cache** - `detectCountry()` caches last result; `isInSaudiArabia()` reuses it to eliminate redundant world_countries queries
+
+### Changed
+
+- **5-level admin hierarchy** - `getAdminHierarchy()` now returns region → governorate → municipality → district → settlement (up from 3 levels)
+- **Data URL updated to v0.4.0** - All boundary files now use consistent column naming (`district_name_ar` instead of `name_ar`, `governorate_id` instead of `gov_id`, etc.)
+- **In-memory TABLEs instead of VIEWs** - Admin boundary data loaded into DuckDB in-memory tables instead of views over remote Parquet, eliminating repeated HTTP fetches on every query
+- **3 tables instead of 5** - Region and governorate info derived from municipality columns (100% coverage), eliminating separate `sa_regions` and `sa_governorates` parquet fetches. Only `sa_municipalities` + `sa_districts` + `sa_settlements` loaded (~1.9MB total)
+- **Single LATERAL JOIN query** - `getAdminHierarchy()` uses one combined SQL query with 3 `LEFT JOIN LATERAL` instead of 5 separate queries, eliminating JS→Worker round-trips
+- **Lazy admin table loading** - Municipalities, districts, and settlements tables are loaded on first `getAdminHierarchy()` call (not at init), keeping SDK initialization fast
+- District autocomplete uses new `district_name_ar`/`district_name_en` column names
+- `close()` now properly drops in-memory tables and resets all state
+
 ## [0.3.0] - 2026-02-10
 
 ### Added
@@ -180,6 +202,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 6,499 postcodes indexed
 - Initial load: ~140 KB (index + boundaries)
 
+[0.4.0]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.4.0
+[0.3.0]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.3.0
 [0.2.3]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.2.3
 [0.2.2]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.2.2
 [0.2.1]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.2.1

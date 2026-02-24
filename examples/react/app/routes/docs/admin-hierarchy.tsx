@@ -344,7 +344,7 @@ export default function AdminHierarchy() {
                             {result.settlement && (
                               <tr>
                                 <td className="px-3 py-2 text-muted-foreground whitespace-nowrap align-top w-0">
-                                  {language === "ar" ? "أقرب مستوطنة" : "Settlement"}
+                                  {language === "ar" ? "تجمع سكاني" : "Settlement"}
                                   {result.settlement.type && (
                                     <Badge variant="outline" className="ms-1 text-xs">
                                       {result.settlement.type}
@@ -433,7 +433,7 @@ export default function AdminHierarchy() {
                   {language === "ar" ? "حي (مناطق حضرية)" : "urban neighborhood boundaries"}
                 </li>
                 <li>
-                  <strong>{language === "ar" ? "المستوطنات" : "Settlements"}</strong> - 6,416{" "}
+                  <strong>{language === "ar" ? "التجمعات السكانية" : "Settlements"}</strong> - 6,416{" "}
                   {language === "ar"
                     ? "نقطة استيطان (أقرب نقطة)"
                     : "settlement points (nearest-point lookup)"}

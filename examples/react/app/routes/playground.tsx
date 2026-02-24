@@ -137,6 +137,7 @@ export default function Playground() {
     municipality?: string;
     district?: string;
     settlement?: string;
+    major_city?: string;
   } | null>(null);
 
   // Active tab for syncing with map
@@ -238,6 +239,10 @@ export default function Playground() {
             language === "ar"
               ? hierarchyResult?.settlement?.name_ar
               : hierarchyResult?.settlement?.name_en,
+          major_city:
+            language === "ar"
+              ? hierarchyResult?.major_city?.name_ar
+              : hierarchyResult?.major_city?.name_en,
         });
 
         if (results.length > 0) {
@@ -618,6 +623,12 @@ export default function Playground() {
                 <div className="flex items-center gap-2 ms-11">
                   <span className="text-muted-foreground">⌖</span>
                   <span className="italic">{adminHierarchy.settlement}</span>
+                </div>
+              )}
+              {adminHierarchy.major_city && (
+                <div className="flex items-center gap-2 ms-11">
+                  <span className="text-muted-foreground">★</span>
+                  <span className="font-medium">{adminHierarchy.major_city}</span>
                 </div>
               )}
             </div>

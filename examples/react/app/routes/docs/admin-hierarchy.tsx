@@ -1,7 +1,16 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import Map, {
+  Marker,
+  NavigationControl,
+  type MapLayerMouseEvent,
+  type MapRef,
+} from "react-map-gl/maplibre";
+import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { Layout } from "~/components/layout/layout";
 import { useTranslation } from "~/i18n/context";
 import { useGeoSDK } from "~/context/geo-sdk-context";
+import { useTheme } from "~/hooks/use-theme";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -18,8 +27,16 @@ export function meta(_args: Route.MetaArgs) {
   ];
 }
 
+const MAP_STYLES = {
+  light: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+  dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+};
+
+const RTL_PLUGIN_URL = "https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.js";
+
 export default function AdminHierarchy() {
   const { t, language } = useTranslation();
+  const { theme } = useTheme();
   const { sdk, initialized, loading, error, retry } = useGeoSDK();
   const [lat, setLat] = useState("24.7136");
   const [lon, setLon] = useState("46.6753");
@@ -28,48 +45,158 @@ export default function AdminHierarchy() {
     municipality?: { id: string; name_ar: string; name_en: string };
     governorate?: { id: string; name_ar: string; name_en: string };
     region?: { id: string; name_ar: string; name_en: string };
-    settlement?: { id: string; name_ar: string; name_en: string; type?: string };
+    settlement?: {
+      id: string;
+      name_ar: string;
+      name_en: string;
+      type?: string;
+      distance_m?: number;
+    };
+    major_city?: {
+      id: string;
+      name_ar: string;
+      name_en: string;
+      city_type?: string;
+      city_grade?: number;
+      distance_m?: number;
+    };
   } | null>(null);
   const [searching, setSearching] = useState(false);
+  const [mapRef, setMapRef] = useState<MapRef | null>(null);
+  const [markerPos, setMarkerPos] = useState<{ lat: number; lon: number } | null>(null);
 
-  const handleSearch = async () => {
-    if (!sdk) return;
-    setSearching(true);
-    try {
-      const res = await sdk.getAdminHierarchy(parseFloat(lat), parseFloat(lon));
-      setResult(res);
-      if (res && (res.region || res.district)) {
-        toast.success("Admin hierarchy found");
-      } else {
-        toast.info("Point is outside Saudi Arabia admin boundaries");
-      }
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Query failed");
-    } finally {
-      setSearching(false);
+  // Initialize RTL text plugin for Arabic support
+  useEffect(() => {
+    if (
+      !maplibregl.getRTLTextPluginStatus ||
+      maplibregl.getRTLTextPluginStatus() === "unavailable"
+    ) {
+      maplibregl.setRTLTextPlugin(RTL_PLUGIN_URL, true).catch((err) => {
+        console.warn("RTL text plugin failed to load:", err);
+      });
     }
-  };
+  }, []);
+
+  const mapStyle = theme === "dark" ? MAP_STYLES.dark : MAP_STYLES.light;
+
+  const handleSearch = useCallback(
+    async (searchLat?: number, searchLon?: number) => {
+      if (!sdk) return;
+      const latVal = searchLat ?? parseFloat(lat);
+      const lonVal = searchLon ?? parseFloat(lon);
+      if (isNaN(latVal) || isNaN(lonVal)) return;
+
+      setSearching(true);
+      try {
+        const res = await sdk.getAdminHierarchy(latVal, lonVal);
+        setResult(res);
+        setMarkerPos({ lat: latVal, lon: lonVal });
+        if (res && (res.region || res.district)) {
+          toast.success("Admin hierarchy found");
+        } else {
+          toast.info("Point is outside Saudi Arabia admin boundaries");
+        }
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "Query failed");
+      } finally {
+        setSearching(false);
+      }
+    },
+    [sdk, lat, lon]
+  );
+
+  const handleMapClick = useCallback(
+    (e: MapLayerMouseEvent) => {
+      const { lng, lat: clickLat } = e.lngLat;
+      setLat(clickLat.toFixed(6));
+      setLon(lng.toFixed(6));
+      setMarkerPos({ lat: clickLat, lon: lng });
+      handleSearch(clickLat, lng);
+    },
+    [handleSearch]
+  );
+
+  const handleManualSearch = useCallback(() => {
+    const latVal = parseFloat(lat);
+    const lonVal = parseFloat(lon);
+    if (isNaN(latVal) || isNaN(lonVal)) return;
+    setMarkerPos({ lat: latVal, lon: lonVal });
+    mapRef?.flyTo({ center: [lonVal, latVal], zoom: 12, duration: 1200 });
+    handleSearch(latVal, lonVal);
+  }, [lat, lon, mapRef, handleSearch]);
 
   return (
     <Layout>
-      <div className="p-6 max-w-4xl mx-auto">
-        <div className="mb-8">
-          <Badge variant="secondary" className="mb-2">
-            API
-          </Badge>
-          <h1 className="text-3xl font-bold mb-2">{t("docs.adminHierarchy.title")}</h1>
-          <p className="text-muted-foreground">{t("docs.adminHierarchy.description")}</p>
+      <div className="h-[calc(100vh-3.5rem)] flex flex-col lg:flex-row gap-4 p-4 overflow-hidden">
+        {/* Map Panel */}
+        <div className="h-[250px] lg:h-auto lg:flex-1 shrink-0 relative rounded-lg overflow-hidden border bg-card">
+          {!initialized && (
+            <div className="absolute inset-0 z-10 bg-background/80 flex items-center justify-center">
+              <Card className="max-w-sm">
+                <CardContent className="pt-6 text-center">
+                  {error ? (
+                    <>
+                      <p className="text-destructive mb-4">{error.message}</p>
+                      <Button onClick={retry}>Retry</Button>
+                    </>
+                  ) : (
+                    <>
+                      <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+                      <p className="text-muted-foreground">
+                        {loading ? "Initializing SDK..." : "Loading..."}
+                      </p>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          <Map
+            ref={(ref) => setMapRef(ref)}
+            initialViewState={{
+              longitude: 46.6753,
+              latitude: 24.7136,
+              zoom: 6,
+            }}
+            style={{ width: "100%", height: "100%" }}
+            mapStyle={mapStyle}
+            onClick={initialized ? handleMapClick : undefined}
+            cursor={initialized ? "crosshair" : "default"}
+            attributionControl={false}
+          >
+            <NavigationControl position="top-right" />
+
+            {markerPos && (
+              <Marker
+                longitude={markerPos.lon}
+                latitude={markerPos.lat}
+                anchor="bottom"
+                color="#1a73e8"
+              />
+            )}
+          </Map>
         </div>
 
-        {/* Method Signature */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>{t("common.methodSignature")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CodeBlock
-              language="typescript"
-              code={`getAdminHierarchy(
+        {/* Sidebar */}
+        <div className="flex-1 lg:flex-none lg:w-[420px] flex flex-col min-h-0 overflow-auto space-y-4">
+          <div>
+            <Badge variant="secondary" className="mb-2">
+              API
+            </Badge>
+            <h1 className="text-3xl font-bold mb-2">{t("docs.adminHierarchy.title")}</h1>
+            <p className="text-muted-foreground">{t("docs.adminHierarchy.description")}</p>
+          </div>
+
+          {/* Method Signature */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">{t("common.methodSignature")}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CodeBlock
+                language="typescript"
+                code={`getAdminHierarchy(
   lat: number,
   lon: number
 ): Promise<{
@@ -78,57 +205,65 @@ export default function AdminHierarchy() {
   governorate?: { id: string; name_ar: string; name_en: string };
   region?: { id: string; name_ar: string; name_en: string };
   settlement?: { id: string; name_ar: string; name_en: string; type?: string };
+  major_city?: MajorCityInfo;
 }>`}
-            />
-          </CardContent>
-        </Card>
+              />
+            </CardContent>
+          </Card>
 
-        {/* Interactive Demo */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>{t("common.tryIt")}</CardTitle>
-            <CardDescription>{t("docs.adminHierarchy.description")}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {error ? (
-              <div className="space-y-2">
-                <p className="text-destructive text-sm">
-                  SDK initialization failed: {error.message}
-                </p>
-                <Button variant="outline" size="sm" onClick={retry}>
-                  Retry
-                </Button>
-              </div>
-            ) : !initialized ? (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>{loading ? "Initializing SDK..." : "Loading..."}</span>
-              </div>
-            ) : (
-              <>
-                <div className="flex gap-2 flex-wrap">
-                  <div>
-                    <label className="text-sm text-muted-foreground">{t("common.latitude")}</label>
-                    <Input
-                      type="number"
-                      step="0.0001"
-                      value={lat}
-                      onChange={(e) => setLat(e.target.value)}
-                      className="w-40"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-muted-foreground">{t("common.longitude")}</label>
-                    <Input
-                      type="number"
-                      step="0.0001"
-                      value={lon}
-                      onChange={(e) => setLon(e.target.value)}
-                      className="w-40"
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    <Button onClick={handleSearch} disabled={searching}>
+          {/* Interactive Demo */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">{t("common.tryIt")}</CardTitle>
+              <CardDescription>{t("docs.adminHierarchy.description")}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {error ? (
+                <div className="space-y-2">
+                  <p className="text-destructive text-sm">
+                    SDK initialization failed: {error.message}
+                  </p>
+                  <Button variant="outline" size="sm" onClick={retry}>
+                    Retry
+                  </Button>
+                </div>
+              ) : !initialized ? (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>{loading ? "Initializing SDK..." : "Loading..."}</span>
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-[1fr_1fr_auto] items-end gap-2">
+                    <div className="min-w-0">
+                      <label className="text-sm text-muted-foreground">
+                        {t("common.latitude")}
+                      </label>
+                      <Input
+                        type="number"
+                        step="0.0001"
+                        value={lat}
+                        onChange={(e) => setLat(e.target.value)}
+                        dir="ltr"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <label className="text-sm text-muted-foreground">
+                        {t("common.longitude")}
+                      </label>
+                      <Input
+                        type="number"
+                        step="0.0001"
+                        value={lon}
+                        onChange={(e) => setLon(e.target.value)}
+                        dir="ltr"
+                      />
+                    </div>
+                    <Button
+                      onClick={handleManualSearch}
+                      disabled={searching}
+                      className="whitespace-nowrap"
+                    >
                       {searching ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
@@ -136,162 +271,197 @@ export default function AdminHierarchy() {
                       )}
                     </Button>
                   </div>
-                </div>
-                {result && (
-                  <Card className="bg-muted/50">
-                    <CardContent className="pt-6">
-                      <div className="space-y-4">
-                        {result.region && (
-                          <div>
-                            <div className="text-sm text-muted-foreground">
-                              {language === "ar" ? "المنطقة" : "Region"}
-                            </div>
-                            <div className="text-xl font-bold" dir="auto">
-                              {language === "ar" ? result.region.name_ar : result.region.name_en}
-                            </div>
-                            {result.region.id && (
-                              <div className="text-xs text-muted-foreground font-mono">
-                                ID: {result.region.id}
-                              </div>
+                  {result && (
+                    <div className="rounded-lg border bg-muted/50 overflow-hidden text-sm">
+                      {result.region ||
+                      result.governorate ||
+                      result.municipality ||
+                      result.district ||
+                      result.settlement ||
+                      result.major_city ? (
+                        <table className="w-full">
+                          <tbody className="divide-y divide-border">
+                            {result.region && (
+                              <tr>
+                                <td className="px-3 py-2 text-muted-foreground whitespace-nowrap align-top w-0">
+                                  {language === "ar" ? "المنطقة" : "Region"}
+                                </td>
+                                <td className="px-3 py-2 font-medium" dir="auto">
+                                  {language === "ar"
+                                    ? result.region.name_ar
+                                    : result.region.name_en}
+                                  <span className="text-xs text-muted-foreground font-mono ms-2">
+                                    {result.region.id}
+                                  </span>
+                                </td>
+                              </tr>
                             )}
-                          </div>
-                        )}
-                        {result.governorate && (
-                          <div>
-                            <div className="text-sm text-muted-foreground">
-                              {language === "ar" ? "المحافظة" : "Governorate"}
-                            </div>
-                            <div className="text-xl font-bold" dir="auto">
-                              {language === "ar"
-                                ? result.governorate.name_ar
-                                : result.governorate.name_en}
-                            </div>
-                            {result.governorate.id && (
-                              <div className="text-xs text-muted-foreground font-mono">
-                                ID: {result.governorate.id}
-                              </div>
+                            {result.governorate && (
+                              <tr>
+                                <td className="px-3 py-2 text-muted-foreground whitespace-nowrap align-top w-0">
+                                  {language === "ar" ? "المحافظة" : "Governorate"}
+                                </td>
+                                <td className="px-3 py-2 font-medium" dir="auto">
+                                  {language === "ar"
+                                    ? result.governorate.name_ar
+                                    : result.governorate.name_en}
+                                  <span className="text-xs text-muted-foreground font-mono ms-2">
+                                    {result.governorate.id}
+                                  </span>
+                                </td>
+                              </tr>
                             )}
-                          </div>
-                        )}
-                        {result.municipality && (
-                          <div>
-                            <div className="text-sm text-muted-foreground">
-                              {language === "ar" ? "البلدية" : "Municipality"}
-                            </div>
-                            <div className="text-xl font-bold" dir="auto">
-                              {language === "ar"
-                                ? result.municipality.name_ar
-                                : result.municipality.name_en}
-                            </div>
-                            {result.municipality.id && (
-                              <div className="text-xs text-muted-foreground font-mono">
-                                ID: {result.municipality.id}
-                              </div>
+                            {result.municipality && (
+                              <tr>
+                                <td className="px-3 py-2 text-muted-foreground whitespace-nowrap align-top w-0">
+                                  {language === "ar" ? "البلدية" : "Municipality"}
+                                </td>
+                                <td className="px-3 py-2 font-medium" dir="auto">
+                                  {language === "ar"
+                                    ? result.municipality.name_ar
+                                    : result.municipality.name_en}
+                                  <span className="text-xs text-muted-foreground font-mono ms-2">
+                                    {result.municipality.id}
+                                  </span>
+                                </td>
+                              </tr>
                             )}
-                          </div>
-                        )}
-                        {result.district && (
-                          <div>
-                            <div className="text-sm text-muted-foreground">
-                              {language === "ar" ? "الحي" : "District"}
-                            </div>
-                            <div className="text-xl font-bold" dir="auto">
-                              {language === "ar"
-                                ? result.district.name_ar
-                                : result.district.name_en}
-                            </div>
-                            {result.district.id && (
-                              <div className="text-xs text-muted-foreground font-mono">
-                                ID: {result.district.id}
-                              </div>
+                            {result.district && (
+                              <tr>
+                                <td className="px-3 py-2 text-muted-foreground whitespace-nowrap align-top w-0">
+                                  {language === "ar" ? "الحي" : "District"}
+                                </td>
+                                <td className="px-3 py-2 font-medium" dir="auto">
+                                  {language === "ar"
+                                    ? result.district.name_ar
+                                    : result.district.name_en}
+                                  <span className="text-xs text-muted-foreground font-mono ms-2">
+                                    {result.district.id}
+                                  </span>
+                                </td>
+                              </tr>
                             )}
-                          </div>
-                        )}
-                        {result.settlement && (
-                          <div>
-                            <div className="text-sm text-muted-foreground">
-                              {language === "ar" ? "المستوطنات البشرية" : "Nearest Settlement"}
-                              {result.settlement.type && (
-                                <Badge variant="outline" className="ms-2 text-xs">
-                                  {result.settlement.type}
-                                </Badge>
-                              )}
-                            </div>
-                            <div className="text-xl font-bold" dir="auto">
-                              {language === "ar"
-                                ? result.settlement.name_ar
-                                : result.settlement.name_en}
-                            </div>
-                            {result.settlement.id && (
-                              <div className="text-xs text-muted-foreground font-mono">
-                                ID: {result.settlement.id}
-                              </div>
+                            {result.settlement && (
+                              <tr>
+                                <td className="px-3 py-2 text-muted-foreground whitespace-nowrap align-top w-0">
+                                  {language === "ar" ? "أقرب مستوطنة" : "Settlement"}
+                                  {result.settlement.type && (
+                                    <Badge variant="outline" className="ms-1 text-xs">
+                                      {result.settlement.type}
+                                    </Badge>
+                                  )}
+                                </td>
+                                <td className="px-3 py-2 font-medium" dir="auto">
+                                  {language === "ar"
+                                    ? result.settlement.name_ar
+                                    : result.settlement.name_en}
+                                  {result.settlement.distance_m != null && (
+                                    <span className="text-xs text-muted-foreground ms-2">
+                                      {result.settlement.distance_m >= 1000
+                                        ? `${(result.settlement.distance_m / 1000).toFixed(1)} km`
+                                        : `${result.settlement.distance_m} m`}
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
                             )}
-                          </div>
-                        )}
-                        {!result.region && !result.district && !result.settlement && (
-                          <div className="text-muted-foreground">
-                            {language === "ar"
-                              ? "النقطة خارج حدود المناطق الإدارية السعودية"
-                              : "Point is outside Saudi Arabia admin boundaries"}
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </>
-            )}
-          </CardContent>
-        </Card>
+                            {result.major_city && (
+                              <tr>
+                                <td className="px-3 py-2 text-muted-foreground whitespace-nowrap align-top w-0">
+                                  {language === "ar" ? "مدينة رئيسية" : "Major City"}
+                                  {result.major_city.city_grade != null && (
+                                    <Badge variant="outline" className="ms-1 text-xs">
+                                      {language === "ar"
+                                        ? `درجة ${result.major_city.city_grade}`
+                                        : `Grade ${result.major_city.city_grade}`}
+                                    </Badge>
+                                  )}
+                                </td>
+                                <td className="px-3 py-2 font-medium" dir="auto">
+                                  {language === "ar"
+                                    ? result.major_city.name_ar
+                                    : result.major_city.name_en}
+                                  {result.major_city.distance_m != null && (
+                                    <span className="text-xs text-muted-foreground ms-2">
+                                      {result.major_city.distance_m >= 1000
+                                        ? `${(result.major_city.distance_m / 1000).toFixed(1)} km`
+                                        : `${result.major_city.distance_m} m`}
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      ) : (
+                        <div className="px-3 py-4 text-muted-foreground text-center">
+                          {language === "ar"
+                            ? "النقطة خارج حدود المناطق الإدارية السعودية"
+                            : "Point is outside Saudi Arabia admin boundaries"}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+            </CardContent>
+          </Card>
 
-        {/* Admin Levels */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>{language === "ar" ? "المستويات الإدارية" : "Admin Levels"}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2 text-muted-foreground">
-              <li>
-                <strong>{language === "ar" ? "المناطق" : "Regions"}</strong> - 13{" "}
-                {language === "ar" ? "منطقة إدارية" : "administrative regions"}
-              </li>
-              <li>
-                <strong>{language === "ar" ? "المحافظات" : "Governorates"}</strong> - 152{" "}
-                {language === "ar" ? "محافظة" : "provincial level divisions"}
-              </li>
-              <li>
-                <strong>{language === "ar" ? "البلديات" : "Municipalities"}</strong> - 285{" "}
-                {language === "ar" ? "بلدية (تغطية 100%)" : "municipalities (100% coverage)"}
-              </li>
-              <li>
-                <strong>{language === "ar" ? "الأحياء" : "Districts"}</strong> - 5,484{" "}
-                {language === "ar" ? "حي (مناطق حضرية)" : "urban neighborhood boundaries"}
-              </li>
-              <li>
-                <strong>{language === "ar" ? "المستوطنات" : "Settlements"}</strong> - 21,450{" "}
-                {language === "ar"
-                  ? "نقطة استيطان (أقرب نقطة)"
-                  : "settlement points (nearest-point lookup)"}
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
+          {/* Admin Levels */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">
+                {language === "ar" ? "المستويات الإدارية" : "Admin Levels"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-muted-foreground text-sm">
+                <li>
+                  <strong>{language === "ar" ? "المناطق" : "Regions"}</strong> - 13{" "}
+                  {language === "ar" ? "منطقة إدارية" : "administrative regions"}
+                </li>
+                <li>
+                  <strong>{language === "ar" ? "المحافظات" : "Governorates"}</strong> - 152{" "}
+                  {language === "ar" ? "محافظة" : "provincial level divisions"}
+                </li>
+                <li>
+                  <strong>{language === "ar" ? "البلديات" : "Municipalities"}</strong> - 285{" "}
+                  {language === "ar" ? "بلدية (تغطية 100%)" : "municipalities (100% coverage)"}
+                </li>
+                <li>
+                  <strong>{language === "ar" ? "الأحياء" : "Districts"}</strong> - 5,484{" "}
+                  {language === "ar" ? "حي (مناطق حضرية)" : "urban neighborhood boundaries"}
+                </li>
+                <li>
+                  <strong>{language === "ar" ? "المستوطنات" : "Settlements"}</strong> - 6,416{" "}
+                  {language === "ar"
+                    ? "نقطة استيطان (أقرب نقطة)"
+                    : "settlement points (nearest-point lookup)"}
+                </li>
+                <li>
+                  <strong>{language === "ar" ? "المدن الرئيسية" : "Major Cities"}</strong> - 220{" "}
+                  {language === "ar"
+                    ? "مدينة رئيسية (أقرب نقطة)"
+                    : "major city points (nearest-point lookup)"}
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
 
-        {/* Code Example */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("common.viewCode")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CodeBlock
-              language="typescript"
-              code={`import { GeoSDK } from "@tabaqat/geocoding-sdk";
+          {/* Code Example */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">{t("common.viewCode")}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CodeBlock
+                language="typescript"
+                code={`import { GeoSDK } from "@tabaqat/geocoding-sdk";
 
 const sdk = new GeoSDK();
 await sdk.initialize();
 
-// Get admin hierarchy for a point (5 levels)
+// Get admin hierarchy for a point (6 levels)
 const hierarchy = await sdk.getAdminHierarchy(24.7136, 46.6753);
 
 if (hierarchy.region) {
@@ -317,10 +487,16 @@ if (hierarchy.district) {
 if (hierarchy.settlement) {
   console.log("Settlement:", hierarchy.settlement.name_en);
   console.log("Type:", hierarchy.settlement.type);       // "مدينة"
+}
+
+if (hierarchy.major_city) {
+  console.log("Major City:", hierarchy.major_city.name_en);
+  console.log("Grade:", hierarchy.major_city.city_grade);
 }`}
-            />
-          </CardContent>
-        </Card>
+              />
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </Layout>
   );

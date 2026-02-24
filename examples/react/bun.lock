@@ -5,7 +5,7 @@
     "": {
       "name": "react",
       "dependencies": {
-        "@posthog/react": "^1.7.0",
+        "@posthog/react": "^1.8.0",
         "@radix-ui/react-dialog": "^1.1.15",
         "@radix-ui/react-dropdown-menu": "^2.1.16",
         "@radix-ui/react-scroll-area": "^1.2.10",
@@ -21,12 +21,12 @@
         "@types/react-syntax-highlighter": "^15.5.13",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
-        "isbot": "^5.1.34",
+        "isbot": "^5.1.35",
         "lucide-react": "^0.562.0",
-        "maplibre-gl": "^5.17.0",
-        "mermaid": "^11.12.2",
+        "maplibre-gl": "^5.19.0",
+        "mermaid": "^11.12.3",
         "next-themes": "^0.4.6",
-        "posthog-js": "^1.336.4",
+        "posthog-js": "^1.353.0",
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
         "react-map-gl": "^8.1.0",
@@ -36,25 +36,25 @@
         "rehype-raw": "^7.0.0",
         "remark-gfm": "^4.0.1",
         "sonner": "^2.0.7",
-        "tailwind-merge": "^3.4.0",
+        "tailwind-merge": "^3.5.0",
       },
       "devDependencies": {
-        "@eslint/js": "^9.39.2",
+        "@eslint/js": "^9.39.3",
         "@react-router/dev": "7.10.1",
-        "@tailwindcss/vite": "^4.1.18",
-        "@types/node": "^22.19.7",
-        "@types/react": "^19.2.10",
+        "@tailwindcss/vite": "^4.2.1",
+        "@types/node": "^22.19.11",
+        "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
-        "eslint": "^9.39.2",
+        "eslint": "^9.39.3",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-react-hooks": "^7.0.1",
         "husky": "^9.1.7",
         "lint-staged": "^16.2.7",
         "prettier": "^3.8.1",
-        "tailwindcss": "^4.1.18",
+        "tailwindcss": "^4.2.1",
         "tw-animate-css": "^1.4.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.54.0",
+        "typescript-eslint": "^8.56.1",
         "vite": "^7.3.1",
         "vite-tsconfig-paths": "^5.1.4",
       },
@@ -285,7 +285,7 @@
 
     "@posthog/react": ["@posthog/react@1.8.0", "", { "peerDependencies": { "@types/react": ">=16.8.0", "posthog-js": ">=1.257.2", "react": ">=16.8.0" }, "optionalPeers": ["@types/react"] }, "sha512-UEX3BAIXMrzN7r/JoVotMY9BSTfJ1umiQqfsU30X1OZAW59cO5cPf50YDj4XNhHTCZpiLqenmvJdtJLsx5Pn4Q=="],
 
-    "@posthog/types": ["@posthog/types@1.352.1", "", {}, "sha512-yrW+nSYBDL2oFTr7ttZO5lhEIRkJ0l1wM5aCH8ZN3Tx9lHuABttfyBC5X0D8L2BAmCB39nV/hGDjq1XqYwIb0A=="],
+    "@posthog/types": ["@posthog/types@1.353.0", "", {}, "sha512-wG5zMdr80QNV+0XkJFCX5ZxcpdER1TtYe21YlLAuI4i0G1wjQDi/FDCjh4b0QGiV8KljQMHfC2xPZ/SXnPBlBQ=="],
 
     "@protobufjs/aspromise": ["@protobufjs/aspromise@1.1.2", "", {}, "sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ=="],
 
@@ -1291,7 +1291,7 @@
 
     "postcss": ["postcss@8.5.6", "", { "dependencies": { "nanoid": "^3.3.11", "picocolors": "^1.1.1", "source-map-js": "^1.2.1" } }, "sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg=="],
 
-    "posthog-js": ["posthog-js@1.352.1", "", { "dependencies": { "@opentelemetry/api": "^1.9.0", "@opentelemetry/api-logs": "^0.208.0", "@opentelemetry/exporter-logs-otlp-http": "^0.208.0", "@opentelemetry/resources": "^2.2.0", "@opentelemetry/sdk-logs": "^0.208.0", "@posthog/core": "1.23.1", "@posthog/types": "1.352.1", "core-js": "^3.38.1", "dompurify": "^3.3.1", "fflate": "^0.4.8", "preact": "^10.28.2", "query-selector-shadow-dom": "^1.0.1", "web-vitals": "^5.1.0" } }, "sha512-Ruz8nAQBKdKCLuxSfmbu94jC0+rj8Rbcv0CS/BNV+W9hSb7my5eH0X+BeNKosU7UquTEuQUYnnw4cPZQwFVRFA=="],
+    "posthog-js": ["posthog-js@1.353.0", "", { "dependencies": { "@opentelemetry/api": "^1.9.0", "@opentelemetry/api-logs": "^0.208.0", "@opentelemetry/exporter-logs-otlp-http": "^0.208.0", "@opentelemetry/resources": "^2.2.0", "@opentelemetry/sdk-logs": "^0.208.0", "@posthog/core": "1.23.1", "@posthog/types": "1.353.0", "core-js": "^3.38.1", "dompurify": "^3.3.1", "fflate": "^0.4.8", "preact": "^10.28.2", "query-selector-shadow-dom": "^1.0.1", "web-vitals": "^5.1.0" } }, "sha512-1ifN9CDMavZwRvm+6UYAaEbvzJPvC6q0warmNGyqUcmtDe3SZh4PfvftSJrucH5Oeh6r+ihWtLS7ESIUS0pYuw=="],
 
     "potpack": ["potpack@2.1.0", "", {}, "sha512-pcaShQc1Shq0y+E7GqJqvZj8DTthWV1KeHGdi0Z6IAin2Oi3JnLCOfwnCo84qc+HAp52wT9nK9H7FAJp5a44GQ=="],
 

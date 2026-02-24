@@ -6,6 +6,7 @@ import path from "path";
 
 export default defineConfig({
   base: process.env.NODE_ENV === 'production' ? '/geocoding-sdk/' : '/',
+  assetsInclude: ['**/*.wasm'],
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   resolve: {
     alias: {
@@ -30,7 +31,13 @@ export default defineConfig({
     ],
   },
   build: {
-    // Ensure WASM files are properly handled
     target: "esnext",
+    rollupOptions: {
+      onwarn(warning, defaultHandler) {
+        // Suppress sourcemap warnings from Radix UI / shadcn components
+        if (warning.message?.includes("Can't resolve original location of error")) return;
+        defaultHandler(warning);
+      },
+    },
   },
 });

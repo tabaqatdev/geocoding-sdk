@@ -21,6 +21,7 @@ export type {
   CountryResult,
   CountryDetectionResult,
   AdminHierarchy,
+  MajorCityInfo,
 } from './geocoder-h3';
 
 // Export logger utility

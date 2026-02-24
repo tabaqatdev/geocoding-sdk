@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@tabaqat/geocoding-sdk)](https://bundlephobia.com/package/@tabaqat/geocoding-sdk)
 
-**v0.4.0** - A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser with automatic fallback to default data source.
+**v0.4.1** - A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser with automatic fallback to default data source.
 
 ## Live Examples
 
@@ -92,7 +92,7 @@ flowchart TB
 - **Postcode Search**: Ultra-fast postcode lookups using indexed tile mapping (~1.3 tiles per postcode)
 - **House Number Search**: Search by building number with region/bbox filtering
 - **Country Detection**: Identify country from coordinates using spatial containment
-- **Admin Hierarchy**: Get 5-level admin info (region, governorate, municipality, district, settlement) for Saudi Arabia coordinates
+- **Admin Hierarchy**: Get 6-level admin info (region, governorate, municipality, district, settlement, major city) with distance for Saudi Arabia coordinates
 - **Autocomplete Suggestions**: Get district, postcode, and region suggestions for typeahead
 - **H3 Tile Loading**: Ultra-fast on-demand loading (~220KB average per tile)
 - **Region Filtering**: Filter searches by single or multiple region names
@@ -264,7 +264,7 @@ const results = await sdk.geocode('شارع الملك فهد', {
 ### Admin Hierarchy
 
 ```typescript
-// Get full 5-level admin hierarchy
+// Get full 6-level admin hierarchy with distances
 const admin = await sdk.getAdminHierarchy(24.7136, 46.6753);
 console.log(admin);
 // {
@@ -272,7 +272,8 @@ console.log(admin);
 //   governorate: { id: '00100', name_ar: 'امارة منطقة الرياض', name_en: 'Riyadh Region Principality' },
 //   municipality: { id: '00100100', name_ar: 'أمانة منطقة الرياض', name_en: 'Riyadh Municipality' },
 //   district: { id: '00100001181', name_ar: 'الورود', name_en: 'Al Wurud' },
-//   settlement: { id: '...', name_ar: 'الرياض', name_en: 'Riyadh', type: 'مدينة' }
+//   settlement: { id: '...', name_ar: 'الرياض', name_en: 'Riyadh', type: 'مدينة', distance_m: 1200 },
+//   major_city: { id: '...', name_ar: 'الرياض', name_en: 'Riyadh', city_grade: 1, distance_m: 1500 }
 // }
 
 // Quick check if coordinates are in Saudi Arabia
@@ -463,7 +464,7 @@ The default `GeoSDK` uses H3 tile-based partitioning (V3) for optimal performanc
 const sdk = new GeoSDK(config?: GeoSDKConfig);
 
 interface GeoSDKConfig {
-  dataUrl?: string;           // Custom data URL (default: source.coop v0.4.0 CDN)
+  dataUrl?: string;           // Custom data URL (default: source.coop v0.4.1 CDN)
   language?: 'ar' | 'en';     // Preferred language
   debug?: boolean;            // Enable debug logging (default: false)
 }
@@ -565,7 +566,7 @@ const inSA = await sdk.isInSaudiArabia(24.7136, 46.6753);
 
 #### `getAdminHierarchy(lat: number, lon: number): Promise<AdminHierarchy>`
 
-Get administrative hierarchy for Saudi Arabia coordinates.
+Get 6-level administrative hierarchy for Saudi Arabia coordinates. Settlement search covers ±0.5° (~55km); major city search has no distance limit. Both include `distance_m`.
 
 ```typescript
 const admin = await sdk.getAdminHierarchy(24.7136, 46.6753);
@@ -574,7 +575,8 @@ const admin = await sdk.getAdminHierarchy(24.7136, 46.6753);
 //   governorate: { id: '00100', name_ar: 'امارة منطقة الرياض', name_en: 'Riyadh Region Principality' },
 //   municipality: { id: '00100100', name_ar: 'أمانة منطقة الرياض', name_en: 'Riyadh Municipality' },
 //   district: { id: '00100001181', name_ar: 'الورود', name_en: 'Al Wurud' },
-//   settlement: { id: '...', name_ar: 'الرياض', name_en: 'Riyadh', type: 'مدينة' }
+//   settlement: { id: '...', name_ar: 'الرياض', name_en: 'Riyadh', type: 'مدينة', distance_m: 1200 },
+//   major_city: { id: '...', name_ar: 'الرياض', name_en: 'Riyadh', city_grade: 1, distance_m: 1500 }
 // }
 ```
 
@@ -708,7 +710,22 @@ interface AdminHierarchy {
   municipality?: { id: string; name_ar: string; name_en: string };
   governorate?: { id: string; name_ar: string; name_en: string };
   region?: { id: string; name_ar: string; name_en: string };
-  settlement?: { id: string; name_ar: string; name_en: string; type?: string };
+  settlement?: { id: string; name_ar: string; name_en: string; type?: string; distance_m?: number };
+  major_city?: MajorCityInfo;
+}
+
+interface MajorCityInfo {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  alt_name_ar?: string;
+  alt_name_en?: string;
+  city_type?: string;
+  city_grade?: number;
+  amana_id?: string;
+  amana_name_ar?: string;
+  amana_name_en?: string;
+  distance_m?: number;
 }
 ```
 
@@ -764,7 +781,7 @@ To host your own data files:
 
 ```typescript
 const sdk = new GeoSDK({
-  dataUrl: 'https://your-cdn.com/geocoding-data/v0.4.0',
+  dataUrl: 'https://your-cdn.com/geocoding-data/v0.4.1',
 });
 ```
 
@@ -775,9 +792,10 @@ Your CDN should serve:
 - `tile_index.parquet` - H3 tile metadata (includes region info)
 - `postcode_index.parquet` - Postcode to tiles mapping
 - `world_countries_simple.parquet` - Country boundaries
-- `sa_municipalities_simple.parquet` - 285 municipalities (loaded lazily)
-- `sa_districts_simple.parquet` - 5,484 district boundaries (loaded lazily)
-- `sa_settlements.parquet` - 21,450 settlement points (loaded lazily)
+- `sa_municipalities.parquet` - 285 municipalities
+- `sa_districts.parquet` - 5,484 district boundaries
+- `sa_settlements.parquet` - 21,450 settlement points
+- `sa_major_cities.parquet` - 220 major cities with grade and amana info
 - `tiles/*.parquet` (717 files)
 
 ## Development

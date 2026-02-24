@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-02-24
+
+### Added
+
+- **Major cities layer** (`sa_major_cities.parquet`) — 220 major Saudi cities with grade, amana, and alternate names
+- **`MajorCityInfo` type** — Exported interface with `id`, `name_ar`, `name_en`, `alt_name_ar`, `alt_name_en`, `city_type`, `city_grade`, `amana_id`, `amana_name_ar`, `amana_name_en`, `distance_m`
+- **`major_city` field in `AdminHierarchy`** — 4th LATERAL JOIN in `getAdminHierarchy()` returns nearest major city (no distance limit, only 220 rows)
+- **`distance_m` on settlement and major_city** — Haversine distance in meters from query point to nearest settlement/major city
+
+### Changed
+
+- **Settlement search widened to ±0.5° (~55km)** — Was ±0.1° (~11km), causing NULL results in rural/desert areas
+- **Major city search has no distance limit** — Removed bbox filter entirely (220 rows, <1ms full scan); always returns nearest major city within Saudi Arabia
+- **Settlement and major_city gated on municipality** — Results only populated when point falls inside a Saudi municipality polygon, preventing leakage to other countries
+- **Eager loading of all boundary tables** — All 5 tables (world_countries, municipalities, districts, settlements, major_cities) loaded in parallel during `initialize()` instead of lazy loading on first `getAdminHierarchy()` call. Total ~2MB — too small to justify lazy loading
+- **Removed lazy loading infrastructure** — Deleted `ensureAdminViews()` method, `adminViewsReady`, `adminViewsPromise`, and `actualBaseUrl` fields
+- **Data URL updated to v0.4.1** — `DEFAULT_DATA_URL` now points to `v0.4.1`
+- **Filename cleanup** — Dropped `_simple` suffix from `sa_municipalities.parquet` and `sa_districts.parquet`
+- **Column rename** — `is_geosa_major_city` → `is_major_city` in settlements schema
+- **English transliteration normalization** — All 6,416 settlements now have consistent English names
+- **6-level admin hierarchy** — `getAdminHierarchy()` now returns region → governorate → municipality → district → settlement → major city (up from 5 levels)
+
+### Removed
+
+- `data/SA_ADMIN_HIERARCHY_REPORT.md` — Internal research document removed from repository
+
 ## [0.4.0] - 2026-02-24
 
 ### Added
@@ -206,6 +232,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 6,499 postcodes indexed
 - Initial load: ~140 KB (index + boundaries)
 
+[0.4.1]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.4.1
 [0.4.0]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.4.0
 [0.3.0]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.3.0
 [0.2.3]: https://github.com/tabaqatdev/geocoding-sdk/releases/tag/v0.2.3

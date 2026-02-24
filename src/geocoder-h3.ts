@@ -1,7 +1,7 @@
 /**
  * H3-Tile Based Geocoding SDK using DuckDB-WASM
  *
- * V3 Architecture:
+ * V4 Architecture:
  * - Uses H3 hexagonal tiles at resolution 5 (~250km²)
  * - Each tile is a small parquet file (~500KB-2MB)
  * - Single row group per tile = 1-2 HTTP requests
@@ -69,6 +69,12 @@ export interface GeoSDKConfig {
   language?: 'ar' | 'en';
   /** Enable debug logging (default: false). Uses native console.* — filter in browser DevTools. */
   debug?: boolean;
+  /** Custom DuckDB WASM bundles for self-hosting. When provided, the SDK loads
+   *  WASM files from these URLs instead of the jsDelivr CDN. */
+  wasmBundles?: {
+    mvp: { mainModule: string; mainWorker: string };
+    eh?: { mainModule: string; mainWorker: string };
+  };
 }
 
 export interface GeocodingResult {
@@ -103,12 +109,27 @@ export interface CountryResult {
 // Alias for backward compatibility
 export type CountryDetectionResult = CountryResult;
 
+export interface MajorCityInfo {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  alt_name_ar?: string;
+  alt_name_en?: string;
+  city_type?: string;
+  city_grade?: number;
+  amana_id?: string;
+  amana_name_ar?: string;
+  amana_name_en?: string;
+  distance_m?: number;
+}
+
 export interface AdminHierarchy {
   district?: { id: string; name_ar: string; name_en: string };
   municipality?: { id: string; name_ar: string; name_en: string };
   governorate?: { id: string; name_ar: string; name_en: string };
   region?: { id: string; name_ar: string; name_en: string };
-  settlement?: { id: string; name_ar: string; name_en: string; type?: string };
+  settlement?: { id: string; name_ar: string; name_en: string; type?: string; distance_m?: number };
+  major_city?: MajorCityInfo;
 }
 
 // H3 resolution for tile partitioning (matches build script)
@@ -117,12 +138,9 @@ const H3_TILE_RESOLUTION = 5;
 export class GeoSDK {
   private db: duckdb.AsyncDuckDB | null = null;
   private conn: duckdb.AsyncDuckDBConnection | null = null;
-  private config: Required<GeoSDKConfig>;
+  private config: Required<Omit<GeoSDKConfig, 'wasmBundles'>> & Pick<GeoSDKConfig, 'wasmBundles'>;
   private initialized = false;
   private ftsAvailable = false;
-  private adminViewsReady = false;
-  private adminViewsPromise: Promise<void> | null = null;
-  private actualBaseUrl = '';
   private log: SDKLogger;
 
   private tileIndex: TileInfo[] = [];
@@ -144,6 +162,7 @@ export class GeoSDK {
       dataUrl: config.dataUrl ?? DEFAULT_DATA_URL,
       language: config.language ?? 'ar',
       debug: config.debug ?? false,
+      wasmBundles: config.wasmBundles,
     };
 
     this.log = createLogger(() => this.config.debug);
@@ -167,7 +186,7 @@ export class GeoSDK {
   ) => void;
 
   /**
-   * Initialize SDK - loads only index files (~50KB)
+   * Initialize SDK - loads indexes and all boundary tables (~2MB)
    * @param options.onProgress - Optional callback for initialization progress
    */
   async initialize(
@@ -199,12 +218,20 @@ export class GeoSDK {
     report('wasm', 'loading');
     this.log.time('wasm');
 
-    const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
-    const bundle = await duckdb.selectBundle(JSDELIVR_BUNDLES);
+    const bundles = this.config.wasmBundles ?? duckdb.getJsDelivrBundles();
+    const bundle = await duckdb.selectBundle(bundles);
     this.log.debug('Bundle:', bundle.mainModule);
 
+    // Resolve relative paths (e.g. Vite's /@fs/… or /assets/…) to absolute
+    // URLs so they work inside the blob worker's importScripts() and fetch().
+    const toAbsUrl = (url: string) =>
+      /^https?:\/\//.test(url) ? url : new URL(url, location.href).href;
+
+    const workerUrl = toAbsUrl(bundle.mainWorker!);
+    const moduleUrl = toAbsUrl(bundle.mainModule);
+
     const worker_url = URL.createObjectURL(
-      new Blob([`importScripts("${bundle.mainWorker}");`], {
+      new Blob([`importScripts("${workerUrl}");`], {
         type: 'text/javascript',
       })
     );
@@ -212,7 +239,7 @@ export class GeoSDK {
     const worker = new Worker(worker_url);
     const duckdbLogger = new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING);
     this.db = new duckdb.AsyncDuckDB(duckdbLogger, worker);
-    await this.db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+    await this.db.instantiate(moduleUrl, bundle.pthreadWorker);
     this.conn = await this.db.connect();
     this.log.timeEnd('wasm');
     report('wasm', 'success', performance.now() - stepStart);
@@ -339,33 +366,61 @@ export class GeoSDK {
       report('postcodes', 'error', performance.now() - stepStart, 'Not available');
     }
 
-    // Step 7: Load world countries into memory
+    // Step 7: Load boundary tables sequentially (avoids overwhelming
+    //         the single WASM worker with concurrent HTTP fetches, which
+    //         can fail under COEP require-corp).
     stepStart = performance.now();
     report('boundaries', 'loading');
-    this.log.time('world_countries');
-    try {
-      await this.conn.query(`
-        CREATE TABLE IF NOT EXISTS world_countries AS
-        SELECT * FROM read_parquet('${actualBaseUrl}/world_countries_simple.parquet')
-      `);
-    } catch (e) {
-      this.log.error('Failed to load world_countries:', e);
-      throw e;
-    }
-    this.log.timeEnd('world_countries');
+    this.log.time('boundary tables');
 
-    // R-tree spatial index for fast ST_Contains queries
-    try {
-      await this.conn.query(
-        `CREATE INDEX IF NOT EXISTS idx_world_geom ON world_countries USING RTREE (geometry)`
-      );
-    } catch {
-      this.log.warn('R-tree indexes not supported');
+    const boundaryTables = [
+      {
+        name: 'world_countries',
+        file: 'world_countries_simple.parquet',
+        // Add bbox columns for fast pre-filter before ST_Contains
+        extra: `, ST_XMin(geometry) AS bbox_xmin, ST_YMin(geometry) AS bbox_ymin,
+                  ST_XMax(geometry) AS bbox_xmax, ST_YMax(geometry) AS bbox_ymax`,
+      },
+      {
+        name: 'sa_municipalities',
+        file: 'sa_municipalities.parquet',
+        extra: `, ST_XMin(geometry) AS bbox_xmin, ST_YMin(geometry) AS bbox_ymin,
+                  ST_XMax(geometry) AS bbox_xmax, ST_YMax(geometry) AS bbox_ymax`,
+      },
+      {
+        name: 'sa_districts',
+        file: 'sa_districts.parquet',
+        extra: `, ST_XMin(geometry) AS bbox_xmin, ST_YMin(geometry) AS bbox_ymin,
+                  ST_XMax(geometry) AS bbox_xmax, ST_YMax(geometry) AS bbox_ymax`,
+      },
+      { name: 'sa_settlements', file: 'sa_settlements.parquet', extra: '' },
+      { name: 'sa_major_cities', file: 'sa_major_cities.parquet', extra: '' },
+    ];
+
+    for (const table of boundaryTables) {
+      let loaded = false;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          await this.conn.query(`
+            CREATE TABLE IF NOT EXISTS ${table.name} AS
+            SELECT *${table.extra}
+            FROM read_parquet('${actualBaseUrl}/${table.file}')
+          `);
+          loaded = true;
+          break;
+        } catch (e) {
+          if (attempt === 0) {
+            this.log.warn(`Failed to load ${table.name}, retrying...`);
+          } else {
+            this.log.error(`Failed to load ${table.name} after retry:`, e);
+            throw e;
+          }
+        }
+      }
+      if (loaded) this.log.debug(`Loaded ${table.name}`);
     }
+    this.log.timeEnd('boundary tables');
     report('boundaries', 'success', performance.now() - stepStart);
-
-    // Admin boundary tables are created lazily on first getAdminHierarchy() call
-    this.actualBaseUrl = actualBaseUrl;
 
     this.initialized = true;
     this.log.timeEnd('total init');
@@ -375,57 +430,6 @@ export class GeoSDK {
     if (!this.initialized || !this.conn) {
       throw new Error('GeoSDK not initialized. Call initialize() first.');
     }
-  }
-
-  /**
-   * Lazily load admin boundary tables into memory on first use.
-   * Only 3 tables needed: municipalities (100% coverage, contains region+gov columns),
-   * districts (urban only), and settlements (nearest-point).
-   * Region and governorate info is derived from the municipality match.
-   */
-  private async ensureAdminViews(): Promise<void> {
-    if (this.adminViewsReady) return;
-
-    // Deduplicate concurrent calls
-    if (!this.adminViewsPromise) {
-      this.adminViewsPromise = (async () => {
-        const url = this.actualBaseUrl;
-        this.log.time('admin tables');
-        await Promise.all([
-          this.conn!.query(`
-            CREATE TABLE IF NOT EXISTS sa_municipalities AS
-            SELECT * FROM read_parquet('${url}/sa_municipalities_simple.parquet')
-          `),
-          this.conn!.query(`
-            CREATE TABLE IF NOT EXISTS sa_districts AS
-            SELECT * FROM read_parquet('${url}/sa_districts_simple.parquet')
-          `),
-          this.conn!.query(`
-            CREATE TABLE IF NOT EXISTS sa_settlements AS
-            SELECT * FROM read_parquet('${url}/sa_settlements.parquet')
-          `),
-        ]);
-
-        // R-tree spatial indexes for polygon containment queries
-        try {
-          await Promise.all([
-            this.conn!.query(
-              `CREATE INDEX IF NOT EXISTS idx_muni_geom ON sa_municipalities USING RTREE (geometry)`
-            ),
-            this.conn!.query(
-              `CREATE INDEX IF NOT EXISTS idx_dist_geom ON sa_districts USING RTREE (geometry)`
-            ),
-          ]);
-        } catch {
-          this.log.warn('R-tree indexes not supported');
-        }
-
-        this.adminViewsReady = true;
-        this.log.timeEnd('admin tables');
-      })();
-    }
-
-    await this.adminViewsPromise;
   }
 
   /**
@@ -694,7 +698,9 @@ export class GeoSDK {
     const result = await this.conn!.query(`
       SELECT iso_a3, iso_a2, name_en, name_ar, continent
       FROM world_countries
-      WHERE ST_Contains(geometry, ST_Point(${lon}, ${lat}))
+      WHERE bbox_xmin <= ${lon} AND bbox_xmax >= ${lon}
+        AND bbox_ymin <= ${lat} AND bbox_ymax >= ${lat}
+        AND ST_Contains(geometry, ST_Point(${lon}, ${lat}))
       LIMIT 1
     `);
 
@@ -724,12 +730,15 @@ export class GeoSDK {
 
   /**
    * Get admin hierarchy for a point
-   * Returns district, municipality, governorate, region, and nearest settlement
+   * Returns district, municipality, governorate, region, nearest settlement, and nearest major city.
+   * Settlement search covers ±0.5° (~55km); major city search has no distance limit (only 220 rows).
+   * Both include `distance_m` — the Haversine distance in meters from the query point.
    *
    * Performance optimizations:
    * - Grid-based cache (~500m) avoids re-querying for nearby clicks
-   * - Settlement uses bbox pre-filter on lat/lon columns (21K → ~tens of rows)
-   * - Polygon layers (region/gov/municipality) run as one batch, settlement separate
+   * - Settlement uses bbox pre-filter ±0.5° on lat/lon columns (21K → ~hundreds of rows)
+   * - Major cities scan all 220 rows (no bbox needed, <1ms)
+   * - Polygon layers use bbox pre-filter before ST_Contains
    */
   async getAdminHierarchy(lat: number, lon: number): Promise<AdminHierarchy> {
     this.ensureInitialized();
@@ -742,12 +751,14 @@ export class GeoSDK {
       return cached.result;
     }
 
-    // Ensure admin boundary tables are loaded (lazy, first call only)
-    await this.ensureAdminViews();
-
-    // Single combined query using 3 LATERAL JOINs on in-memory tables.
+    // Single combined query using 4 LATERAL JOINs on in-memory tables.
     // Municipality (100% SA coverage) provides region + governorate columns,
     // eliminating the need for separate sa_regions and sa_governorates tables.
+    //
+    // Bbox pre-filter (bbox_xmin/xmax/ymin/ymax columns computed at load time)
+    // eliminates polygons whose bounding box doesn't contain the point before
+    // the expensive ST_Contains polygon test runs. This turns the 5,484-district
+    // scan into ~5-20 candidates.
     const result = await this.conn!.query(`
       WITH point AS (SELECT ST_Point(${lon}, ${lat}) AS geom)
       SELECT
@@ -755,26 +766,56 @@ export class GeoSDK {
         m.governorate_id, m.governorate_name_ar, m.governorate_name_en,
         m.municipality_id, m.municipality_name_ar, m.municipality_name_en,
         d.district_id, d.district_name_ar, d.district_name_en,
-        s.city_id, s.city_name_ar, s.city_name_en, s.city_type
+        s.city_id, s.city_name_ar, s.city_name_en, s.city_type, s.settlement_distance_m,
+        mc.mc_city_id, mc.mc_city_name_ar, mc.mc_city_name_en,
+        mc.mc_alt_name_ar, mc.mc_alt_name_en, mc.mc_city_type, mc.mc_city_grade,
+        mc.mc_amana_id, mc.mc_amana_name_ar, mc.mc_amana_name_en, mc.major_city_distance_m
       FROM point p
       LEFT JOIN LATERAL (
         SELECT municipality_id, municipality_name_ar, municipality_name_en,
                governorate_id, governorate_name_ar, governorate_name_en,
                region_id, region_name_ar, region_name_en
-        FROM sa_municipalities WHERE ST_Contains(geometry, p.geom) LIMIT 1
+        FROM sa_municipalities
+        WHERE bbox_xmin <= ${lon} AND bbox_xmax >= ${lon}
+          AND bbox_ymin <= ${lat} AND bbox_ymax >= ${lat}
+          AND ST_Contains(geometry, p.geom)
+        LIMIT 1
       ) m ON TRUE
       LEFT JOIN LATERAL (
         SELECT district_id, district_name_ar, district_name_en
-        FROM sa_districts WHERE ST_Contains(geometry, p.geom) LIMIT 1
+        FROM sa_districts
+        WHERE bbox_xmin <= ${lon} AND bbox_xmax >= ${lon}
+          AND bbox_ymin <= ${lat} AND bbox_ymax >= ${lat}
+          AND ST_Contains(geometry, p.geom)
+        LIMIT 1
       ) d ON TRUE
       LEFT JOIN LATERAL (
-        SELECT city_id, city_name_ar, city_name_en, city_type
+        SELECT city_id, city_name_ar, city_name_en, city_type,
+               6371000 * 2 * ASIN(SQRT(
+                 POWER(SIN((RADIANS(latitude) - RADIANS(${lat})) / 2), 2) +
+                 COS(RADIANS(${lat})) * COS(RADIANS(latitude)) *
+                 POWER(SIN((RADIANS(longitude) - RADIANS(${lon})) / 2), 2)
+               )) AS settlement_distance_m
         FROM sa_settlements
-        WHERE longitude BETWEEN ${lon} - 0.1 AND ${lon} + 0.1
-          AND latitude BETWEEN ${lat} - 0.1 AND ${lat} + 0.1
+        WHERE longitude BETWEEN ${lon} - 0.5 AND ${lon} + 0.5
+          AND latitude BETWEEN ${lat} - 0.5 AND ${lat} + 0.5
         ORDER BY ST_Distance(geometry, p.geom)
         LIMIT 1
       ) s ON TRUE
+      LEFT JOIN LATERAL (
+        SELECT city_id AS mc_city_id, city_name_ar AS mc_city_name_ar, city_name_en AS mc_city_name_en,
+               alt_name_ar AS mc_alt_name_ar, alt_name_en AS mc_alt_name_en,
+               city_type AS mc_city_type, city_grade AS mc_city_grade,
+               amana_id AS mc_amana_id, amana_name_ar AS mc_amana_name_ar, amana_name_en AS mc_amana_name_en,
+               6371000 * 2 * ASIN(SQRT(
+                 POWER(SIN((RADIANS(latitude) - RADIANS(${lat})) / 2), 2) +
+                 COS(RADIANS(${lat})) * COS(RADIANS(latitude)) *
+                 POWER(SIN((RADIANS(longitude) - RADIANS(${lon})) / 2), 2)
+               )) AS major_city_distance_m
+        FROM sa_major_cities
+        ORDER BY ST_Distance(geometry, p.geom)
+        LIMIT 1
+      ) mc ON TRUE
     `);
 
     const hierarchy: AdminHierarchy = {};
@@ -810,12 +851,30 @@ export class GeoSDK {
           name_en: row.district_name_en,
         };
       }
-      if (row.city_id) {
+      // Settlement and major_city are Saudi-only datasets — only populate
+      // when the point falls inside a Saudi municipality.
+      if (row.municipality_id && row.city_id) {
         hierarchy.settlement = {
           id: row.city_id,
           name_ar: row.city_name_ar,
           name_en: row.city_name_en,
           type: row.city_type,
+          distance_m: row.settlement_distance_m != null ? Math.round(Number(row.settlement_distance_m)) : undefined,
+        };
+      }
+      if (row.municipality_id && row.mc_city_id) {
+        hierarchy.major_city = {
+          id: row.mc_city_id,
+          name_ar: row.mc_city_name_ar,
+          name_en: row.mc_city_name_en,
+          alt_name_ar: row.mc_alt_name_ar || undefined,
+          alt_name_en: row.mc_alt_name_en || undefined,
+          city_type: row.mc_city_type || undefined,
+          city_grade: row.mc_city_grade != null ? Number(row.mc_city_grade) : undefined,
+          amana_id: row.mc_amana_id || undefined,
+          amana_name_ar: row.mc_amana_name_ar || undefined,
+          amana_name_en: row.mc_amana_name_en || undefined,
+          distance_m: row.major_city_distance_m != null ? Math.round(Number(row.major_city_distance_m)) : undefined,
         };
       }
     }
@@ -1394,7 +1453,6 @@ export class GeoSDK {
    */
   private async loadDistrictNames(): Promise<void> {
     try {
-      await this.ensureAdminViews();
       const result = await this.conn!.query(`
         SELECT DISTINCT district_name_ar, district_name_en FROM sa_districts
         ORDER BY district_name_ar
@@ -1604,6 +1662,7 @@ export class GeoSDK {
           DROP TABLE IF EXISTS sa_municipalities;
           DROP TABLE IF EXISTS sa_districts;
           DROP TABLE IF EXISTS sa_settlements;
+          DROP TABLE IF EXISTS sa_major_cities;
         `);
       } catch {
         // Ignore errors during cleanup
@@ -1612,8 +1671,6 @@ export class GeoSDK {
     }
     if (this.db) await this.db.terminate();
     this.initialized = false;
-    this.adminViewsReady = false;
-    this.adminViewsPromise = null;
     this.lastCountryResult = null;
     this.loadedTiles.clear();
     this.searchCache.clear();

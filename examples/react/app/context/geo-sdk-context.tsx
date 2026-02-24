@@ -1,5 +1,9 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 import type { GeocodingResult as SDKGeocodingResult } from "@tabaqat/geocoding-sdk";
+import duckdbMvpWasm from "@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm?url";
+import duckdbMvpWorker from "@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js?url";
+import duckdbEhWasm from "@duckdb/duckdb-wasm/dist/duckdb-eh.wasm?url";
+import duckdbEhWorker from "@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?url";
 
 // Re-export for consumers
 export type GeocodingResult = SDKGeocodingResult;
@@ -97,6 +101,10 @@ export function GeoSDKProvider({ children }: GeoSDKProviderProps) {
 
         const geoSDK = new GeoSDK({
           debug: true,
+          wasmBundles: {
+            mvp: { mainModule: duckdbMvpWasm, mainWorker: duckdbMvpWorker },
+            eh: { mainModule: duckdbEhWasm, mainWorker: duckdbEhWorker },
+          },
         });
 
         console.log("[GeoSDK-Context] Calling initialize()...");

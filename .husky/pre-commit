@@ -3,6 +3,9 @@
 # Run lint-staged for formatting and linting
 bun run lint-staged
 
+# Verify formatting on all source files (not just staged)
+bun run format:check
+
 # Run typecheck to ensure no type errors
 bun run typecheck
 

@@ -859,7 +859,10 @@ export class GeoSDK {
           name_ar: row.city_name_ar,
           name_en: row.city_name_en,
           type: row.city_type,
-          distance_m: row.settlement_distance_m != null ? Math.round(Number(row.settlement_distance_m)) : undefined,
+          distance_m:
+            row.settlement_distance_m != null
+              ? Math.round(Number(row.settlement_distance_m))
+              : undefined,
         };
       }
       if (row.municipality_id && row.mc_city_id) {
@@ -874,7 +877,10 @@ export class GeoSDK {
           amana_id: row.mc_amana_id || undefined,
           amana_name_ar: row.mc_amana_name_ar || undefined,
           amana_name_en: row.mc_amana_name_en || undefined,
-          distance_m: row.major_city_distance_m != null ? Math.round(Number(row.major_city_distance_m)) : undefined,
+          distance_m:
+            row.major_city_distance_m != null
+              ? Math.round(Number(row.major_city_distance_m))
+              : undefined,
         };
       }
     }

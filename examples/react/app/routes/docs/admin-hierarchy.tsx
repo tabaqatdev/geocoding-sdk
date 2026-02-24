@@ -204,8 +204,14 @@ export default function AdminHierarchy() {
   municipality?: { id: string; name_ar: string; name_en: string };
   governorate?: { id: string; name_ar: string; name_en: string };
   region?: { id: string; name_ar: string; name_en: string };
-  settlement?: { id: string; name_ar: string; name_en: string; type?: string };
-  major_city?: MajorCityInfo;
+  settlement?: { id: string; name_ar: string; name_en: string; type?: string; distance_m?: number };
+  major_city?: {
+    id: string; name_ar: string; name_en: string;
+    alt_name_ar?: string; alt_name_en?: string;
+    city_type?: string; city_grade?: number;
+    amana_id?: string; amana_name_ar?: string; amana_name_en?: string;
+    distance_m?: number;
+  };
 }>`}
               />
             </CardContent>

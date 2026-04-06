@@ -87,8 +87,10 @@ export interface GeocodingResult {
   district_ar?: string;
   district_en?: string;
   city?: string;
+  city_id?: string;
   gov_ar?: string;
   gov_en?: string;
+  region_id?: string;
   region_ar?: string;
   region_en?: string;
   full_address_ar?: string;
@@ -154,6 +156,13 @@ export class GeoSDK {
     null;
   private districtNames: { ar: string[]; en: string[] } = { ar: [], en: [] };
   private streetNames: Map<string, string[]> = new Map(); // tile -> streets
+
+  // Lookup maps for exposing region_id / city_id in GeocodingResult without
+  // modifying the address tile schema. Built once at init from sa_municipalities
+  // and sa_settlements (already loaded as in-memory DuckDB tables).
+  private regionIdByNameAr: Map<string, string> = new Map();
+  private regionIdByNameEn: Map<string, string> = new Map();
+  private cityIdByRegionAndName: Map<string, string> = new Map();
   private readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
   private readonly MAX_CACHE_SIZE = 100;
 
@@ -422,8 +431,64 @@ export class GeoSDK {
     this.log.timeEnd('boundary tables');
     report('boundaries', 'success', performance.now() - stepStart);
 
+    // Build in-memory lookups for region_id / city_id resolution.
+    // Region lookup: 13 entries, name (ar/en) -> region_id.
+    try {
+      const regionRows = await this.conn.query(`
+        SELECT DISTINCT region_id, region_name_ar, region_name_en
+        FROM sa_municipalities
+      `);
+      for (const row of regionRows.toArray() as DuckDBRow[]) {
+        if (row.region_id && row.region_name_ar) {
+          this.regionIdByNameAr.set(row.region_name_ar, row.region_id);
+        }
+        if (row.region_id && row.region_name_en) {
+          this.regionIdByNameEn.set(row.region_name_en, row.region_id);
+        }
+      }
+
+      // City lookup: keyed by `${region_id}|${city_name_ar}` to disambiguate
+      // duplicate city names across regions. First match wins for intra-region
+      // duplicates (rare outside of unnamed small settlements).
+      const cityRows = await this.conn.query(`
+        SELECT city_id, city_name_ar, region_id
+        FROM sa_settlements
+        WHERE city_id IS NOT NULL AND city_name_ar IS NOT NULL
+      `);
+      for (const row of cityRows.toArray() as DuckDBRow[]) {
+        const key = `${row.region_id}|${row.city_name_ar}`;
+        if (!this.cityIdByRegionAndName.has(key)) {
+          this.cityIdByRegionAndName.set(key, row.city_id);
+        }
+      }
+      this.log.debug(
+        `Built lookups: ${this.regionIdByNameAr.size} regions, ${this.cityIdByRegionAndName.size} cities`
+      );
+    } catch (e) {
+      this.log.warn('Failed to build region/city id lookups:', e);
+    }
+
     this.initialized = true;
     this.log.timeEnd('total init');
+  }
+
+  /**
+   * Resolve region_id and city_id for a result row using in-memory lookups.
+   * Called from mapResultsToGeocodingResult to enrich address tile rows that
+   * only contain region_ar / city names, not IDs.
+   */
+  private resolveIds(regionAr?: string, regionEn?: string, city?: string):
+    { region_id?: string; city_id?: string } {
+    const out: { region_id?: string; city_id?: string } = {};
+    if (regionAr) {
+      out.region_id = this.regionIdByNameAr.get(regionAr);
+    } else if (regionEn) {
+      out.region_id = this.regionIdByNameEn.get(regionEn);
+    }
+    if (out.region_id && city) {
+      out.city_id = this.cityIdByRegionAndName.get(`${out.region_id}|${city}`);
+    }
+    return out;
   }
 
   private ensureInitialized(): void {
@@ -647,6 +712,8 @@ export class GeoSDK {
         result.postcode = row.postcode;
         result.region_ar = row.region_ar;
         result.region_en = row.region_en;
+        const ids = this.resolveIds(row.region_ar, row.region_en);
+        result.region_id = ids.region_id;
         return result;
       }
 
@@ -657,6 +724,9 @@ export class GeoSDK {
         result.city = row.city;
         result.region_ar = row.region_ar;
         result.region_en = row.region_en;
+        const ids = this.resolveIds(row.region_ar, row.region_en, row.city);
+        result.region_id = ids.region_id;
+        result.city_id = ids.city_id;
         return result;
       }
 
@@ -674,6 +744,9 @@ export class GeoSDK {
       result.full_address_ar = row.full_address_ar;
       result.full_address_en = row.full_address_en;
       result.h3_index = row.h3_index;
+      const ids = this.resolveIds(row.region_ar, row.region_en, row.city);
+      result.region_id = ids.region_id;
+      result.city_id = ids.city_id;
       return result;
     });
   }

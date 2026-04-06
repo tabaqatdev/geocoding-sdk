@@ -59,6 +59,8 @@ interface MarkerData {
   postcode?: string;
   distance?: number;
   isResult?: boolean;
+  region_id?: string;
+  city_id?: string;
 }
 
 // Map styles for light and dark mode
@@ -255,6 +257,8 @@ export default function Playground() {
             address: address || "Unknown",
             postcode: result.postcode,
             distance: result.distance_m,
+            region_id: result.region_id,
+            city_id: result.city_id,
           });
           setShowPopup(true);
           setReverseResults(results);
@@ -268,6 +272,8 @@ export default function Playground() {
               postcode: r.postcode,
               distance: r.distance_m,
               isResult: true,
+              region_id: r.region_id,
+              city_id: r.city_id,
             }))
           );
 
@@ -317,6 +323,8 @@ export default function Playground() {
         postcode: r.postcode,
         distance: r.distance_m,
         isResult: true,
+        region_id: r.region_id,
+        city_id: r.city_id,
       }));
 
       setResultMarkers(markers);
@@ -558,6 +566,12 @@ export default function Playground() {
                     <span className="text-xs text-muted-foreground block">
                       {clickMarker.distance.toFixed(0)} m
                     </span>
+                  )}
+                  {(clickMarker.region_id || clickMarker.city_id) && (
+                    <div className="flex gap-1.5 mt-1 font-mono text-[10px] text-muted-foreground">
+                      {clickMarker.region_id && <span>region_id: {clickMarker.region_id}</span>}
+                      {clickMarker.city_id && <span>city_id: {clickMarker.city_id}</span>}
+                    </div>
                   )}
                 </div>
               </Popup>
@@ -1144,8 +1158,18 @@ function ResultsList({
           <div className="font-medium text-sm leading-tight" dir="auto">
             {getAddress(result) || "-"}
           </div>
-          <div className="flex gap-2 mt-1 text-xs text-muted-foreground">
+          <div className="flex flex-wrap gap-1.5 mt-1 text-xs text-muted-foreground">
             {result.postcode && <span>{result.postcode}</span>}
+            {result.region_id && (
+              <Badge variant="outline" className="text-xs px-1 py-0 font-mono">
+                R:{result.region_id}
+              </Badge>
+            )}
+            {result.city_id && (
+              <Badge variant="outline" className="text-xs px-1 py-0 font-mono">
+                C:{result.city_id}
+              </Badge>
+            )}
             {showDistance && result.distance_m !== undefined && (
               <Badge variant="secondary" className="text-xs px-1 py-0">
                 {result.distance_m.toFixed(0)}m

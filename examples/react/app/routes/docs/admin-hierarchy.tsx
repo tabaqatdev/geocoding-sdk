@@ -18,6 +18,7 @@ import { Input } from "~/components/ui/input";
 import { CodeBlock } from "~/components/ui/code-block";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import type { AdminHierarchy } from "@tabaqat/geocoding-sdk";
 import type { Route } from "./+types/admin-hierarchy";
 
 export function meta(_args: Route.MetaArgs) {
@@ -40,27 +41,7 @@ export default function AdminHierarchy() {
   const { sdk, initialized, loading, error, retry } = useGeoSDK();
   const [lat, setLat] = useState("24.7136");
   const [lon, setLon] = useState("46.6753");
-  const [result, setResult] = useState<{
-    district?: { id: string; name_ar: string; name_en: string };
-    municipality?: { id: string; name_ar: string; name_en: string };
-    governorate?: { id: string; name_ar: string; name_en: string };
-    region?: { id: string; name_ar: string; name_en: string };
-    settlement?: {
-      id: string;
-      name_ar: string;
-      name_en: string;
-      type?: string;
-      distance_m?: number;
-    };
-    major_city?: {
-      id: string;
-      name_ar: string;
-      name_en: string;
-      city_type?: string;
-      city_grade?: number;
-      distance_m?: number;
-    };
-  } | null>(null);
+  const [result, setResult] = useState<AdminHierarchy | null>(null);
   const [searching, setSearching] = useState(false);
   const [mapRef, setMapRef] = useState<MapRef | null>(null);
   const [markerPos, setMarkerPos] = useState<{ lat: number; lon: number } | null>(null);
@@ -388,12 +369,28 @@ export default function AdminHierarchy() {
                                   {language === "ar"
                                     ? result.major_city.name_ar
                                     : result.major_city.name_en}
+                                  {result.major_city.id && (
+                                    <span className="text-xs text-muted-foreground font-mono ms-2">
+                                      {result.major_city.id}
+                                    </span>
+                                  )}
                                   {result.major_city.distance_m != null && (
                                     <span className="text-xs text-muted-foreground ms-2">
                                       {result.major_city.distance_m >= 1000
                                         ? `${(result.major_city.distance_m / 1000).toFixed(1)} km`
                                         : `${result.major_city.distance_m} m`}
                                     </span>
+                                  )}
+                                  {result.major_city.amana_id && (
+                                    <div className="text-xs text-muted-foreground mt-0.5">
+                                      {language === "ar" ? "أمانة: " : "Amana: "}
+                                      {language === "ar"
+                                        ? result.major_city.amana_name_ar
+                                        : result.major_city.amana_name_en}
+                                      <span className="font-mono ms-1">
+                                        {result.major_city.amana_id}
+                                      </span>
+                                    </div>
                                   )}
                                 </td>
                               </tr>

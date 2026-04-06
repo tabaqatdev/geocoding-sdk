@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.3] - 2026-04-06
+
+### Changed
+
+- **README updated for v0.4.2 additions** - Documents `region_id` and `city_id` on `GeocodingResult` and bumps the displayed version/data URL references. No code changes, release exists solely to refresh the README shown on npmjs.com
+
 ## [0.4.2] - 2026-04-06
 
 ### Added

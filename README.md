@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@tabaqat/geocoding-sdk)](https://bundlephobia.com/package/@tabaqat/geocoding-sdk)
 
-**v0.4.1** - A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser with automatic fallback to default data source.
+**v0.4.2** - A browser-based geocoding SDK for Saudi Arabia using DuckDB-WASM. Zero backend dependencies - runs entirely in the browser with automatic fallback to default data source.
 
 ## Live Examples
 
@@ -464,7 +464,7 @@ The default `GeoSDK` uses H3 tile-based partitioning (V3) for optimal performanc
 const sdk = new GeoSDK(config?: GeoSDKConfig);
 
 interface GeoSDKConfig {
-  dataUrl?: string;           // Custom data URL (default: source.coop v0.4.1 CDN)
+  dataUrl?: string;           // Custom data URL (default: source.coop v0.4.2 CDN)
   language?: 'ar' | 'en';     // Preferred language
   debug?: boolean;            // Enable debug logging (default: false)
 }
@@ -678,8 +678,10 @@ interface GeocodingResult {
   district_ar?: string;
   district_en?: string;
   city?: string;
+  city_id?: string; // Stable city identifier (from sa_settlements)
   gov_ar?: string; // Governorate (Arabic)
   gov_en?: string; // Governorate (English)
+  region_id?: string; // Stable region identifier (from sa_municipalities)
   region_ar?: string;
   region_en?: string;
   full_address_ar?: string;
@@ -781,7 +783,7 @@ To host your own data files:
 
 ```typescript
 const sdk = new GeoSDK({
-  dataUrl: 'https://your-cdn.com/geocoding-data/v0.4.1',
+  dataUrl: 'https://your-cdn.com/geocoding-data/v0.4.2',
 });
 ```
 

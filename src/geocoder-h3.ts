@@ -477,8 +477,11 @@ export class GeoSDK {
    * Called from mapResultsToGeocodingResult to enrich address tile rows that
    * only contain region_ar / city names, not IDs.
    */
-  private resolveIds(regionAr?: string, regionEn?: string, city?: string):
-    { region_id?: string; city_id?: string } {
+  private resolveIds(
+    regionAr?: string,
+    regionEn?: string,
+    city?: string
+  ): { region_id?: string; city_id?: string } {
     const out: { region_id?: string; city_id?: string } = {};
     if (regionAr) {
       out.region_id = this.regionIdByNameAr.get(regionAr);
